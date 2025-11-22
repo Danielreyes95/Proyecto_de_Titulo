@@ -89,6 +89,34 @@ function mostrarSeleccionEspecifica() {
 }
 
 /* ============================================================
+   🔹 TEXTO DESTINATARIO (IGUAL QUE ENTRENADOR)
+============================================================ */
+function obtenerTextoDestinatario(a) {
+    // Si viene el texto calculado desde el backend (jugador + apoderado o entrenador)
+    if (a.destinatario === "ApoderadoEspecifico" && a.destinatarioTexto) {
+        return a.destinatarioTexto; // Ej: "Mateo Reyes (Apoderado: Daniel Reyes)"
+    }
+
+    if (a.destinatario === "EntrenadorEspecifico" && a.destinatarioTexto) {
+        return a.destinatarioTexto; // Ej: "Entrenador: Juan Pérez"
+    }
+
+    // Casos generales
+    switch (a.destinatario) {
+        case "Apoderados":
+            return "Todos los apoderados";
+        case "Entrenadores":
+            return "Entrenadores";
+        case "Todos":
+            return "Todos (apoderados y entrenadores)";
+        case "Categoria":
+            return "Apoderados de la categoría";
+        default:
+            return a.destinatario || "Destinatario no especificado";
+    }
+}
+
+/* ============================================================
    CARGAR AVISOS
 ============================================================ */
 async function cargarAvisos() {
@@ -130,9 +158,13 @@ async function cargarAvisos() {
         mensaje.classList.add("hidden");
 
         avisos.forEach(a => {
-            const fechaEvento = a.fechaEvento
-                ? new Date(a.fechaEvento).toLocaleDateString("es-CL")
+            // 🔹 Ahora usamos la FECHA DE ENVÍO (createdAt)
+            const fecha = a.createdAt
+                ? new Date(a.createdAt).toLocaleDateString("es-CL")
                 : "—";
+
+            // 🔹 Texto destinatario unificado
+            const textoDest = obtenerTextoDestinatario(a);
 
             const badgeEstado = `
                 <span class="px-2 py-1 rounded text-white ${
@@ -146,8 +178,8 @@ async function cargarAvisos() {
                 <tr class="border-b">
                     <td class="p-2 font-bold">${a.titulo}</td>
                     <td class="p-2">${a.tipo}</td>
-                    <td class="p-2">${a.destinatario}</td>
-                    <td class="p-2">${fechaEvento}</td>
+                    <td class="p-2">${textoDest}</td>
+                    <td class="p-2">${fecha}</td>
                     <td class="p-2">${badgeEstado}</td>
                     <td class="p-2 flex gap-2">
                         <button onclick="abrirModalAviso('${a._id}')"
@@ -340,3 +372,4 @@ document.getElementById("filtroBuscar").addEventListener("input", cargarAvisos);
 ============================================================ */
 cargarCategorias();
 cargarAvisos();
+

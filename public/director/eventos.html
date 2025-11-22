@@ -142,10 +142,30 @@ async function cargarCategorias() {
     const filtro = document.getElementById("filtroCategoria");
     const selectCrear = document.getElementById("categoriaNuevoEvento");
 
+    // opción por defecto
+    filtro.innerHTML = `<option value="">Todas las categorías</option>`;
+    selectCrear.innerHTML = `<option value="">Toda la escuela</option>`;
+
     cats.forEach(c => {
-        filtro.innerHTML += `<option value="${c._id}">${c.nombre}</option>`;
+        // 🔥 PARA FILTRO: usamos el NOMBRE como value
+        filtro.innerHTML += `<option value="${c.nombre}">${c.nombre}</option>`;
+
+        // 🔥 PARA CREAR: usamos el ID como value (backend necesita el _id)
         selectCrear.innerHTML += `<option value="${c._id}">${c.nombre}</option>`;
     });
+}
+
+function obtenerNombreCategoria(e) {
+    if (e.categoria && typeof e.categoria === "object" && e.categoria.nombre) {
+        return e.categoria.nombre;        // cuando viene populada
+    }
+    if (typeof e.categoria === "string") {
+        return e.categoria;               // si guardaste el nombre directamente
+    }
+    if (e.categoriaNombre) {
+        return e.categoriaNombre;         // por si el backend envía este campo
+    }
+    return "Sin categoría";
 }
 
 /* ============================================================
@@ -153,14 +173,17 @@ async function cargarCategorias() {
 ============================================================ */
 async function cargarEventos() {
 
-    const categoria = document.getElementById("filtroCategoria").value;
+    const categoriaFiltro = document.getElementById("filtroCategoria").value;
 
     const res = await fetch(`${BASE_URL}/api/evento/todos`);
     let eventos = await res.json();
 
-    // 🔥 Filtrar por categoría
-    if (categoria) {
-        eventos = eventos.filter(e => e.categoriaId === categoria || e.categoria === categoria);
+    // 🔥 Filtrar por NOMBRE de categoría (Sub-6, Sub-8, etc.)
+    if (categoriaFiltro) {
+        eventos = eventos.filter(e => {
+            const nombreCatEvento = obtenerNombreCategoria(e);
+            return nombreCatEvento === categoriaFiltro;
+        });
     }
 
     const tbody = document.getElementById("tbodyEventos");
@@ -168,29 +191,34 @@ async function cargarEventos() {
 
     eventos.forEach(e => {
 
-        // 🔥 FECHA
+        // FECHA
         const fecha = e.fechaEvento 
             ? new Date(e.fechaEvento).toLocaleDateString("es-CL") 
             : "-";
 
-        // 🔥 TIPO
+        // TIPO
         const tipo = e.tipoEvento ?? "-";
 
-        // 🔥 CATEGORÍA
-        const categoria = e.categoria ?? "Sin categoría";
+        // CATEGORÍA (usamos helper para mostrar)
+        const nombreCategoria = obtenerNombreCategoria(e);
 
-        // 🔥 ENTRENADOR
-        const entrenador = e.entrenador ?? "Director";
+        // ENTRENADOR
+        let nombreEntrenador = "Director";
+        if (e.entrenador && typeof e.entrenador === "object" && e.entrenador.nombreCompleto) {
+            nombreEntrenador = e.entrenador.nombreCompleto;
+        } else if (typeof e.entrenador === "string") {
+            nombreEntrenador = e.entrenador;
+        }
 
-        // 🔥 PORCENTAJE
+        // PORCENTAJE
         const porcentaje = e.porcentajeAsistencia ?? 0;
 
         tbody.innerHTML += `
             <tr class="border-b">
                 <td class="p-2">${fecha}</td>
                 <td class="p-2">${tipo}</td>
-                <td class="p-2">${categoria}</td>
-                <td class="p-2">${entrenador}</td>
+                <td class="p-2">${nombreCategoria}</td>
+                <td class="p-2">${nombreEntrenador}</td>
                 <td class="p-2">${porcentaje}%</td>
 
                 <td class="p-2">
@@ -214,6 +242,8 @@ async function cargarEventos() {
         `;
     });
 }
+
+
 function verDetalle(id) {
     localStorage.setItem("eventoSeleccionado", id);
     window.location.href = "./detalle-evento.html";

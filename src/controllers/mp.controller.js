@@ -115,12 +115,116 @@ exports.webhook = async (req, res) => {
 
     console.log("📌 Topic webhook:", topic);
 
-    let externalRef = "";
-    let transactionAmount = 0;
-    let dateApproved = new Date();
+    // Helper para procesar UNA merchant_order y guardar/actualizar Pago
+    async function procesarOrden(order) {
+      if (!order) {
+        console.warn("⚠️ procesarOrden llamado sin order");
+        return;
+      }
+
+      console.log("📦 merchant_order data:", {
+        order_status: order.order_status,
+        external_reference: order.external_reference,
+        total_amount: order.total_amount,
+        payments: order.payments,
+      });
+
+      const externalRef = order.external_reference || "";
+      let transactionAmount =
+        order.total_amount ||
+        (order.payments && order.payments[0]
+          ? order.payments[0].transaction_amount
+          : 0);
+
+      // buscar un pago aprobado dentro de la orden
+      const approvedPayment = (order.payments || []).find(
+        (p) => p.status === "approved"
+      );
+
+      if (!approvedPayment && order.order_status !== "paid") {
+        console.log(
+          "⚠️ Orden aún no pagada. order_status:",
+          order.order_status
+        );
+        return;
+      }
+
+      const dateApproved =
+        approvedPayment?.date_approved ? approvedPayment.date_approved : new Date();
+
+      console.log("💳 Orden pagada, external_reference:", externalRef);
+
+      const parts = (externalRef || "").split("|");
+      console.log("🔎 external_reference parts:", parts);
+
+      let pagoDoc = null;
+
+      // CASO 1: external_reference = _id de Pago
+      if (parts[0] && parts[0].length === 24 && parts.length === 1) {
+        pagoDoc = await Pago.findById(parts[0]);
+      }
+
+      // CASO 2: _id de Pago + otros datos
+      if (!pagoDoc && parts[0] && parts[0].length === 24 && parts.length > 1) {
+        pagoDoc = await Pago.findById(parts[0]);
+      }
+
+      // CASO 3: jugadorId|apoderadoId|categoriaId|mes
+      if (!pagoDoc && parts.length === 4) {
+        const [jugadorId, apoderadoId, categoriaId, mes] = parts;
+
+        if (jugadorId && apoderadoId && categoriaId && mes) {
+          // intento buscar uno existente
+          pagoDoc = await Pago.findOne({ jugador: jugadorId, mes });
+
+          if (!pagoDoc) {
+            console.log("🟢 Creando nuevo Pago desde MP");
+            pagoDoc = new Pago({
+              jugador: jugadorId,
+              apoderado: apoderadoId,
+              categoria: categoriaId,
+              mes,
+              monto: transactionAmount,
+              metodoPago: "App",           // 👈 coincide con tu enum
+              plataforma: "MercadoPago",
+              estado: "Pagado",
+              fechaPago: dateApproved,
+              observacion: "Pago confirmado vía Mercado Pago",
+            });
+          }
+        }
+      }
+
+      // CASO 4: formato viejo jugadorId|mes
+      if (!pagoDoc && parts.length === 2) {
+        const [jugadorId, mes] = parts;
+        if (jugadorId && mes) {
+          pagoDoc = await Pago.findOne({ jugador: jugadorId, mes });
+        }
+      }
+
+      if (!pagoDoc) {
+        console.warn(
+          "⚠️ No se pudo mapear external_reference a un pago local:",
+          externalRef
+        );
+        return;
+      }
+
+      // Actualizar campos comunes
+      pagoDoc.monto = transactionAmount;
+      pagoDoc.estado = "Pagado";
+      pagoDoc.metodoPago = "App";
+      pagoDoc.plataforma = "MercadoPago";
+      pagoDoc.fechaPago = dateApproved;
+
+      await pagoDoc.save();
+
+      console.log("✅ Pago guardado/actualizado en Mongo:", pagoDoc._id);
+    }
 
     // =======================================
-    // CASO A: merchant_order  (USAR ESTE)
+    // CASO A: merchant_order
     // =======================================
     if (topic === "merchant_order") {
       let merchantOrderId = null;
@@ -143,132 +247,65 @@ exports.webhook = async (req, res) => {
       );
       const order = result.body || result;
 
-      console.log("📦 merchant_order data:", {
-        order_status: order.order_status,
-        external_reference: order.external_reference,
-        total_amount: order.total_amount,
-        payments: order.payments,
-      });
+      await procesarOrden(order);
 
-      externalRef = order.external_reference || "";
-      transactionAmount =
-        order.total_amount ||
-        (order.payments && order.payments[0]
-          ? order.payments[0].transaction_amount
-          : 0);
-
-      // buscar un pago aprobado dentro de la orden
-      const approvedPayment = (order.payments || []).find(
-        (p) => p.status === "approved"
-      );
-
-      if (!approvedPayment && order.order_status !== "paid") {
-        console.log(
-          "⚠️ Orden aún no pagada. order_status:",
-          order.order_status
-        );
-        return res.sendStatus(200);
-      }
-
-      if (approvedPayment) {
-        dateApproved = approvedPayment.date_approved || new Date();
-      } else {
-        dateApproved = new Date();
-      }
-
-      // aquí consideramos el pago como aprobado
-      console.log("💳 Orden pagada, external_reference:", externalRef);
+      return res.sendStatus(200);
     }
 
     // =======================================
-    // CASO B: payment  (SOLO LOG, NO PROCESA)
+    // CASO B: payment
+    // -> buscar merchant_order usando el payment_id
     // =======================================
-    else if (topic === "payment") {
-      console.log(
-        "ℹ️ Webhook de tipo payment recibido, se maneja sólo vía merchant_order."
-      );
+    if (topic === "payment") {
+      let paymentId = null;
+
+      if (req.query["data.id"]) {
+        paymentId = req.query["data.id"];
+      } else if (req.query.id) {
+        paymentId = req.query.id;
+      } else if (req.body?.data?.id) {
+        paymentId = req.body.data.id;
+      }
+
+      console.log("💳 paymentId (payment):", paymentId);
+
+      if (!paymentId) {
+        console.warn("⚠️ Webhook payment sin paymentId, respondo 200");
+        return res.sendStatus(200);
+      }
+
+      try {
+        const result = await mercadopago.merchant_orders.search({
+          qs: { payment_id: paymentId },
+        });
+
+        const orders =
+          (result.body && (result.body.elements || result.body.results)) || [];
+
+        console.log("📦 merchant_orders.search result length:", orders.length);
+
+        if (!orders.length) {
+          console.warn(
+            "⚠️ No se encontró merchant_order asociada al paymentId:",
+            paymentId
+          );
+          return res.sendStatus(200);
+        }
+
+        const order = orders[0];
+
+        await procesarOrden(order);
+      } catch (err) {
+        console.error("❌ Error en merchant_orders.search:", err);
+      }
+
       return res.sendStatus(200);
     }
 
     // =======================================
     // CASO C: topic desconocido
     // =======================================
-    else {
-      console.warn("⚠️ Topic no soportado en webhook:", topic);
-      return res.sendStatus(200);
-    }
-
-    // ===========================
-    // MAPEAR external_reference
-    // ===========================
-    const parts = (externalRef || "").split("|");
-    console.log("🔎 external_reference parts:", parts);
-
-    let pagoDoc = null;
-
-    // CASO 1: external_reference = _id de Pago
-    if (parts[0] && parts[0].length === 24 && parts.length === 1) {
-      pagoDoc = await Pago.findById(parts[0]);
-    }
-
-    // CASO 2: _id de Pago + otros datos
-    if (!pagoDoc && parts[0] && parts[0].length === 24 && parts.length > 1) {
-      pagoDoc = await Pago.findById(parts[0]);
-    }
-
-    // CASO 3: jugadorId|apoderadoId|categoriaId|mes
-    if (!pagoDoc && parts.length === 4) {
-      const [jugadorId, apoderadoId, categoriaId, mes] = parts;
-
-      if (jugadorId && apoderadoId && categoriaId && mes) {
-        pagoDoc = await Pago.findOne({ jugador: jugadorId, mes });
-
-        if (!pagoDoc) {
-          pagoDoc = new Pago({
-            jugador: jugadorId,
-            apoderado: apoderadoId,
-            categoria: categoriaId,
-            mes,
-            monto: transactionAmount,
-            metodoPago: "App",
-            plataforma: "MercadoPago",
-            estado: "Pagado",
-            fechaPago: dateApproved,
-            observacion: "Pago confirmado vía Mercado Pago",
-          });
-        }
-      }
-    }
-
-    // CASO 4: formato viejo jugadorId|mes
-    if (!pagoDoc && parts.length === 2) {
-      const [jugadorId, mes] = parts;
-      if (jugadorId && mes) {
-        pagoDoc = await Pago.findOne({ jugador: jugadorId, mes });
-      }
-    }
-
-    if (!pagoDoc) {
-      console.warn(
-        "⚠️ No se pudo mapear external_reference a un pago local:",
-        externalRef
-      );
-      return res.sendStatus(200);
-    }
-
-    // ===========================
-    // ACTUALIZAR / GUARDAR
-    // ===========================
-    pagoDoc.monto = transactionAmount;
-    pagoDoc.estado = "Pagado";
-    pagoDoc.metodoPago = "App";
-    pagoDoc.plataforma = "MercadoPago";
-    pagoDoc.fechaPago = dateApproved;
-
-    await pagoDoc.save();
-
-    console.log("✅ Pago guardado/actualizado en Mongo:", pagoDoc._id);
-
+    console.warn("⚠️ Topic no soportado en webhook:", topic);
     return res.sendStatus(200);
   } catch (error) {
     console.error("❌ Error en webhook MP:", error);

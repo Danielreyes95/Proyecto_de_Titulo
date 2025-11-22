@@ -107,7 +107,6 @@ exports.webhook = async (req, res) => {
       body: req.body,
     });
 
-    // Detectar el "topic" principal de la notificación
     const topic =
       req.query.topic ||
       req.query.type ||
@@ -116,50 +115,14 @@ exports.webhook = async (req, res) => {
 
     console.log("📌 Topic webhook:", topic);
 
-    let payment = null;
     let externalRef = "";
     let transactionAmount = 0;
-    let dateApproved = null;
+    let dateApproved = new Date();
 
     // =======================================
-    // CASO A: topic = "payment"
+    // CASO A: merchant_order  (USAR ESTE)
     // =======================================
-    if (topic === "payment") {
-      let paymentId = null;
-
-      if (req.query["data.id"]) {
-        paymentId = req.query["data.id"];
-      } else if (req.query.id) {
-        paymentId = req.query.id;
-      } else if (req.body?.data?.id) {
-        paymentId = req.body.data.id;
-      }
-
-      console.log("💳 paymentId (payment):", paymentId);
-
-      if (!paymentId) {
-        console.warn("⚠️ Webhook payment sin paymentId, respondo 200");
-        return res.sendStatus(200);
-      }
-
-      try {
-        const result = await mercadopago.payment.findById(paymentId);
-        payment = result.body || result;
-      } catch (err) {
-        console.error("❌ Error al obtener pago por ID:", err);
-        // si MP dice "Payment not found", respondemos 200 para que no reintente infinito
-        return res.sendStatus(200);
-      }
-
-      externalRef = payment.external_reference || "";
-      transactionAmount = payment.transaction_amount;
-      dateApproved = payment.date_approved || new Date();
-    }
-
-    // =======================================
-    // CASO B: topic = "merchant_order"
-    // =======================================
-    else if (topic === "merchant_order") {
+    if (topic === "merchant_order") {
       let merchantOrderId = null;
 
       if (req.query.id) {
@@ -175,30 +138,56 @@ exports.webhook = async (req, res) => {
         return res.sendStatus(200);
       }
 
-      const result = await mercadopago.merchant_orders.findById(merchantOrderId);
+      const result = await mercadopago.merchant_orders.findById(
+        merchantOrderId
+      );
       const order = result.body || result;
 
-      externalRef = order.external_reference || "";
+      console.log("📦 merchant_order data:", {
+        order_status: order.order_status,
+        external_reference: order.external_reference,
+        total_amount: order.total_amount,
+        payments: order.payments,
+      });
 
-      // tomar el primer pago aprobado dentro de la orden
+      externalRef = order.external_reference || "";
+      transactionAmount =
+        order.total_amount ||
+        (order.payments && order.payments[0]
+          ? order.payments[0].transaction_amount
+          : 0);
+
+      // buscar un pago aprobado dentro de la orden
       const approvedPayment = (order.payments || []).find(
         (p) => p.status === "approved"
       );
 
-      if (!approvedPayment) {
-        console.log("⚠️ merchant_order sin pagos aprobados todavía");
+      if (!approvedPayment && order.order_status !== "paid") {
+        console.log(
+          "⚠️ Orden aún no pagada. order_status:",
+          order.order_status
+        );
         return res.sendStatus(200);
       }
 
-      payment = {
-        status: approvedPayment.status,
-        external_reference: externalRef,
-        transaction_amount: approvedPayment.transaction_amount,
-        date_approved: approvedPayment.date_approved || new Date(),
-      };
+      if (approvedPayment) {
+        dateApproved = approvedPayment.date_approved || new Date();
+      } else {
+        dateApproved = new Date();
+      }
 
-      transactionAmount = approvedPayment.transaction_amount;
-      dateApproved = approvedPayment.date_approved || new Date();
+      // aquí consideramos el pago como aprobado
+      console.log("💳 Orden pagada, external_reference:", externalRef);
+    }
+
+    // =======================================
+    // CASO B: payment  (SOLO LOG, NO PROCESA)
+    // =======================================
+    else if (topic === "payment") {
+      console.log(
+        "ℹ️ Webhook de tipo payment recibido, se maneja sólo vía merchant_order."
+      );
+      return res.sendStatus(200);
     }
 
     // =======================================
@@ -209,31 +198,20 @@ exports.webhook = async (req, res) => {
       return res.sendStatus(200);
     }
 
-    console.log("💳 Detalle pago procesado:", {
-      status: payment.status,
-      external_reference: externalRef,
-      transaction_amount: transactionAmount,
-    });
-
-    // Sólo seguimos si el pago está aprobado
-    if (payment.status !== "approved") {
-      console.log("Pago no aprobado, estado:", payment.status);
-      return res.sendStatus(200);
-    }
-
+    // ===========================
+    // MAPEAR external_reference
+    // ===========================
     const parts = (externalRef || "").split("|");
     console.log("🔎 external_reference parts:", parts);
 
     let pagoDoc = null;
 
-    // =======================================
     // CASO 1: external_reference = _id de Pago
-    // =======================================
     if (parts[0] && parts[0].length === 24 && parts.length === 1) {
       pagoDoc = await Pago.findById(parts[0]);
     }
 
-    // CASO 2: _id de Pago + otros datos (pagoId|mes, etc.)
+    // CASO 2: _id de Pago + otros datos
     if (!pagoDoc && parts[0] && parts[0].length === 24 && parts.length > 1) {
       pagoDoc = await Pago.findById(parts[0]);
     }
@@ -243,11 +221,9 @@ exports.webhook = async (req, res) => {
       const [jugadorId, apoderadoId, categoriaId, mes] = parts;
 
       if (jugadorId && apoderadoId && categoriaId && mes) {
-        // intento buscar uno existente
         pagoDoc = await Pago.findOne({ jugador: jugadorId, mes });
 
         if (!pagoDoc) {
-          // creo uno nuevo
           pagoDoc = new Pago({
             jugador: jugadorId,
             apoderado: apoderadoId,
@@ -280,7 +256,9 @@ exports.webhook = async (req, res) => {
       return res.sendStatus(200);
     }
 
-    // Actualizar campos comunes
+    // ===========================
+    // ACTUALIZAR / GUARDAR
+    // ===========================
     pagoDoc.monto = transactionAmount;
     pagoDoc.estado = "Pagado";
     pagoDoc.metodoPago = "App";

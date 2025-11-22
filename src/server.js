@@ -17,7 +17,7 @@ const asistenciaRoutes = require("./routes/asistencia.routes");
 const directorRoutes = require("./routes/director.routes");
 const pagoRoutes = require("./routes/pago.routes");
 const avisoRoutes = require("./routes/aviso.routes");
-const mercadoPagoRoutes = require("./routes/mercado-pago.route");
+const mercadoPagoRoutes = require("./routes/mercado-pago.routes");
 
 // =============================
 // CONFIGURACIÓN EXPRESS + HTTP + SOCKET.IO

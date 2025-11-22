@@ -136,23 +136,14 @@ exports.webhook = async (req, res) => {
           ? order.payments[0].transaction_amount
           : 0);
 
-      // buscar un pago aprobado dentro de la orden
       const approvedPayment = (order.payments || []).find(
         (p) => p.status === "approved"
       );
 
-      if (!approvedPayment && order.order_status !== "paid") {
-        console.log(
-          "⚠️ Orden aún no pagada. order_status:",
-          order.order_status
-        );
-        return;
-      }
-
       const dateApproved =
         approvedPayment?.date_approved ? approvedPayment.date_approved : new Date();
 
-      console.log("💳 Orden pagada, external_reference:", externalRef);
+      console.log("💳 Procesando orden como pagada, external_reference:", externalRef);
 
       const parts = (externalRef || "").split("|");
       console.log("🔎 external_reference parts:", parts);
@@ -185,7 +176,7 @@ exports.webhook = async (req, res) => {
               categoria: categoriaId,
               mes,
               monto: transactionAmount,
-              metodoPago: "App", // 👈 coincide con tu enum
+              metodoPago: "App",
               plataforma: "MercadoPago",
               estado: "Pagado",
               fechaPago: dateApproved,

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pagos del Jugador</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- 🔐 VALIDACIÓN -->
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<!-- 🔥 CONFIG GLOBAL -->
+<script src="../js/config.js"></script>
+
+<div class="flex">
+
+    <!-- SIDEBAR JUGADOR -->
+    <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4">
+        <h2 class="text-xl font-bold mb-5 text-center">Jugador</h2>
+
+        <a href="./jugador.html" class="hover:underline">Inicio</a>
+        <a href="./mi-categoria.html" class="hover:underline">Mi Categoría</a>
+        <a href="./eventos-jugador.html" class="hover:underline">Eventos</a>
+        <a href="./rendimiento-jugador.html" class="hover:underline">Rendimiento</a>
+        <a href="./pagos-jugador.html" class="font-bold underline">Pagos</a>
+
+        <button onclick="logout()" class="mt-auto bg-red-600 hover:bg-red-700 text-white p-2 rounded">
+            Cerrar sesión
+        </button>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <div class="flex-grow w-full min-w-0 p-8">
+
+        <h1 class="text-3xl font-bold text-amber-600 mb-2">Pagos del Jugador</h1>
+
+        <p class="text-gray-600 mb-6">
+            Jugador: <span id="nombreJugador"></span> •
+            RUT: <span id="rutJugador"></span> •
+            Categoría: <span id="categoriaJugador"></span>
+        </p>
+
+        <!-- =============================================
+            PAGAR MENSUALIDAD
+        =============================================== -->
+        <div class="bg-white p-6 shadow rounded border-l-8 border-amber-500 mb-8">
+            <h2 class="text-xl font-bold text-amber-700 mb-2">Pagar Mensualidad ($25.000)</h2>
+            <p class="text-gray-600 mb-4">Seleccione el mes que desea pagar.</p>
+
+            <select id="mesPagar" class="border px-3 py-2 rounded w-64"></select>
+
+            <button onclick="pagarMensualidad()" 
+                class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 ml-4 rounded shadow">
+                Pagar ahora
+            </button>
+
+            <p id="msgPago" class="mt-3 font-semibold"></p>
+        </div>
+
+        <!-- =============================================
+            HISTORIAL DE PAGOS
+        =============================================== -->
+        <h2 class="text-2xl font-bold text-gray-700 mb-4">Historial de Pagos</h2>
+
+        <div class="bg-white shadow rounded p-4 overflow-x-auto">
+            <table class="w-full min-w-[600px]">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="p-2">Mes</th>
+                        <th class="p-2">Año</th>
+                        <th class="p-2">Estado</th>
+                        <th class="p-2">Monto</th>
+                        <th class="p-2">Método</th>
+                        <th class="p-2">Fecha Pago</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaPagos"></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- 🧠 TODO EL JS AQUÍ ADENTRO -->
+<script>
+// ==========================================
+// DATOS DEL JUGADOR (desde localStorage)
+// ==========================================
+const idJugador = localStorage.getItem("idJugador");
+console.log("idJugador desde LS:", idJugador, "BASE_URL:", BASE_URL);
+
+document.getElementById("nombreJugador").innerText = localStorage.getItem("nombreJugador");
+document.getElementById("rutJugador").innerText = localStorage.getItem("rutJugador");
+document.getElementById("categoriaJugador").innerText = localStorage.getItem("categoriaNombreJugador");
+
+/* ✅ CERRAR SESIÓN */
+function logout() {
+    localStorage.clear();
+    window.location.href = "../index.html";
+}
+
+// =====================================================
+// CARGAR MESES DISPONIBLES PARA PAGO
+// =====================================================
+async function cargarMeses() {
+    try {
+        const res = await fetch(`${BASE_URL}/api/pagos/meses/${idJugador}`);
+        console.log("GET /api/pagos/meses:", res.status);
+
+        const data = await res.json();
+        console.log("Respuesta meses:", data);
+
+        const sel = document.getElementById("mesPagar");
+        sel.innerHTML = "";
+
+        (data.meses || []).forEach(m => {
+            if (!m.pagado) {
+                sel.innerHTML += `<option value="${m.mes} ${m.anio}">${m.mes} ${m.anio}</option>`;
+            }
+        });
+
+        if (sel.innerHTML === "") {
+            sel.innerHTML = `<option>No hay meses pendientes</option>`;
+        }
+    } catch (err) {
+        console.error("Error cargando meses:", err);
+    }
+}
+
+// =====================================================
+// PAGAR MENSUALIDAD (Mercado Pago)
+// =====================================================
+async function pagarMensualidad() {
+    const selectMes = document.getElementById("mesPagar");
+    const mesCompleto = selectMes.value;
+
+    if (!mesCompleto || mesCompleto === "No hay meses pendientes") {
+        alert("No hay meses pendientes para pagar.");
+        return;
+    }
+
+    const token = localStorage.getItem("token");
+    const emailApoderado = localStorage.getItem("emailApoderado");
+    const apoderadoId = localStorage.getItem("idApoderado");
+    const categoriaId = localStorage.getItem("categoriaIdJugador"); // pon la key que uses tú
+
+    try {
+        const res = await fetch(`${BASE_URL}/api/mercado-pago/crear-preferencia`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify({
+                jugadorId: idJugador,
+                apoderadoId,
+                categoriaId,
+                mes: mesCompleto,
+                monto: 25000,
+                emailApoderado,
+                descripcion: `Mensualidad ${mesCompleto} - ${localStorage.getItem("nombreJugador")}`
+            })
+        });
+
+        if (!res.ok) {
+            console.error("Error HTTP al crear preferencia:", await res.text());
+            alert("No se pudo iniciar el pago. Intente nuevamente.");
+            return;
+        }
+
+        const data = await res.json();
+        console.log("Respuesta MP:", data);
+
+        // 👉 Usar sandbox si existe, si no, init_point
+        const urlPago = data.sandbox_init_point || data.init_point;
+
+        if (!urlPago) {
+            alert("Mercado Pago no devolvió la URL de pago.");
+            return;
+        }
+
+        window.location.href = urlPago;
+    } catch (error) {
+        console.error("Error al conectar con Mercado Pago:", error);
+        alert("Error al conectar con Mercado Pago.");
+    }
+}
+
+// =====================================================
+// HISTORIAL DE PAGOS
+// =====================================================
+async function cargarPagos() {
+    try {
+        const mesesRes = await fetch(`${BASE_URL}/api/pagos/meses/${idJugador}`);
+        console.log("GET /api/pagos/meses (historial):", mesesRes.status);
+        const mesesData = await mesesRes.json();
+
+        const pagosRes = await fetch(`${BASE_URL}/api/pagos/jugador/${idJugador}`);
+        console.log("GET /api/pagos/jugador:", pagosRes.status);
+        const pagosData = await pagosRes.json();
+
+        console.log("Meses:", mesesData);
+        console.log("Pagos:", pagosData);
+
+        const pagos = Array.isArray(pagosData) ? pagosData : pagosData.pagos || [];
+        const meses = mesesData.meses || [];
+        const tabla = document.getElementById("tablaPagos");
+        tabla.innerHTML = "";
+
+        meses.forEach(m => {
+            const clave = `${m.mes} ${m.anio}`;  // "Noviembre 2025"
+            const pago = pagos.find(p => p.mes === clave);
+
+            tabla.innerHTML += `
+                <tr class="border-b">
+                    <td class="p-2">${m.mes}</td>
+                    <td class="p-2">${m.anio}</td>
+                    <td class="p-2">${pago ? pago.estado : "Pendiente"}</td>
+                    <td class="p-2">${pago ? "$" + pago.monto.toLocaleString("es-CL") : "-"}</td>
+                    <td class="p-2">${pago ? pago.metodoPago : "-"}</td>
+                    <td class="p-2">${pago?.fechaPago ? new Date(pago.fechaPago).toLocaleDateString("es-CL") : "-"}</td>
+                </tr>
+            `;
+        });
+    } catch (err) {
+        console.error("Error cargando historial de pagos:", err);
+    }
+}
+
+// =====================================================
+// INICIO
+// =====================================================
+cargarMeses();
+cargarPagos();
+</script>
+
+</body>
+</html>

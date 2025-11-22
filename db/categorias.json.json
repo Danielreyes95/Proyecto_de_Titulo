@@ -1,0 +1,108 @@
+[{
+  "_id": {
+    "$oid": "6916ba9ad6c175d3b2c46d98"
+  },
+  "nombre": "Sub-8",
+  "edadMin": 7,
+  "edadMax": 8,
+  "entrenador": {
+    "$oid": "6916b946d6c175d3b2c46d8c"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T05:14:02.247Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T05:14:02.247Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6916bac0d6c175d3b2c46d9a"
+  },
+  "nombre": "Sub-10",
+  "edadMin": 9,
+  "edadMax": 10,
+  "entrenador": {
+    "$oid": "6916b95cd6c175d3b2c46d8e"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T05:14:40.568Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T05:14:40.568Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6916bae1d6c175d3b2c46d9c"
+  },
+  "nombre": "Sub-12",
+  "edadMin": 11,
+  "edadMax": 12,
+  "entrenador": {
+    "$oid": "6916b970d6c175d3b2c46d90"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T05:15:13.116Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T05:15:13.116Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6916bb06d6c175d3b2c46d9e"
+  },
+  "nombre": "Sub-14",
+  "edadMin": 13,
+  "edadMax": 14,
+  "entrenador": {
+    "$oid": "6916b990d6c175d3b2c46d92"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T05:15:50.436Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T05:15:50.436Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6916bb3bd6c175d3b2c46da0"
+  },
+  "nombre": "Sub-16",
+  "edadMin": 15,
+  "edadMax": 16,
+  "entrenador": {
+    "$oid": "6916b9aad6c175d3b2c46d94"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T05:16:43.924Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T05:16:43.924Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6916bb63d6c175d3b2c46da2"
+  },
+  "nombre": "Sub-6",
+  "edadMin": 5,
+  "edadMax": 6,
+  "entrenador": {
+    "$oid": "691acca8e4a35cbcad97709d"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T05:17:23.991Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-17T07:20:17.967Z"
+  },
+  "__v": 0
+}]

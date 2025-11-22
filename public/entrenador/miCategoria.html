@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Categoría - Entrenador</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- VALIDACIÓN -->
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenador") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<script src="../js/config.js"></script>
+
+<div class="flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-green-700 text-white min-h-screen p-5 flex flex-col gap-4">
+        <h2 class="text-2xl font-bold text-center mb-6">Entrenador</h2>
+
+        <a href="./entrenador.html">Inicio</a>
+        <a href="./miCategoria.html"class="font-bold underline">Mi Categoría</a>
+        <a href="./asistencia-jugadores.html">Asistencia</a>
+        <a href="./rendimiento.html">Rendimiento</a>
+        <a href="./eventos.html">Eventos</a>
+        <a href="./avisos-entrenador.html">Avisos</a>
+        <a href="./reportes-entrenador.html">Reportes</a>
+
+        <button onclick="logout()" class="mt-auto bg-red-600 hover:bg-red-700 text-white p-2 rounded">
+            Cerrar sesión
+        </button>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="flex-1 p-10">
+
+        <div class="max-w-6xl mx-auto bg-white shadow rounded-xl p-8">
+
+            <!-- TITULO -->
+            <h1 class="text-3xl font-bold text-green-700 mb-4">
+                Mi Categoría – <span id="nombreCategoria"></span>
+            </h1>
+
+            <!-- ENTRENADOR INFO -->
+            <h2 class="text-xl font-semibold text-gray-700">Entrenador</h2>
+            <p class="text-gray-600"><strong>Nombre:</strong> <span id="entrenadorNombre"></span></p>
+            <p class="text-gray-600 mb-6"><strong>Correo:</strong> <span id="entrenadorCorreo"></span></p>
+
+            <!-- ESTADISTICAS -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
+
+                <div class="p-4 bg-green-100 border-l-8 border-green-600 rounded-lg shadow">
+                    <p class="text-sm text-gray-600">Activos</p>
+                    <p id="activos" class="text-3xl font-bold text-green-700">0</p>
+                </div>
+
+                <div class="p-4 bg-red-100 border-l-8 border-red-600 rounded-lg shadow">
+                    <p class="text-sm text-gray-600">Inactivos</p>
+                    <p id="inactivos" class="text-3xl font-bold text-red-700">0</p>
+                </div>
+
+                <div class="p-4 bg-blue-100 border-l-8 border-blue-600 rounded-lg shadow">
+                    <p class="text-sm text-gray-600">Edad Prom.</p>
+                    <p id="edadPromedio" class="text-3xl font-bold text-blue-700">0</p>
+                </div>
+
+                <div class="p-4 bg-yellow-100 border-l-8 border-yellow-500 rounded-lg shadow">
+                    <p class="text-sm text-gray-600">Asistencia Prom.</p>
+                    <p id="asistenciaPromedio" class="text-3xl font-bold text-yellow-600">0%</p>
+                </div>
+
+            </div>
+
+            <!-- TABLA JUGADORES -->
+            <div class="overflow-x-auto">
+                <table class="w-full border rounded-lg">
+                    <thead class="bg-gray-200 text-gray-700">
+                        <tr>
+                            <th class="p-2 text-left">Nombre</th>
+                            <th class="p-2 text-left">RUT</th>
+                            <th class="p-2 text-left">Edad</th>
+                            <th class="p-2 text-left">Estado</th>
+                            <th class="p-2 text-left">Asistencia</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaJugadores"></tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </main>
+</div>
+
+<script>
+function logout() {
+    localStorage.clear();
+    window.location.href = "../index.html";
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    const categoriaId = localStorage.getItem("categoria");
+    const entrenadorNombre = localStorage.getItem("nombreEntrenador");
+    const entrenadorCorreo = localStorage.getItem("correoEntrenador");
+
+    document.getElementById("entrenadorNombre").textContent = entrenadorNombre;
+    document.getElementById("entrenadorCorreo").textContent = entrenadorCorreo;
+
+    try {
+        // 1️⃣ Obtener categoría (para nombre)
+        const respCat = await fetch(`${BASE_URL}/api/categorias/${categoriaId}`);
+        const categoria = await respCat.json();
+        document.getElementById("nombreCategoria").textContent = categoria.nombre;
+
+        // 2️⃣ Obtener jugadores
+        const resp = await fetch(`${BASE_URL}/api/jugadores/categoria/${categoriaId}`);
+        const jugadores = await resp.json();
+
+        if (!Array.isArray(jugadores)) throw new Error();
+
+        if (jugadores.length === 0) {
+            document.getElementById("tablaJugadores").innerHTML =
+                `<tr><td colspan="5" class="p-4 text-center text-gray-500">No hay jugadores registrados</td></tr>`;
+            return;
+        }
+
+        // --- ESTADÍSTICAS GENERALES ------------------
+        const activos = jugadores.filter(j => j.estado === "activo").length;
+        const inactivos = jugadores.filter(j => j.estado === "inactivo").length;
+        const edades = jugadores.map(j =>
+            new Date().getFullYear() - new Date(j.fechaNacimiento).getFullYear()
+        );
+
+        const promEdad = (edades.reduce((a,b) => a+b, 0) / edades.length).toFixed(1);
+
+        document.getElementById("activos").textContent = activos;
+        document.getElementById("inactivos").textContent = inactivos;
+        document.getElementById("edadPromedio").textContent = promEdad;
+
+        // 3️⃣ Obtener todos los eventos con asistencia
+        const eventos = await fetch(`${BASE_URL}/api/evento/categoria/${categoriaId}`)
+            .then(r => r.json());
+
+        let totalAsistencias = 0;
+        let totalPosibles = 0;
+
+        // Mapa por jugador
+        const mapaJugador = {};
+
+        jugadores.forEach(j => {
+            mapaJugador[j._id] = { asistio: 0, total: 0 };
+        });
+
+        // Recorrer eventos → contar asistencia individual y general
+        eventos.forEach(e => {
+            if (!e.asistencia) return;
+
+                e.asistencia.forEach(reg => {
+                    const id = (typeof reg.jugador === "object")
+                    ? reg.jugador._id
+                    : reg.jugador;
+
+                // Si el jugador no está en el mapa, saltar
+                if (!mapaJugador[id]) return;
+
+                mapaJugador[id].total++;
+                totalPosibles++;
+
+                if (reg.presente) {
+                    mapaJugador[id].asistio++;
+                    totalAsistencias++;
+                }
+            });
+        });
+
+        // Calcular asistencia promedio de la categoría
+        const asistenciaProm = totalPosibles > 0
+            ? Math.round((totalAsistencias / totalPosibles) * 100)
+            : 0;
+
+        document.getElementById("asistenciaPromedio").textContent = asistenciaProm + "%";
+
+        // 4️⃣ TABLA DE JUGADORES
+        const tabla = document.getElementById("tablaJugadores");
+        tabla.innerHTML = "";
+
+        jugadores.forEach(j => {
+            const datos = mapaJugador[j._id];
+            const porcentaje = datos.total > 0
+                ? Math.round((datos.asistio / datos.total) * 100)
+                : 0;
+
+            tabla.innerHTML += `
+                <tr class="border-b">
+                    <td class="p-2">${j.nombre}</td>
+                    <td class="p-2">${j.rut}</td>
+                    <td class="p-2">${new Date().getFullYear() - new Date(j.fechaNacimiento).getFullYear()}</td>
+                    <td class="p-2">
+                        <span class="px-2 py-1 rounded text-white text-xs ${j.estado === "activo" ? "bg-green-600" : "bg-red-600"}">
+                            ${j.estado}
+                        </span>
+                    </td>
+                    <td class="p-2">${porcentaje}%</td>
+                </tr>
+            `;
+        });
+
+    } catch (error) {
+        console.error(error);
+    }
+
+});
+</script>
+
+</body>
+</html>

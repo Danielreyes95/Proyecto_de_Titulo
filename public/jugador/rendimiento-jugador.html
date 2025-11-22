@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Rendimiento del Jugador</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- VALIDACIÓN -->
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<script src="../js/config.js"></script>
+
+<div class="flex">
+
+    <!-- SIDEBAR JUGADOR -->
+    <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4">
+        <h2 class="text-xl font-bold mb-5 text-center">Jugador</h2>
+
+        <a href="./jugador.html" class="hover:underline">Inicio</a>
+        <a href="./mi-categoria.html" class="hover:underline">Mi Categoría</a>
+        <a href="./eventos-jugador.html" class="hover:underline">Eventos</a>
+        <a href="./rendimiento-jugador.html" class="font-bold underline">Rendimiento</a>
+        <a href="./pagos-jugador.html" class="hover:underline">Pagos</a>
+
+        <button onclick="logout()" class="mt-auto bg-red-600 hover:bg-red-700 text-white p-2 rounded">
+            Cerrar sesión
+        </button>
+    </aside>
+
+<div class="flex-grow w-full min-w-0 p-8">
+
+    <h1 class="text-3xl font-bold text-green-700 mb-2">Rendimiento del Jugador</h1>
+
+    <p class="text-gray-600 mb-6">
+        Jugador: <span id="nombreJugador"></span> • 
+        Categoría: <span id="categoriaJugador"></span>
+    </p>
+
+    <!-- BOTONES PRINCIPALES -->
+    <div class="flex gap-4 mb-6">
+        <button id="btnCategoria" onclick="mostrarCategoria()"
+            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded shadow font-semibold">
+            Rendimiento de la categoría
+        </button>
+
+        <button id="btnIndividual" onclick="mostrarIndividual()"
+            class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded shadow font-semibold">
+            Mi Estadística
+        </button>
+    </div>
+
+    <!-- =======================
+         SECCIÓN CATEGORÍA
+    ======================== -->
+    <div id="seccionCategoria" class="hidden space-y-6">
+
+        <h2 class="text-2xl font-bold text-green-700">Rendimiento de la Categoría</h2>
+
+        <!-- RENDIMIENTO POR EVENTO -->
+        <section class="bg-white rounded shadow p-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-1">Rendimiento por evento</h3>
+            <p class="text-sm text-gray-600 mb-3">
+                Resumen de asistencia y estadísticas para cada evento de la categoría.
+            </p>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm min-w-[900px]">
+                    <thead>
+                        <tr class="bg-gray-100 text-left">
+                            <th class="p-2">Fecha</th>
+                            <th class="p-2">Tipo</th>
+                            <th class="p-2 text-center">% Asistencia evento</th>
+                            <th class="p-2 text-center">Goles</th>
+                            <th class="p-2 text-center">Asist. gol</th>
+                            <th class="p-2 text-center">Pases clave</th>
+                            <th class="p-2 text-center">Recuperaciones</th>
+                            <th class="p-2 text-center">Tiros al arco</th>
+                            <th class="p-2 text-center">Faltas cometidas</th>
+                            <th class="p-2 text-center">Faltas recibidas</th>
+                            <th class="p-2 text-center">Amarillas</th>
+                            <th class="p-2 text-center">Rojas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyEventosCategoria"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- RANKING CATEGORÍA -->
+        <section class="bg-white rounded shadow p-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-1">Ranking de la categoría (Top 3)</h3>
+            <p class="text-sm text-gray-600">
+                Se muestran los 3 mejores jugadores de la categoría para cada métrica.
+            </p>
+
+            <div id="contenedorRankings"
+                 class="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                <!-- Tarjetas de ranking generadas por JS -->
+            </div>
+        </section>
+    </div>
+
+    <!-- =======================
+         SECCIÓN INDIVIDUAL
+    ======================== -->
+    <div id="seccionIndividual">
+
+        <h2 class="text-2xl font-bold text-purple-700 mb-4">Mi Estadística Personal</h2>
+
+        <!-- TARJETAS RESUMEN -->
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-5 mb-6">
+
+            <!-- Asistencia -->
+            <div class="p-4 bg-white rounded-xl shadow-md border-l-8 border-green-600 hover:shadow-lg transition">
+                <p class="text-3xl font-extrabold text-green-700" id="asistenciaTotal">0%</p>
+                <p class="text-gray-500 text-sm font-medium">Asistencia total</p>
+            </div>
+
+            <!-- Goles -->
+            <div class="p-4 bg-white rounded-xl shadow-md border-l-8 border-blue-600 hover:shadow-lg transition">
+                <p class="text-3xl font-extrabold text-blue-700" id="golesTotal">0</p>
+                <p class="text-gray-500 text-sm font-medium">Goles totales</p>
+            </div>
+
+            <!-- Asistencias de gol -->
+            <div class="p-4 bg-white rounded-xl shadow-md border-l-8 border-amber-600 hover:shadow-lg transition">
+                <p class="text-3xl font-extrabold text-amber-700" id="asistenciasGol">0</p>
+                <p class="text-gray-500 text-sm font-medium">Asistencias</p>
+            </div>
+
+            <!-- Tarjetas Amarillas -->
+            <div class="p-4 bg-white rounded-xl shadow-md border-l-8 border-purple-600 hover:shadow-lg transition">
+                <p class="text-3xl font-extrabold text-purple-700" id="amarillas">0</p>
+                <p class="text-gray-500 text-sm font-medium">Tarjetas Amarillas</p>
+            </div>
+
+            <!-- Tarjetas Rojas -->
+            <div class="p-4 bg-white rounded-xl shadow-md border-l-8 border-red-600 hover:shadow-lg transition">
+                <p class="text-3xl font-extrabold text-red-700" id="rojas">0</p>
+                <p class="text-gray-500 text-sm font-medium">Tarjetas Rojas</p>
+            </div>
+
+            <!-- Faltas cometidas -->
+            <div class="p-4 bg-white rounded-xl shadow-md border-l-8 border-gray-600 hover:shadow-lg transition">
+                <p class="text-3xl font-extrabold text-gray-700" id="faltas">0</p>
+                <p class="text-gray-500 text-sm font-medium">Faltas cometidas</p>
+            </div>
+
+        </div>
+
+        <!-- TABLA DETALLE -->
+        <h3 class="text-xl font-bold text-gray-700 mb-3">Detalle de tus participaciones</h3>
+
+        <div class="bg-white shadow rounded p-3 overflow-x-auto">
+            <table class="w-full min-w-[600px] text-sm">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="p-2">Fecha</th>
+                        <th class="p-2">Evento</th>
+                        <th class="p-2">Asistencia</th>
+                        <th class="p-2">Obs.</th>
+                        <th class="p-2">Stats</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaDetalle"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- =======================
+     MODAL OBSERVACIÓN
+======================= -->
+<div id="modalObs" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded shadow-lg w-96 relative">
+
+        <button onclick="cerrarModalObs()" 
+                class="absolute top-2 right-3 text-gray-600 hover:text-black text-xl">
+            ×
+        </button>
+
+        <h2 class="text-xl font-bold mb-4">Observación del Entrenador</h2>
+
+        <p class="font-semibold text-gray-700">Observación:</p>
+        <p id="txtObs" class="text-gray-600 mb-4"></p>
+
+        <p class="font-semibold text-gray-700">Motivo de inasistencia:</p>
+        <p id="txtMotivo" class="text-gray-600"></p>
+    </div>
+</div>
+
+<!-- =======================
+     MODAL ESTADÍSTICAS
+======================= -->
+<div id="modalStats" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-xl shadow-lg w-96 relative">
+
+        <button onclick="cerrarModalStats()" 
+                class="absolute top-2 right-3 text-gray-600 hover:text-black text-xl">
+            ×
+        </button>
+
+        <h2 class="text-xl font-bold mb-4 text-green-700">Estadísticas del Evento</h2>
+
+        <div id="statsContenido" class="space-y-2 text-gray-700 text-sm"></div>
+
+    </div>
+</div>
+
+<!-- =======================
+     SCRIPTS
+======================= -->
+<script>
+const idJugador = localStorage.getItem("idJugador");
+const nombreJugador = localStorage.getItem("nombreJugador");
+const categoriaId = localStorage.getItem("categoriaJugador");
+const categoriaNombre = localStorage.getItem("categoriaNombreJugador");
+
+document.getElementById("nombreJugador").innerText = nombreJugador;
+document.getElementById("categoriaJugador").innerText = categoriaNombre || "Sin categoría";
+
+/* ✅ CERRAR SESIÓN */
+function logout() {
+    localStorage.clear();
+    window.location.href = "../index.html";
+}
+
+/* =======================
+   MOSTRAR SECCIONES
+======================= */
+function mostrarCategoria() {
+    document.getElementById("seccionCategoria").classList.remove("hidden");
+    document.getElementById("seccionIndividual").classList.add("hidden");
+    cargarRendimientoCategoria();
+}
+
+function mostrarIndividual() {
+    document.getElementById("seccionIndividual").classList.remove("hidden");
+    document.getElementById("seccionCategoria").classList.add("hidden");
+    cargarEstadisticasJugador();
+}
+/* =======================
+   MODAL ESTADÍSTICAS
+======================= */
+function mostrarStats(evento) {
+    const e = typeof evento === "string" ? JSON.parse(evento) : evento;
+
+    const html = `
+        <p><strong>Goles:</strong> ${e.goles || 0}</p>
+        <p><strong>Asistencias de gol:</strong> ${e.asistenciasGol || 0}</p>
+        <p><strong>Pases clave:</strong> ${e.pasesClave || 0}</p>
+        <p><strong>Recuperaciones:</strong> ${e.recuperaciones || 0}</p>
+        <p><strong>Tiros al arco:</strong> ${e.tirosArco || 0}</p>
+        <p><strong>Faltas cometidas:</strong> ${e.faltasCometidas || 0}</p>
+        <p><strong>Faltas recibidas:</strong> ${e.faltasRecibidas || 0}</p>
+        <p><strong>Tarjeta amarilla:</strong> ${e.amarilla ? "Sí" : "No"}</p>
+        <p><strong>Tarjeta roja:</strong> ${e.roja ? "Sí" : "No"}</p>
+        <p><strong>Nota de rendimiento:</strong> ${e.rendimiento ?? "-"}</p>
+    `;
+
+    document.getElementById("statsContenido").innerHTML = html;
+    document.getElementById("modalStats").classList.remove("hidden");
+}
+
+function cerrarModalStats() {
+    document.getElementById("modalStats").classList.add("hidden");
+}
+
+/* =======================
+   RENDIMIENTO CATEGORÍA
+======================= */
+async function cargarRendimientoCategoria() {
+    try {
+        const res = await fetch(`${BASE_URL}/api/evento/categoria/${categoriaId}`);
+        const eventos = await res.json();
+
+        const tbodyEventos = document.getElementById("tbodyEventosCategoria");
+        const contRankings = document.getElementById("contenedorRankings");
+
+        tbodyEventos.innerHTML = "";
+        contRankings.innerHTML = "";
+
+        if (!Array.isArray(eventos) || eventos.length === 0) {
+            tbodyEventos.innerHTML = `
+                <tr>
+                    <td colspan="12" class="p-3 text-center text-sm text-gray-500">
+                        No hay eventos registrados para esta categoría.
+                    </td>
+                </tr>`;
+            contRankings.innerHTML = `
+                <div class="bg-white border rounded-lg p-4 text-sm text-gray-500">
+                    No hay datos suficientes para generar rankings.
+                </div>`;
+            return;
+        }
+
+        // ---------- 1) TABLA RENDIMIENTO POR EVENTO + ACUMULAR POR JUGADOR ----------
+        const eventosOrdenados = [...eventos].sort(
+            (a, b) => new Date(a.fechaEvento) - new Date(b.fechaEvento)
+        );
+
+        const mapaJugadores = {};
+
+        eventosOrdenados.forEach(ev => {
+            const fecha = ev.fechaEvento ? new Date(ev.fechaEvento) : null;
+            const fechaTxt = fecha ? fecha.toLocaleDateString("es-CL") : "-";
+
+            const asistenciaLista = Array.isArray(ev.asistencia) ? ev.asistencia : [];
+
+            let golesTotales = 0;
+            let asistTotales = 0;
+            let pasesClaveTot = 0;
+            let recuperacionesTot = 0;
+            let tirosArcoTot = 0;
+            let faltasCometidasTot = 0;
+            let faltasRecibidasTot = 0;
+            let amarillasTot = 0;
+            let rojasTot = 0;
+
+            asistenciaLista.forEach(a => {
+                const g  = a.goles || 0;
+                const ag = a.asistenciasGol || 0;
+                const pc = a.pasesClave || 0;
+                const rec = a.recuperaciones || 0;
+                const ta = a.tirosArco || 0;
+                const fc = a.faltasCometidas || 0;
+                const fr = a.faltasRecibidas || 0;
+                const am = a.amarilla ? 1 : 0;
+                const rj = a.roja ? 1 : 0;
+
+                golesTotales        += g;
+                asistTotales        += ag;
+                pasesClaveTot       += pc;
+                recuperacionesTot   += rec;
+                tirosArcoTot        += ta;
+                faltasCometidasTot  += fc;
+                faltasRecibidasTot  += fr;
+                amarillasTot        += am;
+                rojasTot            += rj;
+
+                // ---- Acumular por jugador para rankings ----
+                const idJ = a.jugador?._id || a.jugador;
+                const nombreJ = a.jugador?.nombre || "Jugador";
+
+                if (!mapaJugadores[idJ]) {
+                    mapaJugadores[idJ] = {
+                        nombre: nombreJ,
+                        goles: 0,
+                        asistenciasGol: 0,
+                        recuperaciones: 0,
+                        tirosArco: 0,
+                        presentes: 0,
+                        totalEventos: 0
+                    };
+                }
+
+                mapaJugadores[idJ].goles          += g;
+                mapaJugadores[idJ].asistenciasGol += ag;
+                mapaJugadores[idJ].recuperaciones += rec;
+                mapaJugadores[idJ].tirosArco      += ta;
+                mapaJugadores[idJ].totalEventos   += 1;
+                if (a.presente) mapaJugadores[idJ].presentes += 1;
+            });
+
+            const porcentajeEvento = ev.porcentajeAsistencia ?? 0;
+
+            tbodyEventos.innerHTML += `
+                <tr class="border-b">
+                    <td class="p-2">${fechaTxt}</td>
+                    <td class="p-2">${ev.tipoEvento || "Evento"}</td>
+                    <td class="p-2 text-center">${porcentajeEvento}%</td>
+                    <td class="p-2 text-center">${golesTotales}</td>
+                    <td class="p-2 text-center">${asistTotales}</td>
+                    <td class="p-2 text-center">${pasesClaveTot}</td>
+                    <td class="p-2 text-center">${recuperacionesTot}</td>
+                    <td class="p-2 text-center">${tirosArcoTot}</td>
+                    <td class="p-2 text-center">${faltasCometidasTot}</td>
+                    <td class="p-2 text-center">${faltasRecibidasTot}</td>
+                    <td class="p-2 text-center">${amarillasTot}</td>
+                    <td class="p-2 text-center">${rojasTot}</td>
+                </tr>`;
+        });
+
+        // ---------- 2) RANKINGS TOP 3 POR MÉTRICA ----------
+        const jugadores = Object.values(mapaJugadores).map(j => ({
+            ...j,
+            porcentaje: j.totalEventos > 0
+                ? Math.round((j.presentes * 100) / j.totalEventos)
+                : 0
+        }));
+
+        const definiciones = [
+            { id: "goles",        label: "Goles totales",           campo: "goles",          sufijo: "goles" },
+            { id: "asistencias",  label: "Asistencias (de gol)",    campo: "asistenciasGol", sufijo: "asistencias" },
+            { id: "recuperaciones", label: "Recuperaciones",        campo: "recuperaciones", sufijo: "recuperaciones" },
+            { id: "tiros",        label: "Tiros al arco",           campo: "tirosArco",      sufijo: "tiros" },
+            { id: "asistencia",   label: "% Asistencia",            campo: "porcentaje",     sufijo: "%" }
+        ];
+
+        definiciones.forEach(def => {
+            const listaOrdenada = [...jugadores]
+                .sort((a, b) => (b[def.campo] || 0) - (a[def.campo] || 0))
+                .slice(0, 3);
+
+            let contenido;
+
+            if (listaOrdenada.length === 0 || (listaOrdenada[0][def.campo] || 0) === 0) {
+                contenido = `<p class="text-sm text-gray-500">Sin datos suficientes.</p>`;
+            } else {
+                contenido = `<ol class="space-y-1 text-sm text-gray-700">` +
+                    listaOrdenada.map((j, idx) => {
+                        const valorBruto = j[def.campo] || 0;
+                        const valorTexto = def.campo === "porcentaje"
+                            ? `${valorBruto}%`
+                            : `${valorBruto} ${def.sufijo}`;
+                        return `
+                            <li>
+                                <span class="font-semibold">${idx + 1}.</span>
+                                ${j.nombre}
+                                <span class="text-gray-500">— ${valorTexto}</span>
+                            </li>`;
+                    }).join("") +
+                    `</ol>`;
+            }
+
+                    const colores = {
+                "Goles totales": "border-blue-600",
+                "Asistencias (de gol)": "border-amber-600",
+                "Recuperaciones": "border-green-600",
+                "Tiros al arco": "border-purple-600",
+                "% Asistencia": "border-gray-600"
+            };
+
+            contRankings.innerHTML += `
+                <div class="p-4 bg-white rounded-xl shadow-md border-l-8 ${colores[def.label]} hover:shadow-lg transition">
+                    <p class="font-bold text-lg text-gray-800 mb-1">${def.label}</p>
+                    <p class="text-xs text-gray-500 mb-3">Top 3 de la categoría</p>
+                    ${contenido}
+                </div>
+            `;
+        });
+
+    } catch (err) {
+        console.error("Error cargar rendimiento categoría:", err);
+        document.getElementById("tbodyEventosCategoria").innerHTML = `
+            <tr>
+                <td colspan="12" class="p-3 text-center text-sm text-red-600">
+                    Error al cargar el rendimiento de la categoría.
+                </td>
+            </tr>`;
+    }
+}
+
+/* =======================
+   ESTADÍSTICA PERSONAL
+======================= */
+async function cargarEstadisticasJugador() {
+    // Estadísticas generales
+    const statsRes = await fetch(`${BASE_URL}/api/evento/jugador/${idJugador}/stats`);
+    const stats = await statsRes.json();
+
+    document.getElementById("asistenciaTotal").innerText = stats.porcentaje + "%";
+    document.getElementById("golesTotal").innerText = stats.goles;
+    document.getElementById("asistenciasGol").innerText = stats.asistenciasGol;
+    document.getElementById("amarillas").innerText = stats.amarillas;
+    document.getElementById("rojas").innerText = stats.rojas;
+    document.getElementById("faltas").innerText = stats.faltasCometidas;
+
+    // Detalle eventos
+    const detalleRes = await fetch(`${BASE_URL}/api/evento/jugador/${idJugador}`);
+    const eventos = await detalleRes.json();
+
+    let html = "";
+    eventos.forEach(e => {
+        const fechaTxt = e.fechaEvento
+            ? new Date(e.fechaEvento).toLocaleDateString("es-CL")
+            : "-";
+
+        html += `
+            <tr class="border-b">
+                <td class="p-2">${fechaTxt}</td>
+                <td class="p-2">${e.tipoEvento}</td>
+                <td class="p-2">${e.presente ? "Asistió" : "Faltó"}</td>
+
+                <!-- Botón Observación -->
+                <td class="p-2">
+                    <button class="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
+                        onclick="mostrarObservacion('${e.observacion || ""}', '${e.motivoInasistencia || ""}')">
+                        Ver
+                    </button>
+                </td>
+
+                <!-- Botón Stats -->
+                <td class="p-2">
+                    <button class="px-3 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700"
+                        onclick='mostrarStats(${JSON.stringify(e)})'>
+                        Stats
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("tablaDetalle").innerHTML = html;
+}
+
+/* =======================
+   MODAL FUNCIONES
+======================= */
+function mostrarObservacion(obs, motivo) {
+    document.getElementById("txtObs").innerText =
+        obs && obs !== "null" ? obs : "Sin observación";
+    document.getElementById("txtMotivo").innerText =
+        motivo && motivo !== "null" ? motivo : "—";
+    document.getElementById("modalObs").classList.remove("hidden");
+}
+
+function cerrarModalObs() {
+    document.getElementById("modalObs").classList.add("hidden");
+}
+
+
+/* Mostrar sección por defecto */
+mostrarIndividual();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Eventos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<script src="../js/config.js"></script>
+<script src="../js/entrenador.js"></script>
+
+<script>
+// Validación acceso
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenador") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<div class="flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4">
+        <h2 class="text-xl font-bold mb-5 text-center">Entrenador</h2>
+
+        <a href="./entrenador.html">Inicio</a>
+        <a href="./miCategoria.html">Mi Categoría</a>
+        <a href="./asistencia-jugadores.html">Asistencia</a>
+        <a href="./rendimiento.html">Rendimiento</a>
+        <a href="./eventos.html" class="font-bold underline">Eventos</a>
+        <a href="./avisos-entrenador.html">Avisos</a>
+        <a href="./reportes-entrenador.html">Reportes</a>
+
+        <button onclick="logout()" class="mt-auto bg-red-600 hover:bg-red-700 text-white p-2 rounded">
+            Cerrar sesión
+        </button>
+    </aside>
+
+    <!-- CONTENIDO CENTRAL -->
+    <main class="flex-1 p-8">
+
+        <h1 class="text-3xl font-bold text-green-700 mb-6">Eventos</h1>
+
+        <!-- CREAR EVENTO -->
+        <div class="bg-white p-6 rounded shadow mb-6">
+            <h2 class="text-xl font-semibold mb-4">Crear nuevo evento</h2>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="font-semibold">Fecha Evento</label>
+                    <input id="fechaEvento" type="date" class="border p-2 w-full rounded">
+                </div>
+
+                <div>
+                    <label class="font-semibold">Tipo de Evento</label>
+                    <select id="tipoEvento" class="border p-2 w-full rounded">
+                        <option>Entrenamiento</option>
+                        <option>Partido</option>
+                        <option>Torneo</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="crearEvento()" 
+                class="mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                Crear evento
+            </button>
+        </div>
+
+        <!-- EVENTOS PROGRAMADOS -->
+        <div class="bg-white p-6 rounded shadow mb-6">
+            <h2 class="text-xl font-semibold mb-4">🗓 Eventos Programados</h2>
+
+            <table class="w-full">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="p-2">Fecha</th>
+                        <th class="p-2">Tipo</th>
+                        <th class="p-2">Estado</th>
+                        <th class="p-2">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyProgramados"></tbody>
+            </table>
+        </div>
+
+        <!-- EVENTOS ANTERIORES -->
+        <div class="bg-white p-6 rounded shadow">
+            <h2 class="text-xl font-semibold mb-4">📘 Eventos Anteriores</h2>
+
+            <table class="w-full">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="p-2">Fecha</th>
+                        <th class="p-2">Tipo</th>
+                        <th class="p-2">Asistencia</th>
+                        <th class="p-2">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyAnteriores"></tbody>
+            </table>
+        </div>
+
+    </main>
+</div>
+
+<script>
+
+function logout() {
+    localStorage.clear();
+    window.location.href = "../index.html";
+}
+
+const categoriaId = localStorage.getItem("categoria");
+const entrenadorId = localStorage.getItem("idEntrenador");
+
+/* ======================================================
+   1. CREAR EVENTO PROGRAMADO
+====================================================== */
+async function crearEvento() {
+    const fechaEvento = document.getElementById("fechaEvento").value;
+    const tipoEvento = document.getElementById("tipoEvento").value;
+
+    if (!fechaEvento) {
+        alert("Debe seleccionar una fecha");
+        return;
+    }
+
+    const res = await fetch(`${BASE_URL}/api/evento/crear`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            categoriaId,
+            entrenadorId,
+            fechaEvento,
+            tipoEvento
+        })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        alert("Error: " + data.error);
+        return;
+    }
+
+    alert("Evento programado correctamente.");
+    cargarEventos();
+}
+
+/* ======================================================
+   2. ESTADO VISUAL
+====================================================== */
+function obtenerEstadoVisual(fechaStr) {
+    const hoy = new Date();
+    const fecha = new Date(fechaStr);
+
+    const diffTiempo = fecha - hoy;
+    const dias = Math.ceil(diffTiempo / (1000 * 60 * 60 * 24));
+
+    if (dias === 0)
+        return `<span class="px-2 py-1 bg-green-600 text-white text-xs rounded">HOY</span>`;
+
+    if (dias === 1)
+        return `<span class="px-2 py-1 bg-blue-600 text-white text-xs rounded">MAÑANA</span>`;
+
+    if (dias < 0)
+        return `<span class="px-2 py-1 bg-red-600 text-white text-xs rounded">ATRASADO</span>`;
+
+    return `<span class="px-2 py-1 bg-yellow-500 text-white text-xs rounded">PRÓXIMO EVENTO</span>`;
+}
+
+/* ======================================================
+   3. CARGAR EVENTOS
+====================================================== */
+async function cargarEventos() {
+    const res = await fetch(`${BASE_URL}/api/evento/categoria/${categoriaId}`);
+    const eventos = await res.json();
+
+    const tbodyProgramados = document.getElementById("tbodyProgramados");
+    const tbodyAnteriores = document.getElementById("tbodyAnteriores");
+
+    tbodyProgramados.innerHTML = "";
+    tbodyAnteriores.innerHTML = "";
+
+    const hoy = new Date();
+    const hoySinHora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+
+    eventos.forEach(e => {
+
+        const fecha = new Date(e.fechaEvento);
+        const fechaTxt = fecha.toLocaleDateString("es-CL");
+
+        const fechaEventoSinHora = new Date(
+            fecha.getFullYear(),
+            fecha.getMonth(),
+            fecha.getDate()
+        );
+
+        const estadoVisual = obtenerEstadoVisual(e.fechaEvento);
+
+        const esProgramado =
+            !e.cerrado &&
+            fechaEventoSinHora >= hoySinHora;
+
+        const esAnterior =
+            e.cerrado ||
+            fechaEventoSinHora < hoySinHora;
+
+        /* ---------- EVENTOS PROGRAMADOS ---------- */
+        if (esProgramado) {
+            tbodyProgramados.innerHTML += `
+                <tr class="border-b">
+                    <td class="p-2">${fechaTxt}</td>
+                    <td class="p-2">${e.tipoEvento}</td>
+                    <td class="p-2">${estadoVisual}</td>
+                    <td class="p-2 flex gap-2">
+
+                        <!-- 🔸 Botón ASISTENCIA -->
+                        <button class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                                onclick="abrirModalAsistencia('${e._id}')">
+                            Asistencia
+                        </button>
+
+                        <!-- 🔵 Ir al evento -->
+                        <button onclick="verEvento('${e._id}')"
+                            class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-800">
+                            Ir al evento
+                        </button>
+
+                        <!-- 🔴 Eliminar -->
+                        <button onclick="eliminarEvento('${e._id}')"
+                            class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-800">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>`;
+        }
+
+        /* ---------- EVENTOS ANTERIORES ---------- */
+        if (esAnterior) {
+            tbodyAnteriores.innerHTML += `
+                <tr class="border-b">
+                    <td class="p-2">${fechaTxt}</td>
+                    <td class="p-2">${e.tipoEvento}</td>
+                    <td class="p-2">${e.porcentajeAsistencia}%</td>
+                    <td class="p-2 flex gap-2">
+
+                        <button class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                                onclick="abrirModalAsistencia('${e._id}')">
+                            Asistencia
+                        </button>
+
+                        <button onclick="verEvento('${e._id}')"
+                                class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-800">
+                            Ver
+                        </button>
+
+                        <button onclick="eliminarEvento('${e._id}')"
+                                class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-800">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }
+
+    });
+}
+
+/* ======================================================
+   4. VER EVENTO
+====================================================== */
+function verEvento(id) {
+    localStorage.setItem("eventoSeleccionado", id);
+    window.location.href = "./asistencia-evento.html";
+}
+
+/* ======================================================
+   5. ELIMINAR EVENTO
+====================================================== */
+async function eliminarEvento(id) {
+    if (!confirm("¿Eliminar este evento?")) return;
+
+    const res = await fetch(`${BASE_URL}/api/evento/${id}`, {
+        method: "DELETE"
+    });
+
+    const data = await res.json();
+
+    if (data.error) {
+        alert("Error: " + data.error);
+        return;
+    }
+
+    alert("Evento eliminado");
+    cargarEventos();
+}
+
+cargarEventos();
+
+</script>
+<!-- =======================
+     MODAL ASISTENCIA
+======================== -->
+<div id="modalAsistencia"
+     class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg relative">
+        
+        <button onclick="cerrarModalAsistencia()"
+                class="absolute top-2 right-2 text-gray-600 hover:text-black text-xl">
+            ×
+        </button>
+
+        <h2 class="text-xl font-bold mb-2">Asistencia del evento</h2>
+        <p class="text-gray-600 mb-4">Estado de confirmación de cada jugador</p>
+
+        <table class="w-full border">
+            <thead>
+                <tr class="bg-gray-100 text-left">
+                    <th class="p-2 border">Jugador</th>
+                    <th class="p-2 border">Estado</th>
+                </tr>
+            </thead>
+            <tbody id="tablaAsistencia"></tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

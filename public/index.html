@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Escuela de Fútbol - Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+
+  <!-- =============================
+        MARCA DE AGUA GRANDE
+  ============================== -->
+  <div class="absolute inset-0 flex justify-center items-center pointer-events-none select-none">
+    <span class="text-gray-300 text-[120px] font-bold opacity-10 tracking-wider">
+      ESCUELA DE FÚTBOL
+    </span>
+  </div>
+
+  <!-- =============================
+        FORMULARIO LOGIN
+  ============================== -->
+  <div class="bg-white shadow-xl rounded-xl p-8 w-full max-w-md border-t-8 border-amber-500 z-10">
+
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">
+      Inicio de sesión
+    </h1>
+
+    <form id="loginForm" class="flex flex-col gap-3">
+
+      <div>
+        <label for="rut" class="font-semibold">RUT</label>
+        <input 
+          type="text" 
+          id="rut" 
+          placeholder="Ingresa tu RUT"
+          class="w-full border rounded px-3 py-2 mt-1 focus:ring-2 focus:ring-amber-600"
+          required
+        />
+      </div>
+
+      <div>
+        <label for="password" class="font-semibold">Contraseña</label>
+        <input 
+          type="password" 
+          id="password" 
+          placeholder="Ingresa tu contraseña"
+          class="w-full border rounded px-3 py-2 mt-1 focus:ring-2 focus:ring-amber-600"
+          required
+        />
+      </div>
+
+      <button 
+        type="submit"
+        class="bg-amber-600 hover:bg-amber-700 text-white py-2 rounded mt-3 shadow font-semibold">
+        Ingresar
+      </button>
+
+      <p 
+        class="text-blue-700 cursor-pointer text-sm text-center mt-2 hover:underline"
+        onclick="mostrarRecuperar()">
+        ¿Olvidaste tu contraseña?
+      </p>
+
+      <p 
+        class="text-green-700 cursor-pointer text-center font-semibold hover:underline"
+        onclick="window.location.href='registro-apoderado.html'">
+        Crear cuenta (Apoderado)
+      </p>
+
+    </form>
+
+    <!-- Mensaje antiguo (por compatibilidad) -->
+    <div id="msg" class="hidden mt-4 text-red-600 font-semibold text-center"></div>
+  </div>
+
+
+
+  <!-- =============================
+        MODAL RECUPERAR CONTRASEÑA
+  ============================== -->
+  <div id="modalRecuperar"
+       class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
+
+    <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm border-t-8 border-amber-500">
+
+      <h2 class="text-xl font-bold mb-4 text-center text-gray-700">
+        Recuperar Contraseña
+      </h2>
+
+      <input 
+        id="correoRecuperar" 
+        placeholder="Correo"
+        class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-amber-600"
+      />
+
+      <button 
+        type="button"
+        onclick="recuperarPassword()"
+        class="bg-amber-600 hover:bg-amber-700 text-white py-2 rounded w-full mt-4 shadow">
+        Recuperar
+      </button>
+
+      <button 
+        type="button"
+        onclick="ocultarRecuperar()"
+        class="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 rounded w-full mt-2 shadow">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =============================
+        MODAL DE NOTIFICACIÓN
+  ============================== -->
+  <div id="notificacion"
+      class="hidden fixed inset-0 flex justify-center items-center bg-black bg-opacity-40 z-50">
+
+    <div class="bg-white rounded-lg shadow-lg px-6 py-4 text-center border-t-4 border-red-600">
+      <h3 class="text-lg font-bold text-red-700">Error</h3>
+      <p id="msgNotificacion" class="text-gray-700 mt-2"></p>
+      <button onclick="cerrarNotificacion()"
+              class="bg-red-600 text-white mt-4 px-6 py-2 rounded hover:bg-red-700">
+        Cerrar
+      </button>
+    </div>
+
+  </div>
+
+
+  <!-- JS -->
+  <script src="./js/config.js"></script>
+  <script src="./js/login.js"></script>
+
+  <!-- FUNCIONES PARA MODALES -->
+  <script>
+    function mostrarRecuperar() {
+      document.getElementById("modalRecuperar").classList.remove("hidden");
+    }
+
+    function ocultarRecuperar() {
+      document.getElementById("modalRecuperar").classList.add("hidden");
+    }
+
+    async function recuperarPassword() {
+      const correo = document.getElementById("correoRecuperar").value.trim();
+
+      if (!correo) {
+        mostrarNotificacion("Ingresa tu correo.");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${BASE_URL}/api/auth/recuperar-password`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ correo })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || data.error) {
+          mostrarNotificacion(data.error || "Error al recuperar la contraseña.");
+          return;
+        }
+
+        // Tu backend actualmente devuelve: { mensaje, nuevaPass }
+        alert(`Tu nueva contraseña temporal es: ${data.nuevaPass}`);
+        ocultarRecuperar();
+
+      } catch (error) {
+        console.error("Error recuperar password:", error);
+        mostrarNotificacion("Error al conectar con el servidor.");
+      }
+    }
+
+    // =============================
+    // MODAL DE NOTIFICACIÓN
+    // =============================
+    function mostrarNotificacion(mensaje) {
+      document.getElementById("msgNotificacion").innerText = mensaje;
+      const modal = document.getElementById("notificacion");
+      modal.classList.remove("hidden");
+
+      // Se cierra solo después de 3 segundos
+      setTimeout(() => {
+        modal.classList.add("hidden");
+      }, 3000);
+    }
+
+    function cerrarNotificacion() {
+      document.getElementById("notificacion").classList.add("hidden");
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+[{
+  "_id": {
+    "$oid": "691ad8961461adf92195a4ba"
+  },
+  "jugador": {
+    "$oid": "691756e9b1d0ce98256df75a"
+  },
+  "entrenador": {
+    "$oid": "691acca8e4a35cbcad97709d"
+  },
+  "categoria": {
+    "$oid": "6916bb63d6c175d3b2c46da2"
+  },
+  "tipoEvento": "Partido",
+  "fechaEvento": {
+    "$date": "2025-11-22T00:00:00.000Z"
+  },
+  "asistencia": true,
+  "createdAt": {
+    "$date": "2025-11-17T08:11:02.697Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-17T08:11:02.697Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "691ad8971461adf92195a4bf"
+  },
+  "jugador": {
+    "$oid": "69175a64b1d0ce98256df76c"
+  },
+  "entrenador": {
+    "$oid": "691acca8e4a35cbcad97709d"
+  },
+  "categoria": {
+    "$oid": "6916bb63d6c175d3b2c46da2"
+  },
+  "tipoEvento": "Partido",
+  "fechaEvento": {
+    "$date": "2025-11-22T00:00:00.000Z"
+  },
+  "asistencia": false,
+  "createdAt": {
+    "$date": "2025-11-17T08:11:03.021Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-17T08:11:03.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "691ad8971461adf92195a4c4"
+  },
+  "jugador": {
+    "$oid": "69175a9eb1d0ce98256df778"
+  },
+  "entrenador": {
+    "$oid": "691acca8e4a35cbcad97709d"
+  },
+  "categoria": {
+    "$oid": "6916bb63d6c175d3b2c46da2"
+  },
+  "tipoEvento": "Partido",
+  "fechaEvento": {
+    "$date": "2025-11-22T00:00:00.000Z"
+  },
+  "asistencia": false,
+  "createdAt": {
+    "$date": "2025-11-17T08:11:03.313Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-17T08:11:03.313Z"
+  },
+  "__v": 0
+}]

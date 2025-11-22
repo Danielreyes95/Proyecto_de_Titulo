@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Director</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Notificación flotante */
+        #toastAviso {
+            position: fixed;
+            top: 20px;
+            right: -400px;
+            background: #16a34a;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            font-weight: bold;
+            transition: right 0.5s ease;
+            z-index: 9999;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- 🔐 Validación -->
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<!-- ======================================================
+     CONTENIDO SIN SIDEBAR
+====================================================== -->
+<main class="p-10 min-h-screen relative flex flex-col">
+
+    <!-- TÍTULO -->
+    <h1 class="text-3xl font-bold text-green-700">Bienvenido, Director</h1>
+    <p class="text-gray-600 mb-10">Panel de administración general.</p>
+
+    <!-- ======================================================
+         ACCESOS RÁPIDOS (6 TARJETAS)
+    ======================================================= -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 z-10">
+
+        <a href="./jugadores.html"
+           class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-green-600 
+                  hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
+            <p class="text-xl font-bold text-green-700">Jugadores</p>
+            <p class="text-gray-500 text-sm">Administrar jugadores</p>
+        </a>
+
+        <a href="./entrenadores.html"
+           class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-blue-600 
+                  hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
+            <p class="text-xl font-bold text-blue-700">Entrenadores</p>
+            <p class="text-gray-500 text-sm">Gestión completa</p>
+        </a>
+
+        <a href="./categorias.html"
+           class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-amber-600 
+                  hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
+            <p class="text-xl font-bold text-amber-700">Categorías</p>
+            <p class="text-gray-500 text-sm">Clasificación por edad</p>
+        </a>
+
+        <a href="./pagos.html"
+           class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-yellow-500
+                  hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
+            <p class="text-xl font-bold text-yellow-600">Pagos</p>
+            <p class="text-gray-500 text-sm">Control de mensualidades</p>
+        </a>
+
+        <a href="./avisos.html"
+           class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-red-600
+                  hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
+            <p class="text-xl font-bold text-red-700">Avisos</p>
+            <p class="text-gray-500 text-sm">Comunicados del sistema</p>
+        </a>
+
+        <a href="./reportes.html"
+           class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-purple-600
+                  hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
+            <p class="text-xl font-bold text-purple-700">Reportes</p>
+            <p class="text-gray-500 text-sm">Informes detallados</p>
+        </a>
+
+        <a href="./eventos.html"
+            class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-indigo-600 
+                    hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
+                <p class="text-xl font-bold text-indigo-700">Eventos</p>
+                <p class="text-gray-500 text-sm">Ver todos los eventos</p>
+            </a>
+
+    </div>
+
+    <!-- ======================================================
+         BOTÓN CERRAR SESIÓN
+    ======================================================= -->
+    <div class="mt-auto mb-10 z-10">
+        <button onclick="logout()"
+                class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded shadow">
+            Cerrar sesión
+        </button>
+    </div>
+
+    <!-- MARCA DE AGUA -->
+    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-0 pointer-events-none">
+        <h2 class="text-6xl md:text-7xl font-extrabold text-green-600 opacity-10 select-none">
+            Escuela de Fútbol
+        </h2>
+    </div>
+
+</main>
+
+<!-- 🔔 Notificación flotante -->
+<div id="toastAviso"></div>
+
+<script src="../js/config.js"></script>
+
+<!-- Socket.io -->
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+/* ============================================================
+   SOCKET.IO con autenticación
+============================================================ */
+const socket = io(BASE_URL,{
+    auth: {
+        userId: localStorage.getItem("userId"),
+        rol: localStorage.getItem("rol")
+    }
+});
+
+/* ============================================================
+   TOAST VISUAL
+============================================================ */
+function mostrarToast(titulo) {
+    const toast = document.getElementById("toastAviso");
+    toast.innerText = "🔔 Nuevo aviso: " + titulo;
+    toast.style.right = "20px";
+    setTimeout(() => {
+        toast.style.right = "-400px";
+    }, 4000);
+}
+
+socket.on("nuevo-aviso", aviso => mostrarToast(aviso.titulo));
+
+/* ============================================================
+   LOGOUT
+============================================================ */
+function logout() {
+    localStorage.clear();
+    window.location.href = "../index.html";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Eventos de la categoría - Jugador</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- VALIDACIÓN CORRECTA (apoderado administra al jugador) -->
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<script src="../js/config.js"></script>
+
+<div class="flex">
+
+    <!-- SIDEBAR JUGADOR -->
+    <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4">
+        <h2 class="text-xl font-bold mb-5 text-center">Jugador</h2>
+
+        <a href="./jugador.html" class="hover:underline">Inicio</a>
+        <a href="./mi-categoria.html" class="hover:underline">Mi Categoría</a>
+        <a href="./eventos-jugador.html" class="font-bold underline">Eventos</a>
+        <a href="./rendimiento-jugador.html" class="hover:underline">Rendimiento</a>
+        <a href="./pagos-jugador.html" class="hover:underline">Pagos</a>
+
+        <button onclick="logout()" class="mt-auto bg-red-600 hover:bg-red-700 text-white p-2 rounded">
+            Cerrar sesión
+        </button>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="flex-1 p-8 space-y-6">
+
+        <!-- BOTÓN VOLVER -->
+        <button onclick="window.location.href='./jugador.html'"
+                class="mb-3 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded shadow">
+            ← Volver
+        </button>
+
+        <!-- CABECERA -->
+        <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-green-600 text-white flex items-center justify-center text-xl font-bold">
+                    <span id="avatarInicial">J</span>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold text-green-700">Eventos de la categoría</h1>
+                    <p class="text-gray-600">
+                        Jugador: <span id="nombreJugador"></span> •
+                        Categoría: <span id="categoriaJugador"></span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- FILTROS -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Tipo de evento</label>
+                    <select id="filtroTipo" class="border rounded px-3 py-2 text-sm w-full bg-white">
+                        <option value="">Todos</option>
+                        <option value="Entrenamiento">Entrenamiento</option>
+                        <option value="Partido">Partido</option>
+                        <option value="Torneo">Torneo</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Mes</label>
+                    <select id="filtroMes" class="border rounded px-3 py-2 text-sm w-full bg-white">
+                        <option value="">Todos</option>
+                        <option value="0">Enero</option>
+                        <option value="1">Febrero</option>
+                        <option value="2">Marzo</option>
+                        <option value="3">Abril</option>
+                        <option value="4">Mayo</option>
+                        <option value="5">Junio</option>
+                        <option value="6">Julio</option>
+                        <option value="7">Agosto</option>
+                        <option value="8">Septiembre</option>
+                        <option value="9">Octubre</option>
+                        <option value="10">Noviembre</option>
+                        <option value="11">Diciembre</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Asistencia</label>
+                    <select id="filtroAsistencia" class="border rounded px-3 py-2 text-sm w-full bg-white">
+                        <option value="">Todos</option>
+                        <option value="presente">Asistió / Confirmó</option>
+                        <option value="ausente">Faltó / No asistirá</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <!-- PRÓXIMOS -->
+        <section class="bg-white rounded shadow p-4">
+            <h2 class="text-xl font-semibold mb-3 flex items-center gap-2">
+                <span class="text-green-700">Próximos eventos</span>
+                <span id="badgeProximos" class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full hidden"></span>
+            </h2>
+
+            <div id="contenedorProximos" class="space-y-4"></div>
+
+            <p id="msgSinProximos" class="text-gray-500 text-sm mt-2 hidden">
+                No hay eventos futuros que coincidan con el filtro seleccionado.
+            </p>
+        </section>
+
+        <!-- PASADOS -->
+        <section class="bg-white rounded shadow p-4">
+            <h2 class="text-xl font-semibold mb-3 flex items-center gap-2">
+                <span class="text-gray-800">Eventos pasados</span>
+                <span id="badgePasados" class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full hidden"></span>
+            </h2>
+
+            <div id="contenedorPasados" class="space-y-4"></div>
+
+            <p id="msgSinPasados" class="text-gray-500 text-sm mt-2 hidden">
+                No hay eventos pasados que coincidan con el filtro seleccionado.
+            </p>
+        </section>
+
+    </main>
+</div>
+
+<script>
+function logout() {
+    localStorage.clear();
+    window.location.href = "../index.html";
+}
+
+// ===============================
+//  DATOS DEL JUGADOR
+// ===============================
+const idJugador = localStorage.getItem("idJugador");
+const nombreJugador = localStorage.getItem("nombreJugador") || "Jugador";
+
+// 🔥 Compatibilidad: buscamos en ambas claves
+const categoriaIdRaw =
+  localStorage.getItem("categoriaJugador") ||          // nuevo
+  localStorage.getItem("categoriaIdJugador");          // antiguo
+
+const categoriaId =
+  categoriaIdRaw && categoriaIdRaw !== "null"
+    ? categoriaIdRaw
+    : null;
+
+const categoriaNombre = localStorage.getItem("categoriaNombreJugador") || "Sin categoría";
+
+document.getElementById("nombreJugador").innerText = nombreJugador;
+document.getElementById("categoriaJugador").innerText = categoriaNombre;
+document.getElementById("avatarInicial").innerText =
+  nombreJugador.trim().charAt(0).toUpperCase();
+
+const BASE = BASE_URL;
+
+let eventosCategoria = [];
+
+/* ==========================================================
+   INIT
+========================================================== */
+document.addEventListener("DOMContentLoaded", () => {
+
+    // Si NO hay categoría, no intentamos llamar a la API
+    if (!categoriaId) {
+        document.getElementById("contenedorProximos").innerHTML =
+            "<p class='text-gray-500 text-sm'>Tu jugador aún no tiene categoría asignada. Consulta con la escuela.</p>";
+        document.getElementById("contenedorPasados").innerHTML = "";
+        document.getElementById("msgSinProximos").classList.add("hidden");
+        document.getElementById("msgSinPasados").classList.add("hidden");
+        return;
+    }
+
+    cargarEventos();
+
+    document.getElementById("filtroTipo").addEventListener("change", renderEventos);
+    document.getElementById("filtroMes").addEventListener("change", renderEventos);
+    document.getElementById("filtroAsistencia").addEventListener("change", renderEventos);
+});
+
+/* ==========================================================
+   CARGAR EVENTOS DE LA CATEGORÍA
+========================================================== */
+async function cargarEventos() {
+    try {
+        const res = await fetch(`${BASE}/api/evento/categoria/${categoriaId}`);
+        const json = await res.json();
+
+        // Asegurarnos de que sea un array
+        eventosCategoria = Array.isArray(json) ? json : [];
+
+        renderEventos();
+    } catch (err) {
+        console.error("Error cargando eventos del jugador:", err);
+        document.getElementById("contenedorProximos").innerHTML =
+            "<p class='text-red-600 text-sm'>No se pudieron cargar los eventos.</p>";
+        document.getElementById("contenedorPasados").innerHTML = "";
+    }
+}
+
+/* ==========================================================
+   RENDER GENERAL (APLICA FILTROS Y SEPARA FUTURO / PASADO)
+========================================================== */
+function renderEventos() {
+    const contProx = document.getElementById("contenedorProximos");
+    const contPas = document.getElementById("contenedorPasados");
+    contProx.innerHTML = "";
+    contPas.innerHTML = "";
+
+    const filtroTipo = document.getElementById("filtroTipo").value;
+    const filtroMes = document.getElementById("filtroMes").value;
+    const filtroAsistencia = document.getElementById("filtroAsistencia").value;
+
+    const hoy = new Date();
+    const hoySinHora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+
+    const proximos = [];
+    const pasados  = [];
+
+    (Array.isArray(eventosCategoria) ? eventosCategoria : []).forEach(ev => {
+        const fecha = new Date(ev.fechaEvento);
+        if (isNaN(fecha)) return; // evitar Invalid Date
+
+        // ===== FILTROS =====
+        if (filtroTipo && ev.tipoEvento !== filtroTipo) return;
+        if (filtroMes !== "" && fecha.getMonth() !== Number(filtroMes)) return;
+
+        // Asistencia del jugador en este evento
+        const reg = (ev.asistencia || []).find(a => {
+            const id = a.jugador?._id || a.jugador;
+            return String(id) === String(idJugador);
+        });
+
+        let estadoAsistencia = "sin"; // sin registro / sin confirmación
+
+        if (reg) {
+            estadoAsistencia = reg.presente ? "presente" : "ausente";
+        }
+
+        if (filtroAsistencia && estadoAsistencia !== filtroAsistencia) return;
+
+        // ===== CLASIFICAR: FUTURO / PASADO =====
+        const fechaSinHora = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
+
+        if (fechaSinHora >= hoySinHora) {
+            proximos.push({ ev, fecha, reg, estadoAsistencia });
+        } else {
+            pasados.push({ ev, fecha, reg, estadoAsistencia });
+        }
+    });
+
+    // Render próximos
+    if (proximos.length === 0) {
+        document.getElementById("msgSinProximos").classList.remove("hidden");
+    } else {
+        document.getElementById("msgSinProximos").classList.add("hidden");
+        proximos
+            .sort((a,b) => a.fecha - b.fecha)
+            .forEach(item => contProx.appendChild(crearCardEvento(item, true)));
+    }
+
+    // Render pasados
+    if (pasados.length === 0) {
+        document.getElementById("msgSinPasados").classList.remove("hidden");
+    } else {
+        document.getElementById("msgSinPasados").classList.add("hidden");
+        pasados
+            .sort((a,b) => b.fecha - a.fecha)
+            .forEach(item => contPas.appendChild(crearCardEvento(item, false)));
+    }
+
+    // Badges con cantidades
+    const badgeProx = document.getElementById("badgeProximos");
+    const badgePas  = document.getElementById("badgePasados");
+
+    if (proximos.length > 0) {
+        badgeProx.textContent = `${proximos.length} evento(s)`;
+        badgeProx.classList.remove("hidden");
+    } else {
+        badgeProx.classList.add("hidden");
+    }
+
+    if (pasados.length > 0) {
+        badgePas.textContent = `${pasados.length} evento(s)`;
+        badgePas.classList.remove("hidden");
+    } else {
+        badgePas.classList.add("hidden");
+    }
+}
+
+/* ==========================================================
+   CREAR CARD VISUAL PARA UN EVENTO
+========================================================== */
+function crearCardEvento({ ev, fecha, reg, estadoAsistencia }, esFuturo) {
+    const card = document.createElement("article");
+
+    // Color por tipo
+    let bordeColor = "border-green-500";
+    let icono = "🏋️‍♂️";
+
+    if (ev.tipoEvento === "Partido") {
+        bordeColor = "border-blue-500";
+        icono = "⚽";
+    } else if (ev.tipoEvento === "Torneo") {
+        bordeColor = "border-purple-500";
+        icono = "🏆";
+    }
+
+    const fechaTxt = fecha.toLocaleDateString("es-CL", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
+
+    // Estado (badge derecha)
+    let estadoBadge = "Pasado";
+    let badgeColor = "bg-gray-200 text-gray-700";
+
+    const hoy = new Date();
+    const hoySinHora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+    const fechaSinHora = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
+
+    if (fechaSinHora.getTime() === hoySinHora.getTime()) {
+        estadoBadge = "Hoy";
+        badgeColor = "bg-green-100 text-green-700";
+    } else if (fechaSinHora > hoySinHora) {
+        estadoBadge = "Próximo";
+        badgeColor = "bg-blue-100 text-blue-700";
+    }
+
+    // Asistencia / confirmación del jugador
+    let textoAsistencia = "Sin registro de asistencia";
+    let claseAsistencia = "text-gray-500";
+
+    if (reg) {
+        if (reg.presente) {
+            if (esFuturo) {
+                textoAsistencia = "Has confirmado que asistirás.";
+                claseAsistencia = "text-green-700 font-semibold";
+            } else {
+                textoAsistencia = "Asistió al evento";
+                claseAsistencia = "text-green-700 font-semibold";
+            }
+        } else {
+            if (esFuturo) {
+                textoAsistencia = "Has indicado que no asistirás.";
+                claseAsistencia = "text-red-700 font-semibold";
+            } else {
+                textoAsistencia = "No asistió";
+                claseAsistencia = "text-red-700 font-semibold";
+            }
+        }
+    } else if (esFuturo) {
+        textoAsistencia = "Aún no has confirmado tu asistencia.";
+        claseAsistencia = "text-amber-700";
+    }
+
+    const motivo = reg?.motivoInasistencia || "";
+
+    card.className = `border-l-4 ${bordeColor} bg-gray-50 rounded-lg shadow-sm p-4 flex flex-col gap-3 hover:shadow-md hover:scale-[1.01] transition`;
+
+    card.innerHTML = `
+        <div class="flex items-start justify-between gap-3">
+            <div>
+                <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                    <span>${icono}</span> 
+                    <span>${ev.tipoEvento || "Evento"}</span>
+                </h3>
+                <p class="text-xs text-gray-500 mt-1">Fecha: ${fechaTxt}</p>
+                ${ev.descripcion ? `<p class="text-xs text-gray-500 mt-1">${ev.descripcion}</p>` : ""}
+            </div>
+            <span class="px-2 py-1 text-xs rounded-full ${badgeColor}">
+                ${estadoBadge}
+            </span>
+        </div>
+
+        <div class="text-sm">
+            <p class="${claseAsistencia}">
+                ${textoAsistencia}
+            </p>
+            ${motivo ? `<p class="text-xs text-gray-500 mt-1"><strong>Motivo:</strong> ${motivo}</p>` : ""}
+        </div>
+
+        <div class="flex flex-wrap gap-2 justify-between items-center border-t pt-3 mt-2">
+            <div class="text-xs text-gray-500">
+                <span>Asistencia general evento: </span>
+                <span class="font-semibold">${ev.porcentajeAsistencia ?? 0}%</span>
+            </div>
+
+            <div class="flex gap-2">
+                ${
+                    esFuturo
+                    ? `
+                        <button
+                            class="px-3 py-1 text-xs rounded bg-green-600 text-white hover:bg-green-700"
+                            onclick="confirmarAsistencia('${ev._id}', true)">
+                            Confirmar asistencia
+                        </button>
+                        <button
+                            class="px-3 py-1 text-xs rounded bg-red-600 text-white hover:bg-red-700"
+                            onclick="confirmarAsistencia('${ev._id}', false)">
+                            Avisar que no asistiré
+                        </button>
+                      `
+                    : `
+                        <button
+                            class="px-3 py-1 text-xs rounded bg-blue-600 text-white hover:bg-blue-700"
+                            onclick="verDetalleEvento('${ev._id}')">
+                            Ver detalles
+                        </button>
+                      `
+                }
+            </div>
+        </div>
+    `;
+
+    return card;
+}
+
+/* ==========================================================
+   CONFIRMAR / RECHAZAR ASISTENCIA A FUTURO
+========================================================== */
+async function confirmarAsistencia(eventoId, asistire) {
+    try {
+        let cuerpo = { presente: asistire, observacion: "", motivoInasistencia: "" };
+
+        if (!asistire) {
+            const motivo = prompt("Indica el motivo por el que no asistirás:");
+            if (!motivo || !motivo.trim()) {
+                alert("Debes indicar un motivo para no asistir.");
+                return;
+            }
+            cuerpo.motivoInasistencia = motivo.trim();
+        }
+
+        const res = await fetch(`${BASE}/api/evento/${eventoId}/asistencia/${idJugador}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(cuerpo)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || data.error) {
+            console.error("Error al actualizar asistencia:", data.error || res.status);
+            alert("No se pudo registrar tu asistencia. Intenta nuevamente.");
+            return;
+        }
+
+        alert("Tu respuesta de asistencia fue registrada correctamente.");
+        await cargarEventos();   // Recargar tarjetas
+
+    } catch (err) {
+        console.error("Error confirmarAsistencia:", err);
+        alert("Ocurrió un error al registrar tu asistencia.");
+    }
+}
+
+/* ==========================================================
+   VER DETALLE (placeholder)
+========================================================== */
+function verDetalleEvento(eventoId) {
+    localStorage.setItem("eventoSeleccionado", eventoId);
+    alert("Aquí podrías redirigir a una vista de detalle si la creas.");
+}
+</script>
+
+</body>
+</html>

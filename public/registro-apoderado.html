@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Crear Cuenta - Apoderado</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex justify-center items-center relative overflow-hidden">
+
+  <!-- ===============================
+        MARCA DE AGUA GRANDE
+  ================================ -->
+  <div class="absolute inset-0 flex justify-center items-center pointer-events-none select-none">
+    <span class="text-gray-300 text-[90px] md:text-[120px] font-bold opacity-10 tracking-wider">
+      ESCUELA DE FÚTBOL
+    </span>
+  </div>
+
+  <!-- ===============================
+        TARJETA FORMULARIO
+  ================================ -->
+  <div class="bg-white shadow-xl rounded-xl p-8 w-full max-w-4xl border-t-8 border-amber-500 z-10">
+
+    <h1 class="text-2xl font-bold text-center text-gray-800 mb-2">
+      Crear Cuenta 
+    </h1>
+
+    <p class="text-center text-gray-600 mb-6">
+      Completa tus datos y los de tu hijo para registrarse en la escuela
+    </p>
+
+    <!-- FORM -->
+    <form id="formRegistro" class="grid grid-cols-1 md:grid-cols-2 gap-6" onsubmit="crearCuenta(); return false;">
+
+      <!-- ======================================
+            COLUMNA 1 – DATOS APODERADO
+      ======================================= -->
+      <div class="space-y-3">
+        <h2 class="text-lg font-bold text-gray-700 mb-2">Datos del Apoderado</h2>
+
+        <input id="rutApoderado" 
+          class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-amber-600" 
+          placeholder="RUT del Apoderado" required>
+
+        <input id="nombreApoderado" 
+          class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-amber-600" 
+          placeholder="Nombre completo del Apoderado" required>
+
+        <input id="telefonoApoderado" 
+          class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-amber-600" 
+          placeholder="Teléfono" required>
+
+        <input id="correoApoderado" 
+          type="email"
+          class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-amber-600" 
+          placeholder="Correo electrónico" required>
+
+        <input id="passwordApoderado" 
+          type="password"
+          class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-amber-600" 
+          placeholder="Contraseña" required>
+      </div>
+
+      <!-- ======================================
+            COLUMNA 2 – DATOS JUGADOR
+      ======================================= -->
+      <div class="space-y-3">
+        <h2 class="text-lg font-bold text-gray-700 mb-2">Datos del Jugador</h2>
+
+        <input id="rutJugador" 
+          class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-amber-600" 
+          placeholder="RUT del Jugador" required>
+
+        <input id="nombreJugador" 
+          class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-amber-600" 
+          placeholder="Nombre del Jugador" required>
+
+        <label class="block text-gray-700 font-medium mt-2">Fecha de nacimiento</label>
+        <input id="fechaNacimiento" 
+          type="date"
+          class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-amber-600"
+          required>
+      </div>
+    </form>
+
+    <!-- BOTONES -->
+    <div class="mt-8 flex flex-col items-center">
+      <button onclick="crearCuenta()" 
+        class="bg-amber-600 hover:bg-amber-700 text-white py-2 px-10 rounded shadow font-semibold">
+        Crear cuenta
+      </button>
+
+      <button onclick="window.location.href='index.html'" 
+        class="text-gray-600 hover:underline mt-4">
+        Volver al inicio de sesión
+      </button>
+    </div>
+  </div>
+
+  <script src="../js/config.js"></script>
+
+  <!-- ===============================
+        JS REGISTRO
+  ================================ -->
+  <script>
+    async function crearCuenta() {
+      const data = {
+        rutApoderado: document.getElementById("rutApoderado").value.trim(),
+        nombreApoderado: document.getElementById("nombreApoderado").value.trim(),
+        telefono: document.getElementById("telefonoApoderado").value.trim(),
+        correo: document.getElementById("correoApoderado").value.trim(),
+        // 👇 nombre correcto que espera auth.controller.registroApoderado
+        passwordApoderado: document.getElementById("passwordApoderado").value.trim(),
+
+        rutJugador: document.getElementById("rutJugador").value.trim(),
+        nombreJugador: document.getElementById("nombreJugador").value.trim(),
+        fechaNacimiento: document.getElementById("fechaNacimiento").value
+      };
+
+      // Validación básica en front
+      if (
+        !data.rutApoderado || !data.nombreApoderado || !data.telefono ||
+        !data.correo || !data.passwordApoderado ||
+        !data.rutJugador || !data.nombreJugador || !data.fechaNacimiento
+      ) {
+        alert("Todos los campos son obligatorios.");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${BASE_URL}/api/auth/registro-apoderado`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        let respuesta;
+        try {
+          respuesta = await res.json();
+        } catch (e) {
+          console.error("Respuesta no JSON:", e);
+          alert("Respuesta inesperada del servidor.");
+          return;
+        }
+
+        if (!res.ok || respuesta.error) {
+          alert(respuesta.error || "Error al registrar la cuenta.");
+          return;
+        }
+
+        alert("Cuenta creada correctamente. Ahora puedes iniciar sesión.");
+        window.location.href = "index.html";
+
+      } catch (error) {
+        console.error(error);
+        alert("Error al conectar con el servidor.");
+      }
+    }
+  </script>
+
+</body>
+</html>

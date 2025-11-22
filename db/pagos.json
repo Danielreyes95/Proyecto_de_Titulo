@@ -1,0 +1,120 @@
+[{
+  "_id": {
+    "$oid": "691a929b46df4d21b4990df3"
+  },
+  "jugador": {
+    "$oid": "691756e9b1d0ce98256df75a"
+  },
+  "apoderado": {
+    "$oid": "691746dfb758687298a6ea89"
+  },
+  "categoria": {
+    "$oid": "6916bb63d6c175d3b2c46da2"
+  },
+  "mes": "2025-11",
+  "monto": 30000,
+  "metodoPago": "Efectivo",
+  "plataforma": "Manual",
+  "estado": "Pagado",
+  "fechaPago": {
+    "$date": "2025-11-17T03:12:27.975Z"
+  },
+  "observacion": "asfasd",
+  "createdAt": {
+    "$date": "2025-11-17T03:12:27.983Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-17T03:12:27.983Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "691a9769a51df95097b38c49"
+  },
+  "jugador": {
+    "$oid": "69175a64b1d0ce98256df76c"
+  },
+  "apoderado": {
+    "$oid": "69175a64b1d0ce98256df769"
+  },
+  "categoria": {
+    "$oid": "6916bb63d6c175d3b2c46da2"
+  },
+  "mes": "2025-11",
+  "monto": 25000,
+  "metodoPago": "Efectivo",
+  "plataforma": "Manual",
+  "estado": "Pagado",
+  "fechaPago": {
+    "$date": "2025-11-17T03:32:57.177Z"
+  },
+  "observacion": "asd",
+  "createdAt": {
+    "$date": "2025-11-17T03:32:57.181Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-17T03:32:57.181Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "691b960c7ec892518477105e"
+  },
+  "jugador": {
+    "$oid": "691b8160771ccc177494c953"
+  },
+  "apoderado": {
+    "$oid": "691b8160771ccc177494c950"
+  },
+  "categoria": {
+    "$oid": "6916bb63d6c175d3b2c46da2"
+  },
+  "mes": "Noviembre 2025",
+  "monto": 25000,
+  "metodoPago": "App",
+  "plataforma": "App",
+  "estado": "Pagado",
+  "fechaPago": {
+    "$date": "2025-11-17T21:39:24.471Z"
+  },
+  "observacion": "",
+  "createdAt": {
+    "$date": "2025-11-17T21:39:24.477Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-17T21:39:24.477Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "691ba82af4013108c4a8d442"
+  },
+  "jugador": {
+    "$oid": "69175a9eb1d0ce98256df778"
+  },
+  "apoderado": {
+    "$oid": "69175a9db1d0ce98256df775"
+  },
+  "categoria": {
+    "$oid": "6916bb63d6c175d3b2c46da2"
+  },
+  "mes": "2025-11",
+  "monto": 25000,
+  "metodoPago": "Efectivo",
+  "plataforma": "Manual",
+  "estado": "Pagado",
+  "fechaPago": {
+    "$date": "2025-11-17T22:56:42.327Z"
+  },
+  "observacion": "Pago mes de noviembre",
+  "createdAt": {
+    "$date": "2025-11-17T22:56:42.329Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-17T22:56:42.329Z"
+  },
+  "__v": 0
+}]

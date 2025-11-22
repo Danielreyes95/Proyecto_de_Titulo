@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del Evento - Asistencia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<div class="flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4">
+        <h2 class="text-xl font-bold text-center mb-5">Director</h2>
+
+        <a href="./director.html" class="hover:underline">Inicio</a>
+        <a href="./jugadores.html" class="hover:underline">Jugadores</a>
+        <a href="./entrenadores.html" class="hover:underline">Entrenadores</a>
+        <a href="./categorias.html" class="font-bold underline">Categorías</a>
+        <a href="./eventos.html" class="underline font-bold">Eventos</a>
+        <a href="./pagos.html" class="hover:underline">Pagos</a>
+        <a href="./avisos.html" class="hover:underline">Avisos</a>
+        <a href="./reportes.html" class="hover:underline">Reportes</a>
+
+        <button onclick="logout()" class="bg-red-600 p-2 mt-auto rounded">
+            Cerrar sesión
+        </button>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="flex-1 p-8">
+
+        <!-- Volver -->
+        <button onclick="window.location.href='./asistencia_categoria.html'"
+                class="mb-6 bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded">
+            ← Volver
+        </button>
+
+        <h1 id="tituloEvento" class="text-3xl font-bold text-green-700 mb-6">
+            Detalle del Evento
+        </h1>
+
+        <!-- INFORMACIÓN DEL EVENTO -->
+        <div class="bg-white p-6 rounded shadow mb-8">
+            <h2 class="text-xl font-semibold mb-3">Información del Evento</h2>
+
+            <p id="infoFecha"></p>
+            <p id="infoTipo"></p>
+            <p id="infoCategoria"></p>
+            <p id="infoEntrenador"></p>
+        </div>
+
+        <!-- TABLA DETALLE -->
+        <div class="bg-white p-6 rounded shadow">
+            <h2 class="text-xl font-semibold mb-4">Asistencia del Día</h2>
+
+            <table class="w-full table-auto">
+                <thead>
+                    <tr class="border-b bg-gray-200">
+                        <th class="p-2 text-left">Jugador</th>
+                        <th class="p-2 text-left">RUT</th>
+                        <th class="p-2 text-left">Asistencia</th>
+                        <th class="p-2 text-left">Observación</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tbodyDetalle"></tbody>
+            </table>
+        </div>
+
+    </main>
+
+</div>
+
+<script src="../js/config.js"></script>
+
+<script>
+function logout() {
+    localStorage.clear();
+    window.location.href = "../index.html";
+}
+
+const idEvento = localStorage.getItem("eventoSeleccionado");
+
+if (!idEvento) {
+    alert("Evento no seleccionado");
+    window.location.href = "./asistencia_categoria.html";
+}
+
+/* ======================================
+   CARGAR DETALLE DEL EVENTO COMPLETO
+====================================== */
+async function cargarEvento() {
+
+    const res = await fetch(`${BASE_URL}/api/asistencias/evento/${idEvento}`);
+    const data = await res.json();
+
+    const ev = data.evento;
+    const registros = data.registros;
+
+    document.getElementById("tituloEvento").innerText =
+        `Evento del ${new Date(ev.fecha).toLocaleDateString()}`;
+
+    document.getElementById("infoFecha").innerText =
+        `Fecha: ${new Date(ev.fecha).toLocaleDateString()}`;
+
+    document.getElementById("infoTipo").innerText = `Tipo: ${ev.tipo}`;
+    document.getElementById("infoCategoria").innerText = `Categoría: ${ev.categoria}`;
+    document.getElementById("infoEntrenador").innerText = `Entrenador: ${ev.entrenador}`;
+
+    cargarTabla(registros);
+}
+
+/* ======================================
+   CARGAR TABLA DE REGISTROS
+====================================== */
+function cargarTabla(registros) {
+
+    const tbody = document.getElementById("tbodyDetalle");
+    tbody.innerHTML = "";
+
+    registros.forEach(r => {
+
+        tbody.innerHTML += `
+            <tr class="border-b">
+                <td class="p-2">${r.jugador?.nombre ?? "-"}</td>
+                <td class="p-2">${r.jugador?.rut ?? "-"}</td>
+
+                <td class="p-2 font-bold">
+                    ${r.asistencia
+                        ? "<span class='text-green-600'>🟢 Sí</span>"
+                        : "<span class='text-red-600'>🔴 No</span>"
+                    }
+                </td>
+
+                <td class="p-2">${r.comentario ?? "-"}</td>
+            </tr>
+        `;
+    });
+}
+
+// Ejecutar
+cargarEvento();
+
+</script>
+
+</body>
+</html>

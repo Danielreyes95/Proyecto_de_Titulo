@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Categoría - Jugador</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- 🔐 VALIDACIÓN -->
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<!-- 🔧 CONFIG GLOBAL -->
+<script src="../js/config.js"></script>
+
+<div class="flex">
+
+    <!-- SIDEBAR JUGADOR -->
+    <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4">
+        <h2 class="text-xl font-bold mb-5 text-center">Jugador</h2>
+
+        <a href="./jugador.html" class="hover:underline">Inicio</a>
+        <a href="./mi-categoria.html" class="font-bold underline">Mi Categoría</a>
+        <a href="./eventos-jugador.html" class="hover:underline">Eventos</a>
+        <a href="./rendimiento-jugador.html" class="hover:underline">Rendimiento</a>
+        <a href="./pagos-jugador.html" class="hover:underline">Pagos</a>
+        
+
+        <button onclick="logout()" class="mt-auto bg-red-600 hover:bg-red-700 text-white p-2 rounded">
+            Cerrar sesión
+        </button>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <div class="flex-grow w-full min-w-0 p-8">
+
+        <!-- TITULO Y DATOS DEL JUGADOR -->
+        <h1 class="text-3xl font-bold text-amber-600 mb-2">Mi Categoría</h1>
+
+        <p class="text-gray-600 mb-6">
+            Jugador: <span id="nombreJugador"></span> •
+            RUT: <span id="rutJugador"></span> •
+            Categoría: <span id="categoriaJugador"></span>
+        </p>
+
+        <!-- PROFESOR A CARGO -->
+        <section class="bg-white p-6 shadow rounded mb-8 border-l-8 border-green-600">
+            <div class="flex items-center justify-between gap-4 flex-wrap">
+                <div>
+                    <h2 class="text-xl font-bold text-green-700 mb-1">Profesor a cargo</h2>
+                    <p class="text-gray-600">
+                        <span class="font-semibold">Nombre:</span>
+                        <span id="nombreEntrenador">Cargando...</span>
+                    </p>
+                    <p class="text-gray-600">
+                        <span class="font-semibold">Correo:</span>
+                        <span id="emailEntrenador">-</span>
+                    </p>
+                    <p class="text-gray-600">
+                        <span class="font-semibold">Teléfono:</span>
+                        <span id="telefonoEntrenador">-</span>
+                    </p>
+                </div>
+
+                <div class="text-sm text-gray-500">
+                    <p id="infoCategoriaExtra"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- LISTADO DE JUGADORES -->
+        <section>
+            <h2 class="text-2xl font-bold text-gray-700 mb-4">Compañeros de categoría</h2>
+
+            <div id="msgJugadores" class="mb-3 text-gray-600 text-sm"></div>
+
+            <div class="bg-white shadow rounded p-4 overflow-x-auto">
+                <table class="w-full min-w-[600px]">
+                    <thead>
+                        <tr class="bg-gray-200 text-left">
+                            <th class="p-2">#</th>
+                            <th class="p-2">Nombre</th>
+                            <th class="p-2">Año Nac.</th>
+                            <th class="p-2">Apoderado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaJugadores"></tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+<script>
+// ===============================
+// LOGOUT
+// ===============================
+function logout() {
+    localStorage.clear();
+    window.location.href = "../index.html";
+}
+
+// ===============================
+// DATOS BASE DESDE localStorage
+// ===============================
+const idJugador   = localStorage.getItem("idJugador");
+const nombreJugadorLS = localStorage.getItem("nombreJugador");
+const rutJugadorLS    = localStorage.getItem("rutJugador");
+
+let categoriaNombre =
+  localStorage.getItem("categoriaNombreJugador") ||
+  localStorage.getItem("categoriaJugadorNombre");
+
+let categoriaId =
+  localStorage.getItem("categoriaIdJugador") ||
+  localStorage.getItem("categoriaJugadorId") ||
+  null; // 👈 ya NO usamos categoriaJugador como id
+
+document.getElementById("nombreJugador").innerText    = nombreJugadorLS || "-";
+document.getElementById("rutJugador").innerText       = rutJugadorLS || "-";
+document.getElementById("categoriaJugador").innerText = categoriaNombre || "-";
+
+console.log("MiCategoría -> valores iniciales", {
+  BASE_URL,
+  idJugador,
+  categoriaId,
+  categoriaNombre
+});
+
+// ===============================
+// SIEMPRE INTENTAR COMPLETAR CATEGORÍA DESDE LA API
+// ===============================
+async function completarCategoriaDesdeAPI() {
+    if (!idJugador) {
+        console.warn("No hay idJugador en localStorage");
+        return;
+    }
+
+    try {
+        const url = `${BASE_URL}/api/jugadores/${idJugador}`;
+        console.log("GET jugador para obtener categoría:", url);
+        const res = await fetch(url);
+
+        if (!res.ok) {
+            console.error("Error HTTP al obtener jugador:", res.status, await res.text());
+            return;
+        }
+
+        const raw = await res.json();
+        console.log("Jugador recibido (raw):", raw);
+
+        // 🔍 En muchos controladores se responde { jugador: {...} }
+        const jugador = raw.jugador || raw.data || raw;
+
+        if (!jugador) {
+            console.warn("La respuesta no trae objeto jugador");
+            return;
+        }
+
+        // categoria puede venir:
+        // 1) como ObjectId: "654..."
+        // 2) como objeto: { _id, nombre, ... }
+        let cat = jugador.categoria || jugador.categoriaId;
+
+        if (!cat) {
+            console.warn("El jugador no tiene campo categoria/categoriaId");
+            return;
+        }
+
+        if (typeof cat === "string") {
+            categoriaId = cat;
+        } else if (cat._id) {
+            categoriaId = cat._id;
+            categoriaNombre = categoriaNombre || cat.nombre || cat.nombreCategoria;
+        }
+
+        // Guardar en localStorage para siguientes visitas
+        if (categoriaId) {
+            localStorage.setItem("categoriaIdJugador", categoriaId);
+        }
+        if (categoriaNombre) {
+            localStorage.setItem("categoriaNombreJugador", categoriaNombre);
+            document.getElementById("categoriaJugador").innerText = categoriaNombre;
+        }
+
+        console.log("Categoria completada desde API:", { categoriaId, categoriaNombre });
+    } catch (err) {
+        console.error("Error al completar categoría desde API:", err);
+    }
+}
+
+// ===============================
+// CARGAR INFO DE CATEGORÍA + ENTRENADOR
+// ===============================
+async function cargarCategoriaYEntrenador() {
+    const nombreEntrenadorEl = document.getElementById("nombreEntrenador");
+    const infoExtraEl = document.getElementById("infoCategoriaExtra");
+
+    if (!categoriaId) {
+        console.warn("cargarCategoriaYEntrenador: no hay categoriaId");
+        nombreEntrenadorEl.innerText = "Sin información";
+        infoExtraEl.innerText = "No se encontró el ID de la categoría.";
+        return;
+    }
+
+    try {
+        const url = `${BASE_URL}/api/categorias/${categoriaId}`;
+        console.log("GET categoría:", url);
+        const res = await fetch(url);
+
+        if (!res.ok) {
+            console.error("Error HTTP categoría:", res.status, await res.text());
+            nombreEntrenadorEl.innerText = "No disponible";
+            infoExtraEl.innerText = "No se pudo cargar la información de la categoría.";
+            return;
+        }
+
+        const data = await res.json();
+        console.log("Respuesta categoría:", data);
+
+        const catObj = data.categoria || data;          // por si tu controller devuelve { categoria: {...} }
+        const entrenador = catObj.entrenador || catObj.entrenadorId || {};
+
+        nombreEntrenadorEl.innerText =
+            entrenador.nombreCompleto || entrenador.nombre || "Sin asignar";
+
+        document.getElementById("emailEntrenador").innerText =
+            entrenador.email || entrenador.correo || "-";
+
+        document.getElementById("telefonoEntrenador").innerText =
+            entrenador.telefono || entrenador.fono || "-";
+
+        const info = [];
+        if (catObj.edadMin && catObj.edadMax) {
+            info.push(`Rango de edades: ${catObj.edadMin} - ${catObj.edadMax} años`);
+        }
+        if (catObj.nombre) {
+            info.push(`Nombre de categoría: ${catObj.nombre}`);
+            if (!categoriaNombre) {
+                categoriaNombre = catObj.nombre;
+                document.getElementById("categoriaJugador").innerText = categoriaNombre;
+                localStorage.setItem("categoriaNombreJugador", categoriaNombre);
+            }
+        }
+
+        infoExtraEl.innerText = info.join(" • ");
+    } catch (err) {
+        console.error("Error cargando categoría:", err);
+        nombreEntrenadorEl.innerText = "Error al cargar";
+        infoExtraEl.innerText = "Ocurrió un error al consultar la categoría.";
+    }
+}
+
+// ===============================
+// CARGAR JUGADORES DE LA CATEGORÍA
+// ===============================
+async function cargarJugadoresCategoria() {
+    const tabla = document.getElementById("tablaJugadores");
+    const msg   = document.getElementById("msgJugadores");
+    tabla.innerHTML = "";
+    msg.textContent = "Cargando jugadores...";
+
+    if (!categoriaId) {
+        console.warn("cargarJugadoresCategoria: no hay categoriaId");
+        msg.textContent = "No se encontró el ID de categoría del jugador.";
+        return;
+    }
+
+    try {
+        const url = `${BASE_URL}/api/jugadores/categoria/${categoriaId}`;
+        console.log("GET jugadores por categoría:", url);
+        const res = await fetch(url);
+
+        if (!res.ok) {
+            console.error("Error HTTP jugadores categoría:", res.status, await res.text());
+            msg.textContent = "No se pudo cargar el listado de jugadores.";
+            return;
+        }
+
+        const data = await res.json();
+        console.log("Respuesta jugadores:", data);
+
+        const jugadores = Array.isArray(data) ? data : data.jugadores || [];
+
+        if (!jugadores.length) {
+            msg.textContent = "Aún no hay otros jugadores registrados en esta categoría.";
+            return;
+        }
+
+        msg.textContent = `Total jugadores en la categoría: ${jugadores.length}`;
+
+        jugadores
+            .sort((a, b) => (a.nombreCompleto || a.nombre || "")
+                .localeCompare(b.nombreCompleto || b.nombre || ""))
+            .forEach((j, idx) => {
+
+                const apoderado = j.apoderado || {};
+                const posicion  = j.posicion || j.posicionCampo || "-";
+                const anioNac   = j.fechaNacimiento
+                    ? new Date(j.fechaNacimiento).getFullYear()
+                    : (j.anioNacimiento || "-");
+
+                const esJugadorActual = j._id === idJugador;
+
+                tabla.innerHTML += `
+                    <tr class="border-b ${esJugadorActual ? "bg-amber-50" : ""}">
+                        <td class="p-2">${idx + 1}</td>
+                        <td class="p-2">
+                            ${j.nombreCompleto || j.nombre || "-"}
+                            ${esJugadorActual ? '<span class="text-xs text-amber-600 font-semibold">(Tú)</span>' : ""}
+                        </td>
+                        <td class="p-2">${anioNac}</td>
+                        <td class="p-2">${apoderado.nombreCompleto || apoderado.nombre || "-"}</td>
+                    </tr>
+                `;
+            });
+
+    } catch (err) {
+        console.error("Error cargando jugadores de categoría:", err);
+        msg.textContent = "Error al cargar el listado de jugadores.";
+    }
+}
+
+// ===============================
+// INICIO
+// ===============================
+async function initMiCategoria() {
+    await completarCategoriaDesdeAPI();     // ⚽ siempre pedimos al backend
+
+    console.log("MiCategoría -> usando categoriaId final:", categoriaId);
+
+    await cargarCategoriaYEntrenador();
+    await cargarJugadoresCategoria();
+}
+
+initMiCategoria();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jugadores - Director</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- VALIDACIÓN -->
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<div class="flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4">
+        <h2 class="text-xl font-bold mb-5 text-center">Director</h2>
+
+        <a href="./director.html" class="hover:underline">Inicio</a>
+        <a href="./jugadores.html" class="font-bold underline">Jugadores</a>
+        <a href="./entrenadores.html" class="hover:underline">Entrenadores</a>
+        <a href="./categorias.html" class="hover:underline">Categorías</a>
+        <a href="./eventos.html" class="hover:underline">Eventos</a>
+        <a href="./pagos.html" class="hover:underline">Pagos</a>
+        <a href="./avisos.html" class="hover:underline">Avisos</a>
+        <a href="./reportes.html" class="hover:underline">Reportes</a>
+
+        <button onclick="logout()" class="bg-red-600 p-2 mt-auto rounded">
+            Cerrar sesión
+        </button>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="flex-1 p-8">
+        
+        <!-- Título + Botón agregar -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-green-700">Lista de Jugadores</h1>
+
+            <button onclick="mostrarModalCrearJugador()" 
+                class="bg-green-700 text-white px-4 py-2 rounded shadow hover:bg-green-800">
+                + Agregar Jugador
+            </button>
+        </div>
+
+        <!-- BUSCADOR -->
+        <div class="mb-4">
+            <input 
+                id="buscador"
+                oninput="filtrarJugadores()"
+                placeholder="Buscar por nombre, apellido o RUT..."
+                class="w-full p-2 border rounded"
+            >
+        </div>
+
+        <div class="bg-white shadow rounded-lg p-4">
+
+            <table class="w-full table-auto">
+                <thead>
+                    <tr class="border-b bg-gray-200">
+                        <th class="p-3 text-left">Nombre</th>
+                        <th class="p-3 text-left">RUT</th>
+                        <th class="p-3 text-left">Edad</th>
+                        <th class="p-3 text-left">Categoría</th>
+                        <th class="p-3 text-left">Apoderado</th>
+                        <th class="p-3 text-left">Estado</th>
+                        <th class="p-3 text-center">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tbodyJugadores"></tbody>
+            </table>
+        </div>
+    </main>
+
+</div>
+
+<!-- ============================
+     MODAL CREAR JUGADOR
+============================= -->
+<div id="modalCrearJugador" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center">
+    <div class="bg-white p-6 rounded shadow w-[450px]">
+        <h2 class="text-xl font-bold mb-4">Registrar Jugador</h2>
+
+        <h3 class="font-semibold mb-2">Datos del Apoderado</h3>
+        <input id="rutApoderado" class="w-full border p-2 rounded mb-2" placeholder="RUT Apoderado">
+        <input id="nombreApoderado" class="w-full border p-2 rounded mb-2" placeholder="Nombre Apoderado">
+        <input id="telefonoApoderado" class="w-full border p-2 rounded mb-2" placeholder="Teléfono">
+        <input id="correoApoderado" class="w-full border p-2 rounded mb-4" placeholder="Correo">
+
+        <h3 class="font-semibold mb-2">Datos del Jugador</h3>
+        <input id="rutJugador" class="w-full border p-2 rounded mb-2" placeholder="RUT Jugador">
+        <input id="nombreJugador" class="w-full border p-2 rounded mb-2" placeholder="Nombre Jugador">
+        <input id="fechaNacimientoJugador" type="date" class="w-full border p-2 rounded mb-4">
+
+        <button onclick="registrarJugador()" class="w-full bg-green-700 text-white py-2 rounded">
+            Guardar
+        </button>
+        <button onclick="ocultarModalCrearJugador()" class="w-full mt-2 py-2 rounded bg-gray-300">
+            Cancelar
+        </button>
+    </div>
+</div>
+
+<script src="../js/config.js"></script>
+
+<script>
+// ===========================
+// Calcular edad real
+// ===========================
+function calcularEdad(fecha) {
+    const nacimiento = new Date(fecha);
+    const hoy = new Date();
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const m = hoy.getMonth() - nacimiento.getMonth();
+
+    if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+        edad--;
+    }
+    return edad;
+}
+
+let jugadoresOriginal = [];
+
+// ===========================
+// Cargar jugadores
+// ===========================
+async function cargarJugadores() {
+    try {
+        const res = await fetch(`${BASE_URL}/api/jugadores/listar`);
+
+        if (!res.ok) throw new Error("Error al obtener jugadores");
+
+        const jugadores = await res.json();
+        jugadoresOriginal = jugadores;
+
+        const tbody = document.getElementById("tbodyJugadores");
+        tbody.innerHTML = "";
+
+        jugadores.forEach(j => {
+            tbody.innerHTML += `
+                <tr class="border-b">
+                    <td class="p-3 col-nombre">${j.nombre}</td>
+                    <td class="p-3 col-rut">${j.rut}</td>
+                    <td class="p-3">${calcularEdad(j.fechaNacimiento)}</td>
+                    <td class="p-3">${j.categoria?.nombre ?? "Sin categoría"}</td>
+                    <td class="p-3">${j.apoderado?.nombre ?? "Sin apoderado"}</td>
+                    <td class="p-3">
+                        <span
+                            class="px-2 py-1 rounded text-white ${j.estado === "activo"
+                                ? "bg-green-600"
+                                : "bg-red-600"}">
+                            ${j.estado}
+                        </span>
+                    </td>
+                    <td class="p-3 text-center">
+                        <button
+                            onclick="cambiarEstado('${j._id}', '${j.estado}')"
+                            class="px-3 py-1 rounded text-white ${j.estado === "activo"
+                                ? "bg-red-600"
+                                : "bg-green-600"}">
+                            ${j.estado === "activo" ? "Desactivar" : "Activar"}
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+    } catch (error) {
+        console.error(error);
+        alert("Error al cargar jugadores");
+    }
+}
+
+// ===========================
+// Cambiar estado del jugador
+// ===========================
+async function cambiarEstado(id, estadoActual) {
+    const confirmar = confirm(
+        estadoActual === "activo"
+            ? "¿Seguro quieres desactivar este jugador?"
+            : "¿Deseas activar este jugador?"
+    );
+
+    if (!confirmar) return;
+
+    try {
+        const res = await fetch(`${BASE_URL}/api/jugadores/cambiar-estado/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        const data = await res.json();
+
+        alert("Estado actualizado: " + data.estado);
+        cargarJugadores();
+
+    } catch (err) {
+        console.error(err);
+        alert("Error al cambiar estado");
+    }
+}
+
+// ===========================
+// Registrar Jugador (Apoderado + Jugador)
+// ===========================
+async function registrarJugador() {
+    const data = {
+        rutApoderado: document.getElementById("rutApoderado").value,
+        nombreApoderado: document.getElementById("nombreApoderado").value,
+        telefono: document.getElementById("telefonoApoderado").value,
+        correo: document.getElementById("correoApoderado").value,
+        
+        rutJugador: document.getElementById("rutJugador").value,
+        nombreJugador: document.getElementById("nombreJugador").value,
+        fechaNacimiento: document.getElementById("fechaNacimientoJugador").value
+    };
+
+    const res = await fetch(`${BASE_URL}/api/jugadores/registrar`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    const respuesta = await res.json();
+
+    // 🔥 MOSTRAR CONTRASEÑA TEMPORAL AL DIRECTOR
+    alert(
+        "Jugador y Apoderado registrados con éxito.\n\n" +
+        "Contraseña temporal del apoderado: " + respuesta.passwordTemporalApoderado
+    );
+
+    ocultarModalCrearJugador();
+    cargarJugadores();
+}
+
+// ===========================
+// Modal Crear Jugador
+// ===========================
+function mostrarModalCrearJugador() {
+    document.getElementById("modalCrearJugador").classList.remove("hidden");
+}
+
+function ocultarModalCrearJugador() {
+    document.getElementById("modalCrearJugador").classList.add("hidden");
+}
+
+// ===========================
+// BUSCADOR
+// ===========================
+function filtrarJugadores() {
+    const texto = document.getElementById("buscador").value.toLowerCase();
+    const filas = document.querySelectorAll("#tbodyJugadores tr");
+
+    filas.forEach(fila => {
+        const nombre = fila.querySelector(".col-nombre").textContent.toLowerCase();
+        const rut = fila.querySelector(".col-rut").textContent.toLowerCase();
+
+        if (nombre.includes(texto) || rut.includes(texto)) {
+            fila.classList.remove("hidden");
+        } else {
+            fila.classList.add("hidden");
+        }
+    });
+}
+
+// ===========================
+// Logout
+// ===========================
+function logout() {
+    localStorage.clear();
+    window.location.href = "../index.html";
+}
+
+cargarJugadores();
+
+</script>
+
+</body>
+</html>

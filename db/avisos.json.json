@@ -1,0 +1,22 @@
+[{
+  "_id": {
+    "$oid": "691ba8edf4013108c4a8d46f"
+  },
+  "titulo": "Cambio de dia",
+  "tipo": "Torneo",
+  "destinatario": "Todos",
+  "destinatarioId": null,
+  "creadorId": null,
+  "fechaEvento": {
+    "$date": "2025-11-29T00:00:00.000Z"
+  },
+  "contenido": "El torneo a realizarse el sábado 22 de noviembre, se cambio para el día sábado 29 de noviembre",
+  "estado": "Vigente",
+  "createdAt": {
+    "$date": "2025-11-17T22:59:57.100Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-17T22:59:57.100Z"
+  },
+  "__v": 0
+}]

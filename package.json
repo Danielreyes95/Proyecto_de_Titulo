@@ -1,0 +1,28 @@
+{
+  "name": "escuelafutbolapp",
+  "version": "1.0.0",
+  "description": "Backend Escuela de Futbol - Node + Express + MongoDB",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mercadopago": "^1.5.16",
+    "mongoose": "^8.5.2",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^7.0.10",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

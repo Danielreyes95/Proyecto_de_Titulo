@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Pagos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<div class="max-w-4xl mx-auto p-6 mt-6 bg-white shadow rounded">
+
+    <button onclick="window.location.href='./pagos.html'"
+        class="mb-6 bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded">
+        ← Volver
+    </button>
+
+    <h1 id="tituloJugador" class="text-3xl font-bold text-green-700 mb-6">
+        Historial de Pagos
+    </h1>
+
+    <!-- INFO -->
+    <div class="mb-6">
+        <p id="infoNombre"></p>
+        <p id="infoRut"></p>
+        <p id="infoCategoria"></p>
+    </div>
+
+    <!-- TABLA -->
+    <table class="w-full table-auto">
+        <thead>
+            <tr class="border-b bg-gray-200">
+                <th class="p-2 text-left">Fecha de Pago</th>
+                <th class="p-2 text-left">Mes</th>
+                <th class="p-2 text-left">Monto</th>
+                <th class="p-2 text-left">Método</th>
+                <th class="p-2 text-left">Observación</th>
+            </tr>
+        </thead>
+
+        <tbody id="tbodyHistorial"></tbody>
+    </table>
+
+    <!-- Sin pagos -->
+    <p id="mensajeVacio" class="text-gray-600 text-center mt-4 hidden">
+        Este jugador no tiene pagos registrados.
+    </p>
+
+</div>
+
+<script src="../js/config.js"></script>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const idJugador = params.get("jugador");
+
+if (!idJugador) {
+    alert("Jugador no seleccionado");
+    window.location.href = "./pagos.html";
+}
+
+/* ================================
+   FORMATEAR MONTO
+================================ */
+function formatoCLP(monto) {
+    return Number(monto).toLocaleString("es-CL");
+}
+
+/* ================================
+   Cargar datos del jugador
+================================ */
+async function cargarJugador() {
+    const res = await fetch(`${BASE_URL}/api/jugadores/${idJugador}`);
+    const j = await res.json();
+
+    document.getElementById("tituloJugador").innerText = `Historial de Pago de ${j.nombre}`;
+    document.getElementById("infoNombre").innerText = `Nombre: ${j.nombre}`;
+    document.getElementById("infoRut").innerText = `RUT: ${j.rut}`;
+    document.getElementById("infoCategoria").innerText = `Categoría: ${j.categoria?.nombre ?? "-"}`;
+}
+
+/* ================================
+   Cargar historial de pagos
+================================ */
+async function cargarHistorial() {
+
+    const res = await fetch(`${BASE_URL}/api/pagos/jugador/${idJugador}`);
+    const wrapper = await res.json();
+    const data = wrapper.pagos || [];
+
+    const tbody = document.getElementById("tbodyHistorial");
+    const mensajeVacio = document.getElementById("mensajeVacio");
+
+    tbody.innerHTML = "";
+
+    if (!data.length) {
+        mensajeVacio.classList.remove("hidden");
+        return;
+    }
+
+    mensajeVacio.classList.add("hidden");
+
+    data.forEach(p => {
+        tbody.innerHTML += `
+            <tr class="border-b">
+                <td class="p-2">${p.fechaPago ? new Date(p.fechaPago).toLocaleDateString("es-CL") : "-"}</td>
+                <td class="p-2">${p.mes}</td>
+                <td class="p-2">$${formatoCLP(p.monto)}</td>
+                <td class="p-2">${p.metodoPago}</td>
+                <td class="p-2">${p.observacion ?? "-"}</td>
+            </tr>
+        `;
+    });
+}
+
+cargarJugador();
+cargarHistorial();
+
+</script>

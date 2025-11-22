@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle Evento - Director</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- Validación -->
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<div class="p-6 max-w-6xl mx-auto">
+
+    <button onclick="history.back()" 
+        class="bg-gray-300 px-4 py-2 rounded mb-4 hover:bg-gray-400">
+        ← Volver
+    </button>
+
+    <h1 id="titulo" class="text-3xl font-bold text-green-700 mb-4">Detalle del Evento</h1>
+
+    <!-- INFO GENERAL -->
+    <div class="bg-white p-5 rounded shadow mb-6">
+        <p id="infoFecha" class="text-gray-700 mb-1"></p>
+        <p id="infoTipo" class="text-gray-700 mb-1"></p>
+        <p id="infoCategoria" class="text-gray-700 mb-1"></p>
+        <p id="infoEntrenador" class="text-gray-700 mb-1"></p>
+        <p id="infoObservacion" class="text-gray-700"></p>
+    </div>
+
+    <!-- LISTA DE JUGADORES -->
+    <div class="bg-white p-6 rounded shadow">
+        <h2 class="text-2xl font-semibold mb-4">Jugadores</h2>
+
+        <div id="contenedorJugadores" class="grid md:grid-cols-2 gap-4"></div>
+    </div>
+
+</div>
+
+<script src="../js/config.js"></script>
+
+<script>
+
+const idEvento = localStorage.getItem("eventoSeleccionado");
+
+/* ============================================================
+   Cargar detalle del evento
+============================================================ */
+async function cargarDetalle() {
+
+    const res = await fetch(`${BASE_URL}/api/evento/detalle/${idEvento}`);
+    const evento = await res.json();
+
+    // Seguridad
+    if (!evento || evento.error) {
+        alert("Error cargando el evento.");
+        return;
+    }
+
+    const fecha = new Date(evento.fechaEvento).toLocaleDateString("es-CL");
+
+    document.getElementById("titulo").textContent = `Evento del ${fecha}`;
+    document.getElementById("infoFecha").textContent = `Fecha: ${fecha}`;
+    document.getElementById("infoTipo").textContent = `Tipo: ${evento.tipoEvento}`;
+    document.getElementById("infoCategoria").textContent = `Categoría: ${evento.categoria?.nombre ?? "Sin categoría"}`;
+    document.getElementById("infoEntrenador").textContent = `Entrenador: ${evento.entrenador?.nombre ?? "Director"}`;
+
+    document.getElementById("infoObservacion").textContent =
+        `Observación: ${evento.descripcion ?? "-"}`;
+
+    const cont = document.getElementById("contenedorJugadores");
+    cont.innerHTML = "";
+
+    let asistencia = evento.asistencia;
+
+    /* ============================================================
+       Si NO hay asistencia registrada → cargar jugadores categoría
+    ============================================================ */
+    if (!asistencia || asistencia.length === 0) {
+
+        if (evento.categoria?._id) {
+            const jugadoresRes = await fetch(`${BASE_URL}/api/jugadores/categoria/${evento.categoria._id}`);
+            const jugadores = await jugadoresRes.json();
+
+            asistencia = jugadores.map(j => ({
+                jugador: j,
+                presente: false,
+                observacion: "",
+                motivoInasistencia: "",
+                goles: 0,
+                asistenciasGol: 0,
+                pasesClave: 0,
+                recuperaciones: 0,
+                tirosArco: 0,
+                faltasCometidas: 0,
+                faltasRecibidas: 0,
+                amarilla: false,
+                roja: false,
+                rendimiento: null
+            }));
+        } else {
+            asistencia = [];
+        }
+    }
+
+    /* ============================================================
+       Mostrar tarjetas
+    ============================================================ */
+    asistencia.forEach(j => {
+
+        const tarjeta = document.createElement("div");
+        tarjeta.className = "border rounded-lg p-4 shadow-sm bg-gray-50";
+
+        tarjeta.innerHTML = `
+            <h3 class="font-semibold text-lg">${j.jugador.nombre}</h3>
+            <p class="text-sm text-gray-600 mb-3">${j.jugador.rut}</p>
+
+            <p class="mb-2">
+                <strong>Asistencia:</strong>
+                ${j.presente 
+                    ? `<span class="text-green-600 font-semibold">Asistió</span>` 
+                    : `<span class="text-red-600 font-semibold">Ausente</span>`}
+            </p>
+
+            ${!j.presente ? `
+                <p class="mb-2"><strong>Motivo inasistencia:</strong> ${j.motivoInasistencia || "-"}</p>
+            ` : ""}
+
+            <p class="mb-2"><strong>Observación:</strong> ${j.observacion || "-"}</p>
+
+            <hr class="my-3">
+
+            <p><strong>Goles:</strong> ${j.goles}</p>
+            <p><strong>Asist. Gol:</strong> ${j.asistenciasGol}</p>
+            <p><strong>Pases clave:</strong> ${j.pasesClave}</p>
+            <p><strong>Recuperaciones:</strong> ${j.recuperaciones}</p>
+            <p><strong>Tiros al arco:</strong> ${j.tirosArco}</p>
+            <p><strong>Faltas cometidas:</strong> ${j.faltasCometidas}</p>
+            <p><strong>Faltas recibidas:</strong> ${j.faltasRecibidas}</p>
+
+            <p><strong>Tarjeta amarilla:</strong> ${j.amarilla ? "Sí" : "No"}</p>
+            <p><strong>Tarjeta roja:</strong> ${j.roja ? "Sí" : "No"}</p>
+
+            <p class="mt-2"><strong>Rendimiento:</strong> ${j.rendimiento ?? "-"}</p>
+        `;
+
+        cont.appendChild(tarjeta);
+    });
+}
+
+cargarDetalle();
+
+</script>
+
+</body>
+</html>

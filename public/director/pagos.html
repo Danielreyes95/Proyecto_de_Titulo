@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Pagos - Director</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<div class="flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4">
+        <h2 class="text-xl font-bold mb-5 text-center">Director</h2>
+
+        <a href="./director.html" class="hover:underline">Inicio</a>
+        <a href="./jugadores.html" class="hover:underline">Jugadores</a>
+        <a href="./entrenadores.html" class="hover:underline">Entrenadores</a>
+        <a href="./categorias.html" class="hover:underline">Categorías</a>
+        <a href="./eventos.html" class="hover:underline">Eventos</a>
+        <a href="./pagos.html" class="font-bold underline">Pagos</a>
+        <a href="./avisos.html" class="hover:underline">Avisos</a>
+        <a href="./reportes.html" class="hover:underline">Reportes</a>
+
+        <button onclick="logout()" class="bg-red-600 p-2 mt-auto rounded">
+            Cerrar sesión
+        </button>
+    </aside>
+
+    <!-- ==============================
+         CONTENIDO PRINCIPAL
+    =============================== -->
+    <main class="flex-1 p-8">
+
+        <h1 class="text-3xl font-bold mb-6 text-green-700">Gestión de Pagos</h1>
+
+        <!-- FILTROS -->
+        <div class="grid grid-cols-4 gap-4 mb-6">
+
+            <div>
+                <label class="font-semibold">Categoría</label>
+                <select id="filtroCategoria" class="w-full border p-2 rounded">
+                    <option value="">Todas</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="font-semibold">Mes</label>
+                <input type="month" id="filtroMes" class="w-full border p-2 rounded" />
+            </div>
+
+            <div>
+                <label class="font-semibold">Estado</label>
+                <select id="filtroEstado" class="w-full border p-2 rounded">
+                    <option value="">Todos</option>
+                    <option value="pagado">Pagado</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="atrasado">Atrasado</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="font-semibold">Buscar</label>
+                <input id="filtroBuscar" type="text"
+                       class="w-full border p-2 rounded"
+                       placeholder="Nombre o RUT..." />
+            </div>
+        </div>
+
+        <!-- RESUMEN -->
+        <div id="bloqueResumen" class="hidden grid grid-cols-4 gap-4 mb-6">
+
+            <div class="p-4 bg-green-100 rounded text-center">
+                <p class="font-bold">Pagados</p>
+                <p id="resPagados" class="text-2xl font-bold">0</p>
+            </div>
+
+            <div class="p-4 bg-yellow-100 rounded text-center">
+                <p class="font-bold">Pendientes</p>
+                <p id="resPendientes" class="text-2xl font-bold">0</p>
+            </div>
+
+            <div class="p-4 bg-red-100 rounded text-center">
+                <p class="font-bold">Atrasados</p>
+                <p id="resAtrasados" class="text-2xl font-bold">0</p>
+            </div>
+
+            <div class="p-4 bg-blue-100 rounded text-center">
+                <p class="font-bold">Monto total</p>
+                <p id="resMonto" class="text-2xl font-bold">$0</p>
+            </div>
+
+        </div>
+
+        <!-- TABLA -->
+        <div class="bg-white p-4 rounded shadow">
+            <table class="w-full table-auto">
+                <thead>
+                    <tr class="border-b bg-gray-200">
+                        <th class="p-2">Jugador</th>
+                        <th class="p-2">RUT</th>
+                        <th class="p-2">Inscripción</th>
+                        <th class="p-2">Estado</th>
+                        <th class="p-2">Monto</th>
+                        <th class="p-2">Acciones</th>
+                    </tr>
+                </thead>
+
+                <!-- AQUÍ TU TBODY FUNCIONAL -->
+                <tbody id="tbodyPagos"></tbody>
+            </table>
+        </div>
+
+    </main>
+</div>
+
+<!-- =============================
+     MODAL REGISTRAR PAGO
+============================== -->
+<div id="modalPago"
+     class="fixed inset-0 bg-black bg-opacity-40 hidden flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 class="text-xl font-bold text-green-700 mb-4">Registrar Pago</h2>
+
+        <input type="hidden" id="pagoJugadorId" />
+        <input type="hidden" id="pagoMes" />
+
+        <p class="mb-2"><b>Jugador:</b> <span id="pagoJugadorNombre"></span></p>
+        <p class="mb-2"><b>Mes:</b> <span id="pagoMesTexto"></span></p>
+
+        <div class="mb-3">
+            <label class="font-semibold">Monto a pagar</label>
+            <input type="text" id="pagoMonto"
+                class="border p-2 rounded w-full"
+                placeholder="Ingrese el monto..."
+                oninput="formatearMonto(this)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="font-semibold">Método de pago</label>
+            <select id="pagoMetodo" class="border p-2 rounded w-full">
+                <option value="">Seleccione…</option>
+                <option value="Efectivo">Efectivo</option>
+                <option value="Transferencia">Transferencia</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="font-semibold">Observación</label>
+            <textarea id="pagoObservacion"
+                      class="border p-2 rounded w-full"
+                      rows="2"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 mt-4">
+            <button onclick="cerrarModalPago()"
+                    class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded">
+                Cancelar
+            </button>
+
+            <button onclick="confirmarPago()"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                Confirmar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- =============================
+     MODAL EDITAR
+============================== -->
+<div id="modalEditar"
+     class="fixed inset-0 bg-black bg-opacity-40 hidden flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+
+        <h2 class="text-xl font-bold text-yellow-700 mb-4">Editar Pago</h2>
+
+        <input type="hidden" id="editarPagoId">
+
+        <p class="mb-2"><b>Jugador:</b> <span id="editarJugadorNombre"></span></p>
+        <p class="mb-2"><b>Mes:</b> <span id="editarMesTexto"></span></p>
+
+        <div class="mb-3">
+            <label class="font-semibold">Método de pago</label>
+            <select id="editarMetodo" class="border p-2 rounded w-full">
+                <option value="">(Sin cambio)</option>
+                <option value="Efectivo">Efectivo</option>
+                <option value="Transferencia">Transferencia</option>
+                <option value="Tarjeta">Tarjeta</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="font-semibold">Monto</label>
+            <input type="number" id="editarMonto"
+                   class="border p-2 rounded w-full"
+                   placeholder="(Sin cambio)">
+        </div>
+
+        <div class="mb-3">
+            <label class="font-semibold">Observación</label>
+            <textarea id="editarObservacion"
+                      class="border p-2 rounded w-full"
+                      rows="2"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 mt-4">
+            <button onclick="cerrarModalEditar()"
+                    class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded">
+                Cancelar
+            </button>
+
+            <button onclick="confirmarEdicionPago()"
+                    class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded">
+                Guardar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- =============================
+     MODAL HISTORIAL
+============================== -->
+<div id="modalHistorial"
+     class="fixed inset-0 bg-black bg-opacity-40 hidden flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-[500px]">
+
+        <h2 class="text-xl font-bold text-blue-700 mb-4">
+            Historial de Pagos
+        </h2>
+
+        <p class="mb-2"><b>Jugador:</b>
+            <span id="histJugadorNombre"></span>
+        </p>
+
+        <div class="mb-4">
+            <label class="font-semibold">Año</label>
+            <select id="selectAnio"
+                    class="border p-2 rounded w-full"></select>
+        </div>
+
+        <table class="w-full table-auto mb-4">
+            <thead>
+                <tr class="border-b bg-gray-200">
+                    <th class="p-2">Mes</th>
+                    <th class="p-2">Estado</th>
+                    <th class="p-2">Método</th>
+                    <th class="p-2">Fecha</th>
+                    <th class="p-2">Obs.</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyHistorial"></tbody>
+        </table>
+
+        <div class="flex justify-end">
+            <button onclick="cerrarModalHistorial()"
+                    class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded">
+                Cerrar
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script src="../js/config.js"></script>
+<script src="../js/pagos.js" defer></script>
+
+</body>
+</html>

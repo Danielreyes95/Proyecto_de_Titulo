@@ -1,0 +1,9 @@
+[{
+  "_id": {
+    "$oid": "69157d39a5c7ecaab7ef8c71"
+  },
+  "rut": "11111111-1",
+  "nombre": "Director General",
+  "password": "$2b$10$ZNARKm60p0hxmX2IMvjTvOY3edBxcigfGecggVRTHgd85KAxil7WC",
+  "__v": 0
+}]

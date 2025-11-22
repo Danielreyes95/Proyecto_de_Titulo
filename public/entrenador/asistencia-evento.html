@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Evento - Asistencia y Rendimiento</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<script>
+// Validación acceso
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenador") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<div class="p-6 max-w-5xl mx-auto">
+
+    <button onclick="history.back()" class="bg-gray-300 px-4 py-2 rounded mb-4 hover:bg-gray-400">
+        ← Volver
+    </button>
+
+    <!-- TITULO Y BADGE -->
+    <div class="flex items-center gap-4">
+        <h1 id="titulo" class="text-3xl font-bold text-green-700">Evento</h1>
+
+        <span id="badgeCerrado"
+              class="hidden px-3 py-1 bg-red-600 text-white rounded text-sm font-semibold">
+            EVENTO CERRADO
+        </span>
+    </div>
+
+    <!-- INFORMACIÓN GENERAL -->
+    <div class="bg-white p-4 rounded shadow mb-6">
+        <p id="infoFecha" class="mb-1"></p>
+        <p id="infoTipo" class="mb-1"></p>
+        <p id="infoCategoria" class="mb-1"></p>
+    </div>
+
+    <!-- DETALLE ASISTENCIA -->
+    <div class="bg-white p-4 rounded shadow mb-4">
+        <h2 class="text-xl font-semibold mb-4">Jugadores</h2>
+
+        <div id="contenedorJugadores" class="grid gap-4 md:grid-cols-2">
+            <!-- Tarjetas se inyectan aquí -->
+        </div>
+    </div>
+
+    <!-- BOTONES INFERIORES -->
+    <div class="flex justify-between items-center mt-6">
+
+        <!-- Cerrar evento -->
+        <button id="btnCerrarEvento"
+            class="hidden bg-red-700 hover:bg-red-800 text-white font-semibold px-5 py-2 rounded shadow">
+            Cerrar evento
+        </button>
+
+        <!-- Guardar asistencia -->
+        <button id="btnGuardar"
+            class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded shadow">
+            Guardar asistencia
+        </button>
+
+    </div>
+
+</div>
+
+<script src="../js/config.js"></script>
+
+<script>
+
+const idEvento = localStorage.getItem("eventoSeleccionado");
+let jugadoresBase = [];
+let eventoCerrado = false;
+
+/* ======================================================
+   CARGAR DETALLE DEL EVENTO
+====================================================== */
+async function cargarDetalle() {
+    const res = await fetch(`${BASE_URL}/api/evento/${idEvento}`);
+    const data = await res.json();
+
+    const e = data.evento;
+
+    eventoCerrado = e.cerrado; // IMPORTANTE
+
+    // Formato fecha
+    const fechaFormateada = new Date(e.fecha).toLocaleDateString("es-CL");
+
+    // Información encabezado
+    document.getElementById("titulo").innerText = `Evento del ${fechaFormateada}`;
+    document.getElementById("infoFecha").innerText = `Fecha: ${fechaFormateada}`;
+    document.getElementById("infoTipo").innerText = `Tipo: ${e.tipo}`;
+    document.getElementById("infoCategoria").innerText = `Categoría: ${e.categoria.nombre}`;
+
+    const cont = document.getElementById("contenedorJugadores");
+    cont.innerHTML = "";
+
+    // Asistencia existente o primera vez
+    jugadoresBase = data.asistencia.map(r => ({
+        jugadorId: r.jugador._id,
+        nombre: r.jugador.nombre,
+        rut: r.jugador.rut,
+        ...r
+    }));
+
+    jugadoresBase.forEach(j => {
+        const tarjeta = document.createElement("div");
+        tarjeta.className = "border rounded-lg p-4 shadow-sm bg-gray-50";
+
+        tarjeta.innerHTML = `
+            <h3 class="font-semibold text-lg mb-1">${j.nombre}</h3>
+            <p class="text-sm text-gray-600 mb-2">${j.rut}</p>
+
+            <div class="flex items-center gap-2 mb-2">
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" class="chk-presente"
+                           data-id="${j.jugadorId}" ${j.presente ? "checked" : ""}>
+                    <span>Asistió</span>
+                </label>
+            </div>
+
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Motivo inasistencia</label>
+                <input type="text" class="input-motivo w-full border rounded px-2 py-1 text-sm"
+                       data-id="${j.jugadorId}" value="${j.motivoInasistencia}">
+            </div>
+
+            <div class="mb-2">
+                <label class="block text-sm font-medium mb-1">Observación</label>
+                <textarea class="input-obs w-full border rounded px-2 py-1 text-sm"
+                          data-id="${j.jugadorId}" rows="2">${j.observacion}</textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 mb-2 text-sm">
+
+                <div>
+                    <label class="text-xs font-medium mb-1 block">Goles</label>
+                    <input type="number" min="0" class="input-goles w-full border rounded px-2 py-1"
+                           data-id="${j.jugadorId}" value="${j.goles}">
+                </div>
+
+                <div>
+                    <label class="text-xs font-medium mb-1 block">Asist. Gol</label>
+                    <input type="number" min="0" class="input-asistenciasGol w-full border rounded px-2 py-1"
+                           data-id="${j.jugadorId}" value="${j.asistenciasGol}">
+                </div>
+
+                <div>
+                    <label class="text-xs font-medium mb-1 block">Pases clave</label>
+                    <input type="number" min="0" class="input-pasesClave w-full border rounded px-2 py-1"
+                           data-id="${j.jugadorId}" value="${j.pasesClave}">
+                </div>
+
+                <div>
+                    <label class="text-xs font-medium mb-1 block">Recuperaciones</label>
+                    <input type="number" min="0" class="input-recuperaciones w-full border rounded px-2 py-1"
+                           data-id="${j.jugadorId}" value="${j.recuperaciones}">
+                </div>
+
+                <div>
+                    <label class="text-xs font-medium mb-1 block">Tiros al arco</label>
+                    <input type="number" min="0" class="input-tirosArco w-full border rounded px-2 py-1"
+                           data-id="${j.jugadorId}" value="${j.tirosArco}">
+                </div>
+
+                <div>
+                    <label class="text-xs font-medium mb-1 block">Faltas cometidas</label>
+                    <input type="number" min="0" class="input-faltasCometidas w-full border rounded px-2 py-1"
+                           data-id="${j.jugadorId}" value="${j.faltasCometidas}">
+                </div>
+
+                <div>
+                    <label class="text-xs font-medium mb-1 block">Faltas recibidas</label>
+                    <input type="number" min="0" class="input-faltasRecibidas w-full border rounded px-2 py-1"
+                           data-id="${j.jugadorId}" value="${j.faltasRecibidas}">
+                </div>
+
+            </div>
+
+            <div class="flex items-center gap-4 mb-2 text-sm">
+                <label class="flex items-center gap-1">
+                    <input type="checkbox" class="chk-amarilla" data-id="${j.jugadorId}"
+                           ${j.amarilla ? "checked" : ""}>
+                    <span>Tarjeta amarilla</span>
+                </label>
+
+                <label class="flex items-center gap-1">
+                    <input type="checkbox" class="chk-roja" data-id="${j.jugadorId}"
+                           ${j.roja ? "checked" : ""}>
+                    <span>Tarjeta roja</span>
+                </label>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Rendimiento (1 a 10)</label>
+                <input type="number" min="1" max="10"
+                       class="input-rendimiento w-24 border rounded px-2 py-1 text-sm"
+                       data-id="${j.jugadorId}" value="${j.rendimiento ?? ""}">
+            </div>
+        `;
+
+        cont.appendChild(tarjeta);
+    });
+
+    // Control presencia / motivo
+    actualizarVisibilidadMotivos();
+
+    // Si el evento está cerrado, bloquear inputs y botones
+    if (eventoCerrado) bloquearEvento();
+}
+
+/* ======================================================
+   VISIBILIDAD MOTIVOS
+====================================================== */
+function actualizarVisibilidadMotivos() {
+    document.querySelectorAll(".chk-presente").forEach(chk => {
+        const id = chk.dataset.id;
+        const inputMotivo = document.querySelector(`.input-motivo[data-id='${id}']`);
+
+        // Estado inicial
+        inputMotivo.disabled = chk.checked;
+        inputMotivo.classList.toggle("opacity-50", chk.checked);
+
+        chk.onchange = () => {
+            if (chk.checked) {
+                inputMotivo.value = "";
+                inputMotivo.disabled = true;
+                inputMotivo.classList.add("opacity-50");
+            } else {
+                inputMotivo.disabled = false;
+                inputMotivo.classList.remove("opacity-50");
+            }
+        };
+    });
+}
+
+/* ======================================================
+   BLOQUEAR EVENTO (CERRADO)
+====================================================== */
+function bloquearEvento() {
+
+    // Mostrar badge
+    document.getElementById("badgeCerrado").classList.remove("hidden");
+
+    // Ocultar botón guardar
+    document.getElementById("btnGuardar").classList.add("hidden");
+
+    // Ocultar botón cerrar
+    document.getElementById("btnCerrarEvento").classList.add("hidden");
+
+    // Deshabilitar TODOS los inputs
+    document.querySelectorAll("input, textarea, select").forEach(el => {
+        el.disabled = true;
+        el.classList.add("opacity-60");
+    });
+}
+
+/* ======================================================
+   GUARDAR ASISTENCIA COMPLETA
+====================================================== */
+async function guardarAsistencia() {
+
+    const asistencia = jugadoresBase.map(j => {
+        const id = j.jugadorId;
+
+        return {
+            jugador: id,
+            presente: document.querySelector(`.chk-presente[data-id='${id}']`).checked,
+            observacion: document.querySelector(`.input-obs[data-id='${id}']`).value,
+            motivoInasistencia: document.querySelector(`.input-motivo[data-id='${id}']`).value,
+            goles: Number(document.querySelector(`.input-goles[data-id='${id}']`).value) || 0,
+            asistenciasGol: Number(document.querySelector(`.input-asistenciasGol[data-id='${id}']`).value) || 0,
+            pasesClave: Number(document.querySelector(`.input-pasesClave[data-id='${id}']`).value) || 0,
+            recuperaciones: Number(document.querySelector(`.input-recuperaciones[data-id='${id}']`).value) || 0,
+            tirosArco: Number(document.querySelector(`.input-tirosArco[data-id='${id}']`).value) || 0,
+            faltasCometidas: Number(document.querySelector(`.input-faltasCometidas[data-id='${id}']`).value) || 0,
+            faltasRecibidas: Number(document.querySelector(`.input-faltasRecibidas[data-id='${id}']`).value) || 0,
+            amarilla: document.querySelector(`.chk-amarilla[data-id='${id}']`).checked,
+            roja: document.querySelector(`.chk-roja[data-id='${id}']`).checked,
+            rendimiento: Number(document.querySelector(`.input-rendimiento[data-id='${id}']`).value) || null
+        };
+    });
+
+    const res = await fetch(`${BASE_URL}/api/evento/${idEvento}/asistencia`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ asistencia })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        alert("Error: " + (data.error || "No se pudo guardar"));
+        return;
+    }
+
+    // ===============================
+    // ✔ AVISO DE GUARDADO EXITOSO
+    // ===============================
+    alert("Asistencia guardada correctamente. Redirigiendo...");
+
+    // ===============================
+    // ✔ ESPERA 1 SEGUNDO Y REDIRECCIONA
+    // ===============================
+    setTimeout(() => {
+        window.location.href = "./eventos.html";
+    }, 800);
+}
+/* ======================================================
+   CERRAR EVENTO
+====================================================== */
+async function cerrarEvento() {
+
+    if(!confirm("¿Seguro que deseas cerrar este evento? No podrás editarlo después.")) return;
+
+    const res = await fetch(`${BASE_URL}/api/evento/${idEvento}/cerrar`, {
+        method: "PUT"
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+        alert("Evento cerrado correctamente");
+        bloquearEvento();
+    } else {
+        alert("Error: " + data.error);
+    }
+}
+
+document.getElementById("btnGuardar").addEventListener("click", guardarAsistencia);
+document.getElementById("btnCerrarEvento").addEventListener("click", cerrarEvento);
+
+// Mostrar botón cerrar solo si evento abierto
+function mostrarBotonCerrar() {
+    if (!eventoCerrado) {
+        document.getElementById("btnCerrarEvento").classList.remove("hidden");
+    }
+}
+
+cargarDetalle().then(() => mostrarBotonCerrar());
+
+</script>
+
+</body>
+</html>

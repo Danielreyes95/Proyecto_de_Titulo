@@ -1,0 +1,130 @@
+[{
+  "_id": {
+    "$oid": "6916b946d6c175d3b2c46d8c"
+  },
+  "nombre": "Luis Martínez",
+  "rut": "12.345.678-5",
+  "password": "$2b$10$39StnSAj9mA7QI9zCYNZ3O0ZfSdPvaZwlEa1cbvT4Nj8SSom.jai6",
+  "telefono": "987654321",
+  "correo": "lmartinez@escuela.cl",
+  "createdAt": {
+    "$date": "2025-11-14T05:08:22.274Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T22:06:53.007Z"
+  },
+  "__v": 0,
+  "estado": "activo"
+},
+{
+  "_id": {
+    "$oid": "6916b95cd6c175d3b2c46d8e"
+  },
+  "nombre": "Carlos Rivas",
+  "rut": "13.111.222-4",
+  "password": "$2b$10$wKy3MHhPqnTdCRMhlWeTruYF//XVmuIx9wu0stHWZeD/ISdr.lRLK",
+  "telefono": "987650123",
+  "correo": "crivas@escuela.cl",
+  "createdAt": {
+    "$date": "2025-11-14T05:08:44.870Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T22:07:25.708Z"
+  },
+  "__v": 0,
+  "estado": "activo"
+},
+{
+  "_id": {
+    "$oid": "6916b970d6c175d3b2c46d90"
+  },
+  "nombre": "Fernando Soto",
+  "rut": "14.555.666-7",
+  "password": "$2b$10$7WdVUoX0KkgkcK.0tQHvhuPEzW.xA3byapxsI9DUw5hCsqEConi2e",
+  "telefono": "987650222",
+  "correo": "fsoto@escuela.cl",
+  "createdAt": {
+    "$date": "2025-11-14T05:09:04.924Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T22:07:27.370Z"
+  },
+  "__v": 0,
+  "estado": "activo"
+},
+{
+  "_id": {
+    "$oid": "6916b990d6c175d3b2c46d92"
+  },
+  "nombre": "Mario Paredes",
+  "rut": "15.777.888-9",
+  "password": "$2b$10$gWWzlWRI5oBUaiazR/N0yuyqgLpH9FGUhvuMRHUzSqS5m6uHdNHPa",
+  "telefono": "987650333",
+  "correo": "mparedes@escuela.cl",
+  "createdAt": {
+    "$date": "2025-11-14T05:09:36.903Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T22:07:29.201Z"
+  },
+  "__v": 0,
+  "estado": "activo"
+},
+{
+  "_id": {
+    "$oid": "6916b9aad6c175d3b2c46d94"
+  },
+  "nombre": "Ricardo Cáceres",
+  "rut": "16.666.444-2",
+  "password": "$2b$10$BIlkmdroeRmh2DRAcSWYKufiIlLMbBs02b740lrQnzoRmhnzKf8CO",
+  "telefono": "987650444",
+  "correo": "rcaceres@escuela.cl",
+  "createdAt": {
+    "$date": "2025-11-14T05:10:02.355Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T22:07:33.505Z"
+  },
+  "__v": 0,
+  "estado": "activo"
+},
+{
+  "_id": {
+    "$oid": "69199d3a84aee4cd6116800e"
+  },
+  "nombre": "Daniel Reyes",
+  "rut": "19204129-5",
+  "password": "$2b$10$CmqdjJvJt0XC8w85Q2NCX..aHrexClYE38YQXE2wmUcHckanfPOFC",
+  "telefono": "930278529",
+  "correo": "danielalejandroreyesparra@gmail.com",
+  "estado": "activo",
+  "categoria": null,
+  "createdAt": {
+    "$date": "2025-11-16T09:45:30.153Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-16T09:45:30.153Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "691acca8e4a35cbcad97709d"
+  },
+  "nombre": "Jorge Salgado",
+  "rut": "17222333-1",
+  "password": "$2b$10$uQZfyjYVhAW.qr3zWSk5tuTBkFFfHWaZUdMOFiem3/oPjcuIWRyTi",
+  "telefono": "987650555",
+  "correo": "jsalgado@escuela.cl",
+  "estado": "activo",
+  "categoria": {
+    "$oid": "6916bb63d6c175d3b2c46da2"
+  },
+  "createdAt": {
+    "$date": "2025-11-17T07:20:08.090Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-17T07:20:18.133Z"
+  },
+  "__v": 0
+}]

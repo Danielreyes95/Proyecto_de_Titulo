@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenadores - Director</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- VALIDACIÓN -->
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<div class="flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4">
+        <h2 class="text-xl font-bold mb-5 text-center">Director</h2>
+
+        <a href="./director.html" class="hover:underline">Inicio</a>
+        <a href="./jugadores.html" class="hover:underline">Jugadores</a>
+        <a href="./entrenadores.html" class="font-bold underline">Entrenadores</a>
+        <a href="./categorias.html" class="hover:underline">Categorías</a>
+        <a href="./eventos.html" class="hover:underline">Eventos</a>
+        <a href="./pagos.html" class="hover:underline">Pagos</a>
+        <a href="./avisos.html" class="hover:underline">Avisos</a>
+        <a href="./reportes.html" class="hover:underline">Reportes</a>
+
+        <button onclick="logout()" class="bg-red-600 p-2 mt-auto rounded">
+            Cerrar sesión
+        </button>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="flex-1 p-8">
+
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-green-700">Listado de Entrenadores</h1>
+
+            <button onclick="mostrarModalCrear()" 
+                class="bg-green-700 text-white px-4 py-2 rounded shadow hover:bg-green-800">
+                + Agregar Entrenador
+            </button>
+        </div>
+
+        <div class="bg-white shadow rounded-lg p-4">
+            <table class="w-full table-auto">
+                <thead>
+                    <tr class="border-b bg-gray-200">
+                        <th class="p-3 text-left">Nombre</th>
+                        <th class="p-3 text-left">RUT</th>
+                        <th class="p-3 text-left">Teléfono</th>
+                        <th class="p-3 text-left">Correo</th>
+                        <th class="p-3 text-left">Categoría</th>
+                        <th class="p-3 text-left">Estado</th>
+                        <th class="p-3 text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyEntrenadores"></tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<!-- ============================
+     MODAL CREAR ENTRENADOR
+============================= -->
+<div id="modalCrear" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center">
+    <div class="bg-white p-6 rounded shadow w-96">
+        <h2 class="text-xl font-bold mb-4">Agregar Entrenador</h2>
+
+        <input id="nombreNuevo" class="w-full border p-2 rounded mb-3" placeholder="Nombre">
+        <input id="rutNuevo" class="w-full border p-2 rounded mb-3" placeholder="RUT">
+        <input id="telefonoNuevo" class="w-full border p-2 rounded mb-3" placeholder="Teléfono">
+        <input id="correoNuevo" class="w-full border p-2 rounded mb-3" placeholder="Correo">
+        <input id="passwordNuevo" class="w-full border p-2 rounded mb-3" placeholder="Password">
+
+        <button onclick="crearEntrenador()" 
+            class="w-full bg-green-700 text-white py-2 rounded">Guardar</button>
+        <button onclick="ocultarModalCrear()" 
+            class="w-full mt-2 py-2 rounded bg-gray-300">Cancelar</button>
+    </div>
+</div>
+
+<!-- ============================
+     MODAL CAMBIAR CATEGORÍA
+============================= -->
+<div id="modalCategoria" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center">
+    <div class="bg-white p-6 rounded shadow w-96">
+        <h2 class="text-xl font-bold mb-4">Cambiar Categoría</h2>
+
+        <label class="font-semibold">Seleccionar nueva categoría</label>
+        <select id="selectCategoria" class="w-full border p-2 rounded mb-3"></select>
+
+        <button onclick="guardarNuevaCategoria()" 
+            class="w-full bg-blue-600 text-white py-2 rounded">Guardar</button>
+        <button onclick="ocultarModalCategoria()" 
+            class="w-full mt-2 py-2 rounded bg-gray-300">Cancelar</button>
+    </div>
+</div>
+
+<script src="../js/config.js"></script>
+
+<script>
+let entrenadorSeleccionado = null;
+
+/* ============= LOGOUT ============= */
+function logout() {
+    localStorage.clear();
+    window.location.href = "../index.html";
+}
+
+/* ============= MODALES ============= */
+function mostrarModalCrear() { document.getElementById("modalCrear").classList.remove("hidden"); }
+function ocultarModalCrear() { document.getElementById("modalCrear").classList.add("hidden"); }
+
+function mostrarModalCategoria() { document.getElementById("modalCategoria").classList.remove("hidden"); }
+function ocultarModalCategoria() { document.getElementById("modalCategoria").classList.add("hidden"); }
+
+/* ============= LISTAR ENTRENADORES ============= */
+async function cargarEntrenadores() {
+    try {
+        const res = await fetch(`${BASE_URL}/api/entrenadores/listar`);
+        const entrenadores = await res.json();
+
+        const tbody = document.getElementById("tbodyEntrenadores");
+        tbody.innerHTML = "";
+
+        entrenadores.forEach(e => {
+            tbody.innerHTML += `
+                <tr class="border-b">
+                    <td class="p-3">${e.nombre}</td>
+                    <td class="p-3">${e.rut}</td>
+                    <td class="p-3">${e.telefono}</td>
+                    <td class="p-3">${e.correo}</td>
+                    <td class="p-3">${e.categoria?.nombre ?? "Sin categoría"}</td>
+                    <td class="p-3">
+                        <span class="px-2 py-1 rounded text-white 
+                            ${e.estado === "activo" ? "bg-green-600" : "bg-red-600"}">
+                            ${e.estado}
+                        </span>
+                    </td>
+
+                    <td class="p-3 text-center flex gap-2 justify-center">
+
+                        <button 
+                            onclick="cambiarEstado('${e._id}')"
+                            class="px-3 py-1 rounded text-white 
+                            ${e.estado === 'activo' ? 'bg-red-600' : 'bg-green-600'}">
+                            ${e.estado === "activo" ? "Deshabilitar" : "Habilitar"}
+                        </button>
+
+                        <button 
+                            onclick="abrirModalCambiarCategoria('${e._id}')"
+                            class="px-3 py-1 bg-blue-600 text-white rounded">
+                            Cambiar Categoría
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+    } catch (err) {
+        console.error(err);
+        alert("Error al cargar entrenadores");
+    }
+}
+
+/* ============= CREAR ENTRENADOR ============= */
+async function crearEntrenador() {
+    const nombre = document.getElementById("nombreNuevo").value;
+    const rut = document.getElementById("rutNuevo").value;
+    const telefono = document.getElementById("telefonoNuevo").value;
+    const correo = document.getElementById("correoNuevo").value;
+    const password = document.getElementById("passwordNuevo").value;
+
+    await fetch(`${BASE_URL}/api/entrenadores/crear`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ nombre, rut, telefono, correo, password })
+    });
+
+    ocultarModalCrear();
+    cargarEntrenadores();
+}
+
+/* ============= CAMBIAR ESTADO ============= */
+async function cambiarEstado(id) {
+    if (!confirm("¿Cambiar estado del entrenador?")) return;
+
+    await fetch(`${BASE_URL}/api/entrenadores/cambiar-estado/${id}`, {
+        method: "PUT"
+    });
+
+    cargarEntrenadores();
+}
+
+/* ============= ABRIR MODAL CAMBIAR CATEGORÍA ============= */
+async function abrirModalCambiarCategoria(id) {
+    entrenadorSeleccionado = id;
+
+    try {
+        const res = await fetch(`${BASE_URL}/api/categorias`);
+        const categorias = await res.json();
+
+        const select = document.getElementById("selectCategoria");
+        select.innerHTML = "";
+
+        categorias.forEach(c => {
+            select.innerHTML += `
+                <option value="${c._id}">
+                    ${c.nombre} (${c.edadMin} - ${c.edadMax} años)
+                </option>
+            `;
+        });
+
+        mostrarModalCategoria();
+
+    } catch (error) {
+        console.error("Error cargando categorías:", error);
+        alert("No se pudo cargar la lista de categorías");
+    }
+}
+
+/* ============= GUARDAR CAMBIO DE CATEGORÍA ============= */
+async function guardarNuevaCategoria() {
+    const categoriaId = document.getElementById("selectCategoria").value;
+
+    await fetch(`${BASE_URL}/api/entrenadores/cambiar-categoria`, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            idEntrenador: entrenadorSeleccionado,
+            categoriaId
+        })
+    });
+
+    ocultarModalCategoria();
+    cargarEntrenadores();
+}
+
+cargarEntrenadores();
+</script>
+
+</body>
+</html>

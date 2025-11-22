@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Reportes - Director</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- VALIDACIÓN -->
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<div class="flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4 shadow-lg">
+        <h2 class="text-xl font-bold mb-5 text-center">Director</h2>
+
+        <a href="./director.html" class="hover:underline">Inicio</a>
+        <a href="./jugadores.html" class="hover:underline">Jugadores</a>
+        <a href="./entrenadores.html" class="hover:underline">Entrenadores</a>
+        <a href="./categorias.html" class="hover:underline">Categorías</a>
+        <a href="./eventos.html" class="hover:underline">Eventos</a>
+        <a href="./pagos.html" class="hover:underline">Pagos</a>
+        <a href="./avisos.html" class="hover:underline">Avisos</a>
+        <a href="./reportes.html" class="font-bold underline">Reportes</a>
+
+        <button onclick="logout()" class="bg-red-600 p-2 mt-auto rounded hover:bg-red-700">
+            Cerrar sesión
+        </button>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-1 p-8">
+
+        <h1 class="text-3xl font-bold text-green-700 mb-6">Reportes Generales</h1>
+
+        <!-- TARJETAS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div class="bg-white shadow-md rounded-lg p-6 border-l-8 border-green-600">
+                <h3 class="text-lg font-semibold text-green-700">Total Jugadores</h3>
+                <p id="repTotalJugadores" class="text-4xl font-bold mt-3 text-gray-800">—</p>
+            </div>
+
+            <div class="bg-white shadow-md rounded-lg p-6 border-l-8 border-blue-600">
+                <h3 class="text-lg font-semibold text-blue-700">Total Entrenadores</h3>
+                <p id="repTotalEntrenadores" class="text-4xl font-bold mt-3 text-gray-800">—</p>
+            </div>
+
+            <div class="bg-white shadow-md rounded-lg p-6 border-l-8 border-yellow-500">
+                <h3 class="text-lg font-semibold text-yellow-600">Pagos al día</h3>
+                <p id="repPagosDia" class="text-4xl font-bold mt-3 text-gray-800">—</p>
+            </div>
+
+            <!-- ASISTENCIA MENSUAL -->
+            <div class="bg-white shadow-md rounded-lg p-6 border-l-8 border-purple-600">
+                <h3 class="text-lg font-semibold text-purple-700">Asistencia mensual</h3>
+                <p id="repAsistenciaMensual" class="text-4xl font-bold mt-3 text-gray-800">—%</p>
+            </div>
+
+        </div>
+
+        <div class="mt-10"></div>
+
+        <div class="border border-gray-300 rounded-lg p-6 bg-white shadow-md">
+
+            <h2 class="text-xl font-bold text-green-800 mb-4">Gráficos y Reportes Detallados</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+
+                <div>
+                    <label class="font-semibold">Tipo de reporte</label>
+                    <select id="tipoReporte" class="w-full border p-2 rounded">
+                        <option value="">Seleccione…</option>
+                        <option value="asistencia">Asistencia</option>
+                        <option value="pagos">Pagos</option>
+                        <option value="jugadores">Jugadores</option>
+                        <option value="rendimiento">Rendimiento</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="font-semibold">Mes</label>
+                    <select id="reporteMes" class="w-full border p-2 rounded">
+                        <option value="">—</option>
+                        <script>
+                            const meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+                            document.write(meses.map((m,i)=>`<option value="${i+1}">${m}</option>`).join(""));
+                        </script>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="font-semibold">Año</label>
+                    <select id="reporteAnyo" class="w-full border p-2 rounded">
+                        <option value="">—</option>
+                        <script>
+                            const year = new Date().getFullYear();
+                            for(let y = year; y >= year-5; y--){
+                                document.write(`<option value="${y}">${y}</option>`);
+                            }
+                        </script>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="font-semibold">Categoría</label>
+                    <select id="reporteCategoria" class="w-full border p-2 rounded"></select>
+                </div>
+            </div>
+
+            <button onclick="generarReporte()" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded shadow">
+                Generar Reporte
+            </button>
+
+            <div id="contenedorReporte" class="mt-8 min-h-[300px] p-4 border rounded bg-gray-50 shadow-inner">
+                <p class="text-gray-500">Aquí aparecerán los gráficos o tablas del reporte seleccionado.</p>
+            </div>
+
+            <button onclick="descargarPDF()" class="mt-6 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow">
+                Descargar PDF
+            </button>
+
+        </div>
+
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="/js/config.js"></script>
+<script src="/js/reportes.js" defer></script>
+
+</body>
+</html>

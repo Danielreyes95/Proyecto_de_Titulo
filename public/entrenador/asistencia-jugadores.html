@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Asistencia de la Categoría</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- VALIDACIÓN -->
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenador") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<script src="../js/config.js"></script>
+
+<div class="flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4">
+        <h2 class="text-xl font-bold mb-5 text-center">Entrenador</h2>
+
+        <a href="./entrenador.html">Inicio</a>
+        <a href="./miCategoria.html">Mi Categoría</a>
+        <a href="./asistencia-jugadores.html" class="font-bold underline">Asistencia</a>
+        <a href="./rendimiento.html">Rendimiento</a>
+        <a href="./eventos.html">Eventos</a>
+        <a href="./avisos-entrenador.html">Avisos</a>
+        <a href="./reportes-entrenador.html">Reportes</a>
+
+        <button onclick="logout()" class="mt-auto bg-red-600 hover:bg-red-700 text-white p-2 rounded">
+            Cerrar sesión
+        </button>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="flex-1 p-8 space-y-6">
+
+        <!-- ENCABEZADO + FILTROS -->
+        <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div>
+                <h1 class="text-3xl font-bold text-green-700">Asistencia de la categoría</h1>
+                <p class="text-gray-600">
+                    Revisa la asistencia de cada jugador, diferenciando por tipo de evento.
+                </p>
+            </div>
+
+            <div class="flex gap-3 items-center">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">
+                        Filtrar historial por tipo
+                    </label>
+                    <select id="filtroTipo" class="border rounded px-3 py-2 text-sm bg-white">
+                        <option value="">Todos los tipos</option>
+                        <option value="Entrenamiento">Entrenamiento</option>
+                        <option value="Partido">Partido</option>
+                        <option value="Torneo">Torneo</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">
+                        Buscar jugador
+                    </label>
+                    <input id="txtBuscar" type="text"
+                           placeholder="Nombre o RUT..."
+                           class="border rounded px-3 py-2 text-sm w-56">
+                </div>
+            </div>
+        </header>
+
+        <!-- RESUMEN CATEGORÍA -->
+        <section class="bg-white rounded shadow p-4">
+            <h2 class="text-xl font-semibold mb-3">Resumen de la categoría</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                <div class="p-3 bg-green-50 rounded border">
+                    <p class="text-gray-600">Eventos totales (según filtro)</p>
+                    <p id="resEventosTotales" class="text-2xl font-bold">0</p>
+                </div>
+
+                <div class="p-3 bg-blue-50 rounded border">
+                    <p class="text-gray-600">Asistencia promedio general</p>
+                    <p id="resAsistenciaProm" class="text-2xl font-bold">0%</p>
+                </div>
+
+                <div class="p-3 bg-yellow-50 rounded border">
+                    <p class="text-gray-600">Entrenamientos</p>
+                    <p id="resEntrenamientos" class="text-2xl font-bold">0</p>
+                </div>
+
+                <div class="p-3 bg-purple-50 rounded border">
+                    <p class="text-gray-600">Partidos / Torneos</p>
+                    <p id="resPartidosTorneos" class="text-2xl font-bold">0</p>
+                </div>
+            </div>
+
+            <!-- LISTA DE FECHAS DEL FILTRO -->
+            <div class="mt-4">
+                <h3 class="text-sm font-semibold text-gray-700">
+                    Fechas de los eventos del filtro actual
+                </h3>
+                <p id="textoFechasFiltro" class="text-xs text-gray-500">
+                    Mostrando todos los eventos de la categoría.
+                </p>
+                <div id="listaFechasFiltro"
+                     class="mt-2 flex flex-wrap gap-2 text-xs">
+                    <!-- Chips de fechas -->
+                </div>
+            </div>
+        </section>
+
+        <!-- LISTA DE JUGADORES (CARDS) -->
+        <section class="bg-white rounded shadow p-4">
+            <h2 class="text-xl font-semibold mb-4">Asistencia por jugador</h2>
+
+            <div id="contenedorJugadores" class="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+                <!-- Cards dinámicas -->
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script>
+function logout() {
+    localStorage.clear();
+    window.location.href = "../index.html";
+}
+
+const categoriaId = localStorage.getItem("categoria");
+const BASE = BASE_URL; // por comodidad
+
+let jugadores = [];
+let eventosCategoria = [];
+let statsPorJugador = {};   // { jugadorId: {...} }
+
+document.addEventListener("DOMContentLoaded", () => {
+    initAsistencia();
+});
+
+/* ==========================================================
+   CARGA GENERAL
+========================================================== */
+async function initAsistencia() {
+    try {
+        await Promise.all([
+            cargarJugadores(),
+            cargarEventosCategoria()
+        ]);
+
+        calcularStatsJugadores();
+        actualizarVista();
+
+        // Filtro de texto
+        document.getElementById("txtBuscar").addEventListener("input", () => {
+            actualizarVista();
+        });
+
+        // Filtro por tipo de evento
+        document.getElementById("filtroTipo").addEventListener("change", () => {
+            // Resetear históriales para que se recarguen con el nuevo filtro
+            Object.keys(statsPorJugador).forEach(id => {
+                const cont = document.getElementById(`historial-${id}`);
+                if (cont) {
+                    cont.dataset.cargado = "0";
+                    cont.innerHTML = `
+                        <p class="text-gray-500 text-sm">
+                            Haz clic en "Ver historial" para cargar el detalle del filtro actual.
+                        </p>`;
+                }
+            });
+
+            actualizarVista();
+        });
+
+    } catch (err) {
+        console.error("Error cargando asistencia:", err);
+        alert("Ocurrió un error al cargar la asistencia.");
+    }
+}
+
+/* ==========================================================
+   ACTUALIZAR VISTA COMPLETA (RESUMEN + CARDS)
+========================================================== */
+function actualizarVista() {
+    renderResumenCategoria();
+    renderJugadores();
+}
+
+/* ==========================================================
+   OBTENER JUGADORES / EVENTOS
+========================================================== */
+async function cargarJugadores() {
+    const res = await fetch(`${BASE}/api/jugadores/categoria/${categoriaId}`);
+    jugadores = await res.json();
+}
+
+async function cargarEventosCategoria() {
+    const res = await fetch(`${BASE}/api/evento/categoria/${categoriaId}`);
+    eventosCategoria = await res.json();
+}
+
+/* ==========================================================
+   CALCULAR STATS POR JUGADOR (TOTAL + POR TIPO)
+========================================================== */
+function calcularStatsJugadores() {
+    statsPorJugador = {};
+
+    // Inicializar estructura
+    jugadores.forEach(j => {
+        statsPorJugador[j._id] = {
+            jugadorId: j._id,
+            nombre: j.nombre,
+            rut: j.rut,
+            estado: j.estado,
+
+            totalEventos: 0,
+            asistio: 0,
+
+            tipos: {
+                "Entrenamiento": { total: 0, asistio: 0 },
+                "Partido":       { total: 0, asistio: 0 },
+                "Torneo":        { total: 0, asistio: 0 }
+            }
+        };
+    });
+
+    // Recorrer eventos y asistencia
+    eventosCategoria.forEach(e => {
+        const tipo = e.tipoEvento || "Otro";
+
+        (e.asistencia || []).forEach(a => {
+            const jugadorId = a.jugador?._id || a.jugador;
+            if (!statsPorJugador[jugadorId]) return;
+
+            const stats = statsPorJugador[jugadorId];
+
+            stats.totalEventos++;
+            if (a.presente) stats.asistio++;
+
+            if (stats.tipos[tipo]) {
+                stats.tipos[tipo].total++;
+                if (a.presente) stats.tipos[tipo].asistio++;
+            }
+        });
+    });
+
+    // Calcular porcentajes generales por jugador
+    Object.values(statsPorJugador).forEach(s => {
+        s.porcentajeTotal = s.totalEventos > 0
+            ? Number(((s.asistio / s.totalEventos) * 100).toFixed(1))
+            : 0;
+
+        ["Entrenamiento","Partido","Torneo"].forEach(t => {
+            const info = s.tipos[t];
+            info.porcentaje = info.total > 0
+                ? Number(((info.asistio / info.total) * 100).toFixed(1))
+                : 0;
+        });
+    });
+}
+
+/* ==========================================================
+   RESUMEN DE LA CATEGORÍA (SEGÚN FILTRO)
+========================================================== */
+function renderResumenCategoria() {
+    const tipoFiltro = document.getElementById("filtroTipo").value;
+
+    let eventosFiltrados = eventosCategoria;
+    if (tipoFiltro) {
+        eventosFiltrados = eventosCategoria.filter(
+            e => e.tipoEvento === tipoFiltro
+        );
+    }
+
+    const totalEventos = eventosFiltrados.length;
+
+    let sumaAsistencia = 0;
+    let entrenamientos = 0;
+    let partidos = 0;
+    let torneos = 0;
+
+    eventosFiltrados.forEach(e => {
+        const porc = Number(e.porcentajeAsistencia || 0);
+        sumaAsistencia += isNaN(porc) ? 0 : porc;
+
+        if (e.tipoEvento === "Entrenamiento") entrenamientos++;
+        else if (e.tipoEvento === "Partido") partidos++;
+        else if (e.tipoEvento === "Torneo") torneos++;
+    });
+
+    const asistenciaProm = totalEventos > 0
+        ? Number((sumaAsistencia / totalEventos).toFixed(1))
+        : 0;
+
+    document.getElementById("resEventosTotales").innerText = totalEventos;
+    document.getElementById("resAsistenciaProm").innerText = `${asistenciaProm}%`;
+    document.getElementById("resEntrenamientos").innerText = entrenamientos;
+    document.getElementById("resPartidosTorneos").innerText = partidos + torneos;
+
+    // === Fechas del filtro ===
+    const listaFechasDiv = document.getElementById("listaFechasFiltro");
+    const textoFechas = document.getElementById("textoFechasFiltro");
+
+    listaFechasDiv.innerHTML = "";
+
+    if (totalEventos === 0) {
+        textoFechas.textContent = tipoFiltro
+            ? `No hay eventos de tipo "${tipoFiltro}" registrados.`
+            : "No hay eventos registrados para esta categoría.";
+        return;
+    }
+
+    if (tipoFiltro) {
+        textoFechas.textContent =
+            `Mostrando ${totalEventos} evento(s) de tipo "${tipoFiltro}".`;
+    } else {
+        textoFechas.textContent =
+            `Mostrando todos los eventos de la categoría (${totalEventos}).`;
+    }
+
+    // Ordenar por fecha ascendente
+    const ordenados = [...eventosFiltrados].sort((a, b) =>
+        new Date(a.fechaEvento) - new Date(b.fechaEvento)
+    );
+
+    ordenados.forEach(ev => {
+        const span = document.createElement("span");
+        const fechaStr = ev.fechaEvento
+            ? new Date(ev.fechaEvento).toLocaleDateString("es-CL")
+            : "-";
+
+        span.className =
+            "px-2 py-1 rounded-full bg-gray-100 border text-gray-700";
+        span.textContent = fechaStr + (ev.tipoEvento ? ` (${ev.tipoEvento})` : "");
+        listaFechasDiv.appendChild(span);
+    });
+}
+
+/* ==========================================================
+   RENDER CARDS DE JUGADORES
+========================================================== */
+function renderJugadores() {
+    const cont = document.getElementById("contenedorJugadores");
+    cont.innerHTML = "";
+
+    const busqueda = document.getElementById("txtBuscar").value.trim().toLowerCase();
+    const tipoFiltro = document.getElementById("filtroTipo").value;
+
+    const lista = jugadores.filter(j => {
+        if (!busqueda) return true;
+        const nombre = (j.nombre || "").toLowerCase();
+        const rut = (j.rut || "").toLowerCase();
+        return nombre.includes(busqueda) || rut.includes(busqueda);
+    });
+
+    lista.forEach(j => {
+        const stats = statsPorJugador[j._id] || {
+            porcentajeTotal: 0,
+            totalEventos: 0,
+            asistio: 0,
+            tipos: {
+                "Entrenamiento": { porcentaje: 0, total: 0, asistio: 0 },
+                "Partido":       { porcentaje: 0, total: 0, asistio: 0 },
+                "Torneo":        { porcentaje: 0, total: 0, asistio: 0 }
+            }
+        };
+
+        const ent = stats.tipos["Entrenamiento"];
+        const par = stats.tipos["Partido"];
+        const tor = stats.tipos["Torneo"];
+
+        // === Métrica principal según filtro ===
+        let etiquetaFiltro = "todos los eventos";
+        let porcentajeFiltro = stats.porcentajeTotal || 0;
+        let resumenFiltro = `${stats.asistio || 0}/${stats.totalEventos || 0}`;
+
+        if (tipoFiltro && stats.tipos[tipoFiltro]) {
+            const info = stats.tipos[tipoFiltro];
+            etiquetaFiltro = tipoFiltro.toLowerCase() + "s";
+            porcentajeFiltro = info.porcentaje || 0;
+            resumenFiltro = `${info.asistio || 0}/${info.total || 0}`;
+        }
+
+        const card = document.createElement("div");
+        card.className = "bg-gray-50 rounded-lg border shadow-sm p-4 flex flex-col gap-3";
+
+        card.innerHTML = `
+            <div class="flex items-start justify-between gap-2">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">${j.nombre}</h3>
+                    <p class="text-xs text-gray-500">${j.rut}</p>
+                </div>
+                <span class="px-2 py-1 text-xs rounded-full ${
+                    j.estado === "activo" ? "bg-green-600" : "bg-gray-500"
+                } text-white">
+                    ${j.estado || "sin estado"}
+                </span>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div>
+                    <p class="text-xs text-gray-500">Asistencia según filtro</p>
+                    <p class="text-3xl font-bold text-green-700">${porcentajeFiltro}%</p>
+                    <p class="text-[11px] text-gray-500">
+                        ${tipoFiltro
+                            ? `En ${etiquetaFiltro} (${resumenFiltro})`
+                            : `En todos los eventos (${resumenFiltro})`}
+                    </p>
+                </div>
+                <div class="flex-1 text-xs text-gray-600 space-y-1">
+                    <div class="flex items-center justify-between">
+                        <span>Entrenamientos</span>
+                        <span>${ent.porcentaje || 0}% (${ent.asistio || 0}/${ent.total || 0})</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span>Partidos</span>
+                        <span>${par.porcentaje || 0}% (${par.asistio || 0}/${par.total || 0})</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span>Torneos</span>
+                        <span>${tor.porcentaje || 0}% (${tor.asistio || 0}/${tor.total || 0})</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t pt-3 mt-1">
+                <button onclick="toggleHistorialJugador('${j._id}')"
+                        class="text-xs px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700">
+                    Ver historial
+                </button>
+            </div>
+
+            <div id="historial-${j._id}" class="mt-2 text-xs text-gray-700 hidden" data-cargado="0">
+                <p class="text-gray-500 text-sm">
+                    Haz clic en "Ver historial" para cargar el detalle del filtro actual.
+                </p>
+            </div>
+        `;
+
+        cont.appendChild(card);
+    });
+}
+
+/* ==========================================================
+   HISTORIAL DENTRO DE LA MISMA PÁGINA
+========================================================== */
+async function toggleHistorialJugador(jugadorId) {
+    const cont = document.getElementById(`historial-${jugadorId}`);
+    if (!cont) return;
+
+    const oculto = cont.classList.contains("hidden");
+    const tipoFiltro = document.getElementById("filtroTipo").value;
+
+    if (oculto) {
+        cont.classList.remove("hidden");
+
+        if (cont.dataset.cargado === "0") {
+            const res = await fetch(`${BASE}/api/evento/jugador/${jugadorId}`);
+            let registros = await res.json();
+
+            // Filtro por tipo de evento (si está seleccionado)
+            if (tipoFiltro) {
+                registros = registros.filter(r =>
+                    (r.tipoEvento || r.tipo) === tipoFiltro
+                );
+            }
+
+            if (!Array.isArray(registros) || registros.length === 0) {
+                cont.innerHTML = "<p class='text-gray-500 text-sm'>Sin registros para mostrar en este filtro.</p>";
+            } else {
+                let html = `
+                    <table class="w-full text-xs table-auto mt-2">
+                        <thead>
+                            <tr class="border-b bg-gray-200">
+                                <th class="p-1 text-left">Fecha</th>
+                                <th class="p-1 text-left">Tipo</th>
+                                <th class="p-1 text-center">Asistencia</th>
+                                <th class="p-1 text-left">Observación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                registros.forEach(r => {
+                    const fecha = r.fechaEvento
+                        ? new Date(r.fechaEvento).toLocaleDateString("es-CL")
+                        : "-";
+                    const tipo  = r.tipoEvento || r.tipo || "-";
+
+                    html += `
+                        <tr class="border-b">
+                            <td class="p-1">${fecha}</td>
+                            <td class="p-1">${tipo}</td>
+                            <td class="p-1 text-center">
+                                ${r.presente
+                                    ? "<span class='text-green-600 font-semibold'>Asistió</span>"
+                                    : "<span class='text-red-600 font-semibold'>Faltó</span>"}
+                            </td>
+                            <td class="p-1">${r.observacion || "-"}</td>
+                        </tr>
+                    `;
+                });
+
+                html += "</tbody></table>";
+                cont.innerHTML = html;
+            }
+
+            cont.dataset.cargado = "1";
+        }
+    } else {
+        cont.classList.add("hidden");
+    }
+}
+</script>
+
+</body>
+</html>

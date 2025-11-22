@@ -1,0 +1,440 @@
+[{
+  "_id": {
+    "$oid": "691756e9b1d0ce98256df75a"
+  },
+  "rut": "22222222-2",
+  "nombre": "Pedro Pérez",
+  "fechaNacimiento": {
+    "$date": "2019-03-12T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bb63d6c175d3b2c46da2"
+  },
+  "apoderado": {
+    "$oid": "691746dfb758687298a6ea89"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T16:20:57.872Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-15T20:00:32.758Z"
+  },
+  "__v": 0,
+  "estado": "activo"
+},
+{
+  "_id": {
+    "$oid": "69175a64b1d0ce98256df76c"
+  },
+  "rut": "33333333-3",
+  "nombre": "Lucas Medina",
+  "fechaNacimiento": {
+    "$date": "2019-01-14T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bb63d6c175d3b2c46da2"
+  },
+  "apoderado": {
+    "$oid": "69175a64b1d0ce98256df769"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T16:35:48.742Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T16:35:48.742Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69175a9eb1d0ce98256df778"
+  },
+  "rut": "44444444-4",
+  "nombre": "Antonio Silva",
+  "fechaNacimiento": {
+    "$date": "2019-11-10T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bb63d6c175d3b2c46da2"
+  },
+  "apoderado": {
+    "$oid": "69175a9db1d0ce98256df775"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T16:36:46.163Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T16:36:46.163Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69175b48b1d0ce98256df77e"
+  },
+  "rut": "55555555-5",
+  "nombre": "Tomás Gómez",
+  "fechaNacimiento": {
+    "$date": "2017-06-12T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916ba9ad6c175d3b2c46d98"
+  },
+  "apoderado": {
+    "$oid": "69175b48b1d0ce98256df77b"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T16:39:36.737Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T16:39:36.737Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69175b58b1d0ce98256df784"
+  },
+  "rut": "77777777-7",
+  "nombre": "Andres Pino",
+  "fechaNacimiento": {
+    "$date": "2016-11-03T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916ba9ad6c175d3b2c46d98"
+  },
+  "apoderado": {
+    "$oid": "69175b57b1d0ce98256df781"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T16:39:52.047Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T16:39:52.047Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69175db2b1d0ce98256df78a"
+  },
+  "rut": "10101010-1",
+  "nombre": "Benjamín Díaz",
+  "fechaNacimiento": {
+    "$date": "2015-04-18T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bac0d6c175d3b2c46d9a"
+  },
+  "apoderado": {
+    "$oid": "69175db2b1d0ce98256df787"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T16:49:54.376Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T16:49:54.376Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69175de2b1d0ce98256df796"
+  },
+  "rut": "20202020-2",
+  "nombre": "Miguel Herrera",
+  "fechaNacimiento": {
+    "$date": "2014-09-10T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bac0d6c175d3b2c46d9a"
+  },
+  "apoderado": {
+    "$oid": "69175de2b1d0ce98256df793"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T16:50:42.292Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T16:50:42.292Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69175debb1d0ce98256df79c"
+  },
+  "rut": "30303030-3",
+  "nombre": "Bruno Orellana",
+  "fechaNacimiento": {
+    "$date": "2015-12-02T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bac0d6c175d3b2c46d9a"
+  },
+  "apoderado": {
+    "$oid": "69175debb1d0ce98256df799"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T16:50:51.684Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T16:50:51.684Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6917608ab1d0ce98256df7a6"
+  },
+  "rut": "40404040-4",
+  "nombre": "Agustín Soto",
+  "fechaNacimiento": {
+    "$date": "2013-07-21T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bae1d6c175d3b2c46d9c"
+  },
+  "apoderado": {
+    "$oid": "6917608ab1d0ce98256df7a3"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T17:02:02.286Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T17:02:02.286Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "691760c3b1d0ce98256df7b2"
+  },
+  "rut": "50505050-5",
+  "nombre": "Andres Rivas",
+  "fechaNacimiento": {
+    "$date": "2012-02-11T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bae1d6c175d3b2c46d9c"
+  },
+  "apoderado": {
+    "$oid": "691760c3b1d0ce98256df7af"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T17:02:59.299Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T17:02:59.299Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "691760cbb1d0ce98256df7b8"
+  },
+  "rut": "60606060-6",
+  "nombre": "Diego Fuentes",
+  "fechaNacimiento": {
+    "$date": "2013-10-05T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bae1d6c175d3b2c46d9c"
+  },
+  "apoderado": {
+    "$oid": "691760cbb1d0ce98256df7b5"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T17:03:07.541Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T17:03:07.541Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6917624ab1d0ce98256df7be"
+  },
+  "rut": "70707070-7",
+  "nombre": "Tomás Castro",
+  "fechaNacimiento": {
+    "$date": "2011-04-10T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bb06d6c175d3b2c46d9e"
+  },
+  "apoderado": {
+    "$oid": "6917624ab1d0ce98256df7bb"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T17:09:30.719Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T17:09:30.719Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6917625fb1d0ce98256df7c4"
+  },
+  "rut": "80808080-8",
+  "nombre": "Cristobal Herrera",
+  "fechaNacimiento": {
+    "$date": "2010-08-25T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bb06d6c175d3b2c46d9e"
+  },
+  "apoderado": {
+    "$oid": "6917625fb1d0ce98256df7c1"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T17:09:51.310Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T17:09:51.310Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69176266b1d0ce98256df7ca"
+  },
+  "rut": "90909090-9",
+  "nombre": "Benjamín Morales",
+  "fechaNacimiento": {
+    "$date": "2011-12-19T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bb06d6c175d3b2c46d9e"
+  },
+  "apoderado": {
+    "$oid": "69176265b1d0ce98256df7c7"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T17:09:58.181Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T17:09:58.181Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6917631db1d0ce98256df7d4"
+  },
+  "rut": "60606060-9",
+  "nombre": "Ignacio Paredes",
+  "fechaNacimiento": {
+    "$date": "2009-06-14T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bb3bd6c175d3b2c46da0"
+  },
+  "apoderado": {
+    "$oid": "691762f5b1d0ce98256df7cd"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T17:13:01.813Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T17:13:01.813Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6917632db1d0ce98256df7d8"
+  },
+  "rut": "50505050-8",
+  "nombre": "Emilio Díaz",
+  "fechaNacimiento": {
+    "$date": "2008-11-03T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bb3bd6c175d3b2c46da0"
+  },
+  "apoderado": {
+    "$oid": "691760c3b1d0ce98256df7af"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T17:13:17.052Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T17:13:17.052Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6917633ab1d0ce98256df7dc"
+  },
+  "rut": "42404040-4",
+  "nombre": "Matías Rivas",
+  "fechaNacimiento": {
+    "$date": "2009-02-22T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bb3bd6c175d3b2c46da0"
+  },
+  "apoderado": {
+    "$oid": "6917608ab1d0ce98256df7a3"
+  },
+  "createdAt": {
+    "$date": "2025-11-14T17:13:30.136Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T17:13:30.136Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "691b8160771ccc177494c953"
+  },
+  "rut": "25262324-5",
+  "nombre": "Mateo Reyes",
+  "fechaNacimiento": {
+    "$date": "2019-12-19T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bb63d6c175d3b2c46da2"
+  },
+  "apoderado": {
+    "$oid": "691b8160771ccc177494c950"
+  },
+  "estado": "activo",
+  "createdAt": {
+    "$date": "2025-11-17T20:11:12.885Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-17T20:11:12.885Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "691ba7baf4013108c4a8d434"
+  },
+  "rut": "25123456-7",
+  "nombre": "Mateo Montecinos",
+  "fechaNacimiento": {
+    "$date": "2019-07-20T00:00:00.000Z"
+  },
+  "categoria": {
+    "$oid": "6916bb63d6c175d3b2c46da2"
+  },
+  "apoderado": {
+    "$oid": "691ba7baf4013108c4a8d431"
+  },
+  "estado": "activo",
+  "createdAt": {
+    "$date": "2025-11-17T22:54:50.643Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-17T22:54:50.643Z"
+  },
+  "__v": 0
+}]

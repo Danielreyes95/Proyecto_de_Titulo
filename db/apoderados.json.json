@@ -1,0 +1,306 @@
+[{
+  "_id": {
+    "$oid": "691746dfb758687298a6ea89"
+  },
+  "rut": "11111111-1",
+  "nombre": "María López",
+  "telefono": "987654321",
+  "correo": "maria.lopez@example.com",
+  "password": "$2b$10$T2P/LSIfVCmJ2scZwJ/26ORBMC8w5RJhE5ISkJb2LUsUAyC1R4gMm",
+  "createdAt": {
+    "$date": "2025-11-14T15:12:31.171Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T15:12:31.171Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69175a64b1d0ce98256df769"
+  },
+  "rut": "22222222-1",
+  "nombre": "Carlos Medina",
+  "telefono": "987654321",
+  "correo": "carlos@example.com",
+  "password": "$2b$10$XIUFCxtbtksNCN/ZWsrYm.iefRt.8k9f2H6aH/bydz1mronP7ydZq",
+  "createdAt": {
+    "$date": "2025-11-14T16:35:48.530Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T16:35:48.530Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69175a9db1d0ce98256df775"
+  },
+  "rut": "33333333-1",
+  "nombre": "Verónica Silva",
+  "telefono": "934567812",
+  "correo": "vero@example.com",
+  "password": "$2b$10$TrsOMHRv91Cb6oT8HZC2.eZ2.QHqXitoqW8Il3ctbjo9.hSHqEFo6",
+  "createdAt": {
+    "$date": "2025-11-14T16:36:45.955Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T16:36:45.955Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69175b48b1d0ce98256df77b"
+  },
+  "rut": "44444444-1",
+  "nombre": "Patricia Gómez",
+  "telefono": "987654321",
+  "correo": "patricia@example.com",
+  "password": "$2b$10$sDni0zUqn0NH7jbnFvB2le6GyL2sbaQovBNyxfYCFbdbfeMXcy9ty",
+  "createdAt": {
+    "$date": "2025-11-14T16:39:36.484Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T16:39:36.484Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69175b57b1d0ce98256df781"
+  },
+  "rut": "66666666-2",
+  "nombre": "Rodrigo Pino",
+  "telefono": "987654321",
+  "correo": "rodrigo@example.com",
+  "password": "$2b$10$Xr/Ctn6D4.l5e7tuu97zxuc0OrZ1X2qfz/S01cjfG4qTWR3uAugRK",
+  "createdAt": {
+    "$date": "2025-11-14T16:39:51.833Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T16:39:51.833Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69175db2b1d0ce98256df787"
+  },
+  "rut": "12345678-9",
+  "nombre": "Francisca Díaz",
+  "telefono": "987111222",
+  "correo": "francisca.diaz@example.com",
+  "password": "$2b$10$MrwlvRdrxsNDufb7w5tHnOJr1g.q01HB3.XmOl2XAdGBaTjBlTwum",
+  "createdAt": {
+    "$date": "2025-11-14T16:49:54.159Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T16:49:54.159Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69175de2b1d0ce98256df793"
+  },
+  "rut": "22334455-6",
+  "nombre": "Claudio Herrera",
+  "telefono": "987222333",
+  "correo": "claudio.herrera@example.com",
+  "password": "$2b$10$bdYFS78Y.f9vO3l2nY7DCuwcIWDY3F1HroHVTpqZHpZdDj6uri2ci",
+  "createdAt": {
+    "$date": "2025-11-14T16:50:42.088Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T16:50:42.088Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69175debb1d0ce98256df799"
+  },
+  "rut": "33445566-7",
+  "nombre": "Paola Orellana",
+  "telefono": "987333444",
+  "correo": "paola.orellana@example.com",
+  "password": "$2b$10$UYP5syjy7mOYLBJHfLYA7u40sidxd4d88QtwbKUIiZ4bhYC08.65u",
+  "createdAt": {
+    "$date": "2025-11-14T16:50:51.477Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T16:50:51.477Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6917608ab1d0ce98256df7a3"
+  },
+  "rut": "44556677-8",
+  "nombre": "Gabriela Soto",
+  "telefono": "987444555",
+  "correo": "gabriela.soto@example.com",
+  "password": "$2b$10$jfFiAvwM9xm8Xp21Y35dnewnJ.RX2Xwanlb3GINHIK0y1Bt9/PIwS",
+  "createdAt": {
+    "$date": "2025-11-14T17:02:02.064Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T17:02:02.064Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "691760c3b1d0ce98256df7af"
+  },
+  "rut": "55667788-9",
+  "nombre": "Mauricio Rivas",
+  "telefono": "987555666",
+  "correo": "mauricio.rivas@example.com",
+  "password": "$2b$10$z/1b4efL9DUBgAW/N2o8zuZu8rydMQrwBwXiEKHyOCO5dXcPnEjQa",
+  "createdAt": {
+    "$date": "2025-11-14T17:02:59.086Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T17:02:59.086Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "691760cbb1d0ce98256df7b5"
+  },
+  "rut": "66778899-0",
+  "nombre": "Marcela Fuentes",
+  "telefono": "987666777",
+  "correo": "marcela.fuentes@example.com",
+  "password": "$2b$10$gkH3OR0dLfYcPPuifYgHie7JZABHkeGjWUZIq8mpQs9RYsiWxSi6q",
+  "createdAt": {
+    "$date": "2025-11-14T17:03:07.331Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T17:03:07.331Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6917624ab1d0ce98256df7bb"
+  },
+  "rut": "77889900-1",
+  "nombre": "Rodrigo Castro",
+  "telefono": "987777111",
+  "correo": "rodrigo.castro@example.com",
+  "password": "$2b$10$EKtAyde4AXAgzekXCyfO..w2hEuRpEGwjTlhTCvvU3Xkrxh6inrbG",
+  "createdAt": {
+    "$date": "2025-11-14T17:09:30.481Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T17:09:30.481Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6917625fb1d0ce98256df7c1"
+  },
+  "rut": "88990011-2",
+  "nombre": "Patricia Herrera",
+  "telefono": "987888222",
+  "correo": "patricia.herrera@example.com",
+  "password": "$2b$10$g0qz9dcAUVHSd7Ht9GqGKeMpi7u2na8GuudqX8g07YczzKhFaQIem",
+  "createdAt": {
+    "$date": "2025-11-14T17:09:51.098Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T17:09:51.098Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69176265b1d0ce98256df7c7"
+  },
+  "rut": "99001122-3",
+  "nombre": "Fabián Morales",
+  "telefono": "987999333",
+  "correo": "fabian.morales@example.com",
+  "password": "$2b$10$OMPuQIRJscuVzCDbXqebpeior9JSOntc81Nlsh22NunuRzHli3eyq",
+  "createdAt": {
+    "$date": "2025-11-14T17:09:57.936Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T17:09:57.936Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "691762f5b1d0ce98256df7cd"
+  },
+  "rut": "66778899-1",
+  "nombre": "Marcelo Paredes",
+  "telefono": "987111000",
+  "correo": "marcelo.paredes@example.com",
+  "password": "$2b$10$ymDfBwMNgWF4kCtYkieaAu8y/5HUeBeIHi4RmlnY/lIxoa8YM0znK",
+  "createdAt": {
+    "$date": "2025-11-14T17:12:21.528Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-14T17:12:21.528Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "691b7c4d230660e3d2c74640"
+  },
+  "rut": "19204129-5",
+  "nombre": "Daniel Reyes",
+  "telefono": "930278529",
+  "correo": "p.montecinosalarcon@gmail.com",
+  "password": "$2b$10$p4Gn8JxW7Y2F5DWI1Jo.7O3r64yyH01MbUHPQ/y0dBSDJfzdb1yi2",
+  "createdAt": {
+    "$date": "2025-11-17T19:49:33.497Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-17T19:49:33.497Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "691b8160771ccc177494c950"
+  },
+  "rut": "19204156-5",
+  "nombre": "Daniel Reyes",
+  "telefono": "930278529",
+  "correo": "p.montecinosalarcon@gmail.com",
+  "password": "$2b$10$wmIuFD1Z/7xO/Ah8cKEbmOl8cTLRhqaVs8tpgHaFZPuf4fIGujtkG",
+  "createdAt": {
+    "$date": "2025-11-17T20:11:12.673Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-17T20:11:12.673Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "691ba7baf4013108c4a8d431"
+  },
+  "rut": "19304789-6",
+  "nombre": "Pamela Montecinos",
+  "telefono": "955544432",
+  "correo": "p.montecinosalarcon@gmail.com",
+  "password": "$2b$10$Tg0dj3vTPzKfr.D977.5JeoyBxJPfuzhyBMuuv1WG.7aSZ72Js6CG",
+  "createdAt": {
+    "$date": "2025-11-17T22:54:50.482Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-17T22:54:50.482Z"
+  },
+  "__v": 0
+}]

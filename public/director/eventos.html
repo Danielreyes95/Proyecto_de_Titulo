@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Eventos - Director</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<script>
+// Validación director
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<div class="flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-60 bg-green-700 text-white min-h-screen p-5 flex flex-col gap-4">
+        <h2 class="text-xl font-bold text-center mb-4">Director</h2>
+
+        <a href="./director.html" class="hover:underline">Inicio</a>
+        <a href="./jugadores.html" class="hover:underline">Jugadores</a>
+        <a href="./entrenadores.html" class="hover:underline">Entrenadores</a>
+        <a href="./categorias.html" class="hover:underline">Categorías</a>
+        <a href="./eventos.html" class="underline font-bold">Eventos</a>
+        <a href="./pagos.html" class="hover:underline">Pagos</a>
+        <a href="./avisos.html" class="hover:underline">Avisos</a>
+        <a href="./reportes.html" class="hover:underline">Reportes</a>
+
+        <button onclick="logout()" class="mt-auto bg-red-600 hover:bg-red-700 text-white p-2 rounded">
+            Cerrar sesión
+        </button>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="flex-1 p-8">
+
+        <h1 class="text-3xl font-bold text-green-700 mb-6">Eventos de la Escuela</h1>
+
+        <div class="flex items-center gap-4 mb-6">
+            <button onclick="abrirModalCrearEvento()"
+                    class="bg-green-700 hover:bg-green-800 text-white px-6 py-2 rounded shadow">
+                ➕ Crear nuevo evento
+            </button>
+
+            <select id="filtroCategoria" onchange="cargarEventos()"
+                    class="border p-2 rounded bg-white">
+                <option value="">Todas las categorías</option>
+            </select>
+        </div>
+
+        <!-- TABLA DE EVENTOS -->
+        <div class="bg-white p-6 rounded shadow">
+            <table class="w-full text-left">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="p-2">Fecha</th>
+                        <th class="p-2">Tipo</th>
+                        <th class="p-2">Categoría</th>
+                        <th class="p-2">Entrenador</th>
+                        <th class="p-2">Asistencia</th>
+                        <th class="p-2">Estado</th>
+                        <th class="p-2">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyEventos"></tbody>
+            </table>
+        </div>
+
+    </main>
+</div>
+
+
+<!-- MODAL CREAR EVENTO -->
+<div id="modalCrear" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+    <div class="bg-white w-full max-w-lg p-6 rounded shadow">
+
+        <h2 class="text-2xl font-bold text-green-700 mb-4">Crear nuevo evento</h2>
+
+        <label class="font-semibold">Fecha del evento</label>
+        <input id="fechaNuevoEvento" type="date" class="border p-2 w-full rounded mb-4">
+
+        <label class="font-semibold">Tipo de evento</label>
+        <select id="tipoNuevoEvento" class="border p-2 w-full rounded mb-4">
+            <option value="Entrenamiento">Entrenamiento</option>
+            <option value="Partido">Partido</option>
+            <option value="Torneo">Torneo</option>
+        </select>
+
+        <label class="font-semibold">Categoría</label>
+        <select id="categoriaNuevoEvento" class="border p-2 w-full rounded mb-4">
+            <option value="">Toda la escuela</option>
+        </select>
+
+        <label class="font-semibold">Observación / Descripción</label>
+        <textarea id="descripcionNuevoEvento"
+                  class="border p-2 w-full rounded h-24 mb-4"
+                  placeholder="Ej: Partido amistoso, torneo comunal, evaluación física, etc."></textarea>
+
+        <div class="flex justify-end gap-3">
+            <button onclick="cerrarModalCrearEvento()"
+                class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+                Cancelar
+            </button>
+
+            <button onclick="crearEventoDirector()"
+                class="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-800">
+                Crear
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="../js/config.js"></script>
+
+<script>
+
+function logout() {
+    localStorage.clear();
+    window.location.href = "../index.html";
+}
+
+function abrirModalCrearEvento() {
+    document.getElementById("modalCrear").classList.remove("hidden");
+}
+
+function cerrarModalCrearEvento() {
+    document.getElementById("modalCrear").classList.add("hidden");
+}
+
+/* ============================================================
+   CARGAR CATEGORÍAS
+============================================================ */
+async function cargarCategorias() {
+    const res = await fetch(`${BASE_URL}/api/categorias`);
+    const cats = await res.json();
+
+    const filtro = document.getElementById("filtroCategoria");
+    const selectCrear = document.getElementById("categoriaNuevoEvento");
+
+    cats.forEach(c => {
+        filtro.innerHTML += `<option value="${c._id}">${c.nombre}</option>`;
+        selectCrear.innerHTML += `<option value="${c._id}">${c.nombre}</option>`;
+    });
+}
+
+/* ============================================================
+   CARGAR TODOS LOS EVENTOS
+============================================================ */
+async function cargarEventos() {
+
+    const categoria = document.getElementById("filtroCategoria").value;
+
+    const res = await fetch(`${BASE_URL}/api/evento/todos`);
+    let eventos = await res.json();
+
+    // 🔥 Filtrar por categoría
+    if (categoria) {
+        eventos = eventos.filter(e => e.categoriaId === categoria || e.categoria === categoria);
+    }
+
+    const tbody = document.getElementById("tbodyEventos");
+    tbody.innerHTML = "";
+
+    eventos.forEach(e => {
+
+        // 🔥 FECHA
+        const fecha = e.fechaEvento 
+            ? new Date(e.fechaEvento).toLocaleDateString("es-CL") 
+            : "-";
+
+        // 🔥 TIPO
+        const tipo = e.tipoEvento ?? "-";
+
+        // 🔥 CATEGORÍA
+        const categoria = e.categoria ?? "Sin categoría";
+
+        // 🔥 ENTRENADOR
+        const entrenador = e.entrenador ?? "Director";
+
+        // 🔥 PORCENTAJE
+        const porcentaje = e.porcentajeAsistencia ?? 0;
+
+        tbody.innerHTML += `
+            <tr class="border-b">
+                <td class="p-2">${fecha}</td>
+                <td class="p-2">${tipo}</td>
+                <td class="p-2">${categoria}</td>
+                <td class="p-2">${entrenador}</td>
+                <td class="p-2">${porcentaje}%</td>
+
+                <td class="p-2">
+                    ${e.cerrado 
+                        ? `<span class="px-2 py-1 bg-red-600 text-white rounded text-xs">Cerrado</span>`
+                        : `<span class="px-2 py-1 bg-green-600 text-white rounded text-xs">Abierto</span>`}
+                </td>
+
+                <td class="p-2 flex gap-2">
+                    <button onclick="verDetalle('${e._id}')"
+                        class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-800">
+                        Ver
+                    </button>
+
+                    <button onclick="eliminarEvento('${e._id}')"
+                        class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-800">
+                        Eliminar
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+}
+function verDetalle(id) {
+    localStorage.setItem("eventoSeleccionado", id);
+    window.location.href = "./detalle-evento.html";
+}
+
+async function eliminarEvento(id) {
+    if (!confirm("¿Eliminar este evento?")) return;
+
+    const res = await fetch(`${BASE_URL}/api/evento/${id}`, {
+        method: "DELETE"
+    });
+
+    const data = await res.json();
+
+    if (data.error) {
+        alert("Error: " + data.error);
+        return;
+    }
+
+    alert("Evento eliminado");
+    cargarEventos();
+}
+
+/* ============================================================
+   CREAR EVENTO DESDE DIRECTOR
+============================================================ */
+async function crearEventoDirector() {
+
+    const fecha = document.getElementById("fechaNuevoEvento").value;
+    const tipo = document.getElementById("tipoNuevoEvento").value;
+    const categoria = document.getElementById("categoriaNuevoEvento").value;
+    const descripcion = document.getElementById("descripcionNuevoEvento").value;
+
+    if (!fecha) {
+        alert("Debe seleccionar una fecha");
+        return;
+    }
+
+    const res = await fetch(`${BASE_URL}/api/evento/crear/director`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            fechaEvento: fecha,
+            tipoEvento: tipo,
+            categoriaId: categoria,
+            descripcion
+        })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        alert("Error: " + data.error);
+        return;
+    }
+
+    alert("Evento creado correctamente");
+    cerrarModalCrearEvento();
+    cargarEventos();
+}
+
+cargarCategorias();
+cargarEventos();
+
+</script>
+
+</body>
+</html>

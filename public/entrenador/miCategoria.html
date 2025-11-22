@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // 3️⃣ Obtener todos los eventos con asistencia
         const eventos = await fetch(`${BASE_URL}/api/evento/categoria/${categoriaId}`)
-            .then(r => r.json());
+    .then(r => r.json());
 
         let totalAsistencias = 0;
         let totalPosibles = 0;
@@ -159,37 +159,41 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         jugadores.forEach(j => {
             mapaJugador[j._id] = { asistio: 0, total: 0 };
+});
+
+// Recorrer eventos → contar asistencia individual y general
+    eventos.forEach(e => {
+        if (!e.asistencia || !Array.isArray(e.asistencia)) return;
+
+        e.asistencia.forEach(reg => {
+            // ⚠️ Si el registro o el jugador vienen null, saltar
+            if (!reg || !reg.jugador) return;
+
+            const id = (typeof reg.jugador === "object")
+                ? reg.jugador._id
+                : reg.jugador;
+
+            if (!id) return;
+
+            // Si el jugador no está en el mapa, saltar (por si es de otra categoría o fue eliminado)
+            if (!mapaJugador[id]) return;
+
+            mapaJugador[id].total++;
+            totalPosibles++;
+
+            if (reg.presente) {
+                mapaJugador[id].asistio++;
+                totalAsistencias++;
+            }
         });
+    });
 
-        // Recorrer eventos → contar asistencia individual y general
-        eventos.forEach(e => {
-            if (!e.asistencia) return;
+    // Calcular asistencia promedio de la categoría
+    const asistenciaProm = totalPosibles > 0
+        ? Math.round((totalAsistencias / totalPosibles) * 100)
+        : 0;
 
-                e.asistencia.forEach(reg => {
-                    const id = (typeof reg.jugador === "object")
-                    ? reg.jugador._id
-                    : reg.jugador;
-
-                // Si el jugador no está en el mapa, saltar
-                if (!mapaJugador[id]) return;
-
-                mapaJugador[id].total++;
-                totalPosibles++;
-
-                if (reg.presente) {
-                    mapaJugador[id].asistio++;
-                    totalAsistencias++;
-                }
-            });
-        });
-
-        // Calcular asistencia promedio de la categoría
-        const asistenciaProm = totalPosibles > 0
-            ? Math.round((totalAsistencias / totalPosibles) * 100)
-            : 0;
-
-        document.getElementById("asistenciaPromedio").textContent = asistenciaProm + "%";
-
+    document.getElementById("asistenciaPromedio").textContent = asistenciaProm + "%";
         // 4️⃣ TABLA DE JUGADORES
         const tabla = document.getElementById("tablaJugadores");
         tabla.innerHTML = "";

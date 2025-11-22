@@ -33,19 +33,8 @@ exports.crearPreferencia = async (req, res) => {
       return res.status(400).json({ message: "Falta el monto del pago" });
     }
 
-    // Para debug rápido
-    console.log("🧾 Crear preferencia MP:", {
-      monto,
-      descripcion,
-      idPago,
-      emailApoderado,
-      jugadorId,
-      apoderadoId,
-      categoriaId,
-      mes,
-      FRONTEND_URL: process.env.FRONTEND_URL,
-      BACKEND_URL: process.env.BACKEND_URL,
-    });
+    // 👀 VER QUÉ ESTÁ LLEGANDO DESDE EL FRONT
+    console.log("🧾 Body crearPreferencia:", req.body);
 
     const preference = {
       items: [
@@ -58,30 +47,26 @@ exports.crearPreferencia = async (req, res) => {
           unit_price: Number(monto),
         },
       ],
-
-      // correo del pagador (opcional)
       payer: emailApoderado ? { email: emailApoderado } : undefined,
-
       back_urls: {
         success: `${process.env.FRONTEND_URL}/jugador/pago-exitoso.html`,
         failure: `${process.env.FRONTEND_URL}/jugador/pago-fallido.html`,
         pending: `${process.env.FRONTEND_URL}/jugador/pago-pendiente.html`,
       },
-
       auto_return: "approved",
-
-      // URL pública de tu backend para recibir el webhook
       notification_url: `${process.env.BACKEND_URL}/api/mercado-pago/webhook`,
 
-      // Info para poder identificar el pago local
-      // Caso 1: viene idPago directamente
-      // Caso 2: armamos jugadorId|apoderadoId|categoriaId|mes
       external_reference: idPago
         ? String(idPago)
         : jugadorId && mes
         ? [jugadorId, apoderadoId || "", categoriaId || "", mes].join("|")
         : "",
     };
+
+    console.log("🧾 Preferencia a crear:", {
+      external_reference: preference.external_reference,
+      notification_url: preference.notification_url,
+    });
 
     const response = await mercadopago.preferences.create(preference);
     const body = response?.body || response;
@@ -122,42 +107,128 @@ exports.webhook = async (req, res) => {
       body: req.body,
     });
 
-    let paymentId;
+    // Detectar el "topic" principal de la notificación
+    const topic =
+      req.query.topic ||
+      req.query.type ||
+      req.body?.topic ||
+      req.body?.type;
 
-    if (req.query.type === "payment" && req.query["data.id"]) {
-      paymentId = req.query["data.id"];
-    } else if (req.query.topic === "payment" && req.query.id) {
-      paymentId = req.query.id;
-    } else if (req.body?.data?.id) {
-      paymentId = req.body.data.id;
+    console.log("📌 Topic webhook:", topic);
+
+    let payment = null;
+    let externalRef = "";
+    let transactionAmount = 0;
+    let dateApproved = null;
+
+    // =======================================
+    // CASO A: topic = "payment"
+    // =======================================
+    if (topic === "payment") {
+      let paymentId = null;
+
+      if (req.query["data.id"]) {
+        paymentId = req.query["data.id"];
+      } else if (req.query.id) {
+        paymentId = req.query.id;
+      } else if (req.body?.data?.id) {
+        paymentId = req.body.data.id;
+      }
+
+      console.log("💳 paymentId (payment):", paymentId);
+
+      if (!paymentId) {
+        console.warn("⚠️ Webhook payment sin paymentId, respondo 200");
+        return res.sendStatus(200);
+      }
+
+      try {
+        const result = await mercadopago.payment.findById(paymentId);
+        payment = result.body || result;
+      } catch (err) {
+        console.error("❌ Error al obtener pago por ID:", err);
+        // si MP dice "Payment not found", respondemos 200 para que no reintente infinito
+        return res.sendStatus(200);
+      }
+
+      externalRef = payment.external_reference || "";
+      transactionAmount = payment.transaction_amount;
+      dateApproved = payment.date_approved || new Date();
     }
 
-    if (!paymentId) {
-      console.warn("Webhook sin paymentId, respondo 200 igual");
+    // =======================================
+    // CASO B: topic = "merchant_order"
+    // =======================================
+    else if (topic === "merchant_order") {
+      let merchantOrderId = null;
+
+      if (req.query.id) {
+        merchantOrderId = req.query.id;
+      } else if (req.body?.data?.id) {
+        merchantOrderId = req.body.data.id;
+      }
+
+      console.log("📦 merchantOrderId:", merchantOrderId);
+
+      if (!merchantOrderId) {
+        console.warn("⚠️ Webhook merchant_order sin id, respondo 200");
+        return res.sendStatus(200);
+      }
+
+      const result = await mercadopago.merchant_orders.findById(merchantOrderId);
+      const order = result.body || result;
+
+      externalRef = order.external_reference || "";
+
+      // tomar el primer pago aprobado dentro de la orden
+      const approvedPayment = (order.payments || []).find(
+        (p) => p.status === "approved"
+      );
+
+      if (!approvedPayment) {
+        console.log("⚠️ merchant_order sin pagos aprobados todavía");
+        return res.sendStatus(200);
+      }
+
+      payment = {
+        status: approvedPayment.status,
+        external_reference: externalRef,
+        transaction_amount: approvedPayment.transaction_amount,
+        date_approved: approvedPayment.date_approved || new Date(),
+      };
+
+      transactionAmount = approvedPayment.transaction_amount;
+      dateApproved = approvedPayment.date_approved || new Date();
+    }
+
+    // =======================================
+    // CASO C: topic desconocido
+    // =======================================
+    else {
+      console.warn("⚠️ Topic no soportado en webhook:", topic);
       return res.sendStatus(200);
     }
 
-    const result = await mercadopago.payment.findById(paymentId);
-    const payment = result.body || result;
-
-    console.log("💳 Detalle pago MP:", {
+    console.log("💳 Detalle pago procesado:", {
       status: payment.status,
-      external_reference: payment.external_reference,
-      transaction_amount: payment.transaction_amount,
+      external_reference: externalRef,
+      transaction_amount: transactionAmount,
     });
 
+    // Sólo seguimos si el pago está aprobado
     if (payment.status !== "approved") {
       console.log("Pago no aprobado, estado:", payment.status);
       return res.sendStatus(200);
     }
 
-    const externalRef = payment.external_reference || "";
-    const parts = externalRef.split("|");
+    const parts = (externalRef || "").split("|");
     console.log("🔎 external_reference parts:", parts);
 
     let pagoDoc = null;
 
-    // CASO 1: external_reference = _id de Pago (24 chars)
+    // =======================================
+    // CASO 1: external_reference = _id de Pago
+    // =======================================
     if (parts[0] && parts[0].length === 24 && parts.length === 1) {
       pagoDoc = await Pago.findById(parts[0]);
     }
@@ -172,19 +243,21 @@ exports.webhook = async (req, res) => {
       const [jugadorId, apoderadoId, categoriaId, mes] = parts;
 
       if (jugadorId && apoderadoId && categoriaId && mes) {
+        // intento buscar uno existente
         pagoDoc = await Pago.findOne({ jugador: jugadorId, mes });
 
         if (!pagoDoc) {
+          // creo uno nuevo
           pagoDoc = new Pago({
             jugador: jugadorId,
             apoderado: apoderadoId,
             categoria: categoriaId,
             mes,
-            monto: payment.transaction_amount,
+            monto: transactionAmount,
             metodoPago: "App",
             plataforma: "MercadoPago",
             estado: "Pagado",
-            fechaPago: payment.date_approved || new Date(),
+            fechaPago: dateApproved,
             observacion: "Pago confirmado vía Mercado Pago",
           });
         }
@@ -208,11 +281,11 @@ exports.webhook = async (req, res) => {
     }
 
     // Actualizar campos comunes
-    pagoDoc.monto = payment.transaction_amount;
+    pagoDoc.monto = transactionAmount;
     pagoDoc.estado = "Pagado";
     pagoDoc.metodoPago = "App";
     pagoDoc.plataforma = "MercadoPago";
-    pagoDoc.fechaPago = payment.date_approved || new Date();
+    pagoDoc.fechaPago = dateApproved;
 
     await pagoDoc.save();
 

@@ -185,7 +185,7 @@ exports.webhook = async (req, res) => {
               categoria: categoriaId,
               mes,
               monto: transactionAmount,
-              metodoPago: "App",           // 👈 coincide con tu enum
+              metodoPago: "App", // 👈 coincide con tu enum
               plataforma: "MercadoPago",
               estado: "Pagado",
               fechaPago: dateApproved,
@@ -224,7 +224,7 @@ exports.webhook = async (req, res) => {
     }
 
     // =======================================
-    // CASO A: merchant_order
+    // CASO A: merchant_order (findById)
     // =======================================
     if (topic === "merchant_order") {
       let merchantOrderId = null;
@@ -254,7 +254,7 @@ exports.webhook = async (req, res) => {
 
     // =======================================
     // CASO B: payment
-    // -> buscar merchant_order usando el payment_id
+    // -> buscar merchant_order usando el payment_id, con mercadopago.get
     // =======================================
     if (topic === "payment") {
       let paymentId = null;
@@ -275,12 +275,15 @@ exports.webhook = async (req, res) => {
       }
 
       try {
-        const result = await mercadopago.merchant_orders.search({
+        // 👇 Usamos el método genérico .get en vez de merchant_orders.search
+        const result = await mercadopago.get("/merchant_orders/search", {
           qs: { payment_id: paymentId },
         });
 
-        const orders =
-          (result.body && (result.body.elements || result.body.results)) || [];
+        const body = result.body || result;
+        console.log("📦 merchant_orders.search raw body:", body);
+
+        const orders = body.elements || body.results || [];
 
         console.log("📦 merchant_orders.search result length:", orders.length);
 
@@ -296,7 +299,7 @@ exports.webhook = async (req, res) => {
 
         await procesarOrden(order);
       } catch (err) {
-        console.error("❌ Error en merchant_orders.search:", err);
+        console.error("❌ Error en merchant_orders.search vía GET:", err);
       }
 
       return res.sendStatus(200);

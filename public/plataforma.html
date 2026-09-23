@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Administración de escuelas</title>
+  <link rel="stylesheet" href="/assets/css/plataforma.css">
+  <script src="/js/plataforma.js" defer></script>
+</head>
+<body>
+  <main class="layout">
+    <header class="cabecera">
+      <div>
+        <span class="eyebrow">PLATAFORMA DE GESTIÓN DEPORTIVA</span>
+        <h1>Administración de escuelas</h1>
+        <p>Crea instituciones independientes y configura sus identidades visuales.</p>
+      </div>
+      <button id="salir" class="secundario" type="button" hidden>Cerrar sesión</button>
+    </header>
+
+    <section id="inicioSesion" class="panel auth-panel" aria-labelledby="tituloLogin">
+      <h2 id="tituloLogin">Acceso del administrador general</h2>
+      <p>Este acceso es independiente de las cuentas de las escuelas.</p>
+      <form id="loginForm" class="formulario">
+        <label>Correo electrónico<input id="email" type="email" autocomplete="username" required maxlength="254"></label>
+        <label>Contraseña<input id="password" type="password" autocomplete="current-password" required></label>
+        <button type="submit">Ingresar al panel</button>
+      </form>
+    </section>
+
+    <section id="administracion" hidden>
+      <div class="estadisticas">
+        <div class="stat"><span>Escuelas registradas</span><strong id="total">0</strong></div>
+        <div class="stat"><span>Escuelas activas</span><strong id="activas">0</strong></div>
+        <div class="stat"><span>Escuelas suspendidas</span><strong id="suspendidas">0</strong></div>
+      </div>
+
+      <div class="grid">
+        <section class="panel" aria-labelledby="tituloCrear">
+          <h2 id="tituloCrear">Nueva escuela</h2>
+          <p>Registra una institución antes de asignar sus directores.</p>
+          <form id="crearForm" class="formulario">
+            <label>Nombre<input id="nombre" required maxlength="120" placeholder="Escuela Deportiva Los Leones"></label>
+            <label>Identificador único (slug)<input id="slug" required minlength="3" maxlength="64" pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="los-leones"></label>
+            <button type="submit">Crear escuela</button>
+          </form>
+        </section>
+
+        <section class="panel" aria-labelledby="tituloMarca">
+          <h2 id="tituloMarca">Identidad visual</h2>
+          <p>Selecciona una escuela. Por ahora, la marca la configura el administrador general.</p>
+          <form id="marcaForm" class="formulario">
+            <label>Escuela<select id="escuelaMarca" required><option value="">Seleccionar escuela</option></select></label>
+            <label>Nombre público<input id="nombrePublico" required maxlength="100"></label>
+            <div class="colores">
+              <label>Principal<input id="colorPrimario" type="color" value="#166534"></label>
+              <label>Secundario<input id="colorSecundario" type="color" value="#ffffff"></label>
+              <label>Acento<input id="colorAcento" type="color" value="#f59e0b"></label>
+              <label>Texto<input id="colorTexto" type="color" value="#111827"></label>
+            </div>
+            <div id="vistaPrevia" class="preview">
+              <span>VISTA PREVIA</span>
+              <strong id="previaNombre">Nombre de la escuela</strong>
+              <div><button type="button" id="previaBoton">Ejemplo de botón</button></div>
+            </div>
+            <button type="submit">Guardar colores y nombre</button>
+            <small>Las imágenes se incorporarán mediante carga y validación segura en una próxima etapa.</small>
+          </form>
+        </section>
+      </div>
+
+      <section class="panel listado" aria-labelledby="tituloLista">
+        <div class="listado-header">
+          <h2 id="tituloLista">Escuelas registradas</h2>
+          <button id="recargar" class="secundario" type="button">Actualizar</button>
+        </div>
+        <div class="tabla-scroll">
+          <table>
+            <thead><tr><th>Escuela</th><th>Identificador</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody id="escuelasBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <p id="mensaje" role="status" aria-live="polite"></p>
+    <footer>Plataforma multiescuela · Versión inicial de administración</footer>
+  </main>
+</body>
+</html>

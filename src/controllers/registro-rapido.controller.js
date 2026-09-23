@@ -73,7 +73,10 @@ async function listar(req, res, next) {
 // recibe SOLO sus categorías asignadas, no las categorías de otras escuelas.
 async function misCategorias(req, res, next) {
   try {
-    const filter = { escuela: escuela(req), estado: "activa" };
+    const filter = { escuela: escuela(req) };
+    // Solo los informes solicitan ver categorías históricas inactivas.
+    // La creación de eventos vuelve a validar categoría activa en servidor.
+    if (req.query.incluirInactivas !== "true") filter.estado = "activa";
     if (req.deporteScope.rol !== "director") {
       filter._id = { $in: req.deporteScope.categorias };
     }

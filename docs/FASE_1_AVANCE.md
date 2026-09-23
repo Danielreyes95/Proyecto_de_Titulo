@@ -200,3 +200,28 @@ Ejemplo de creación (solo con token válido de administración):
 - Demo visual autónoma ficticia `public/demo-confirmaciones.html` para revisarla en un computador restringido y pruebas de autorización con mocks en GitHub Actions.
 - Aún NO está desplegada la plataforma funcional, NO hay envío automático de correos/push por confirmación ni persistencia de la demo.
 - Ver especificación y escenarios `docs/CONFIRMACION_PARTICIPACION.md`.
+
+## Fase 11 - Del prototipo académico a un producto SaaS comercial
+- El objetivo comercial fue confirmado: software multiescuela para ofrecer
+  a múltiples clientes, no una entrega de Proyecto de Título.
+- Documento de producto y dos flujos de facturación separados en
+  `docs/PRODUCTO_COMERCIAL.md`: suscripción de cada escuela a la
+  plataforma versus mensualidades de familias para su escuela.
+- Configuración inicial de escudo y portada por institución, además de
+  nombre y colores existentes. Director y superadministrador disponen
+  de controles para subir/ver/retirar imágenes.
+- Imagen transformada en navegador y verificada por servidor (PNG/JPEG,
+  firma y dimensiones, máximo 750 KB). Se almacena en GridFS de MongoDB
+  para no depender de filesystem efímero, y solo una escuela activa
+  puede servir su imagen institucional vigente.
+- Portada y escudo se muestran en selección del director y portal familiar.
+- Se actualizaron la demo ficticia y README para revisar la experiencia
+  comercial desde un computador sin instalaciones.
+- Pruebas unitarias de validación y acceso a activos; checklist detallado:
+  `docs/IMAGENES_INSTITUCIONALES.md`.
+
+**Bloqueos:** no se ha probado GridFS en entorno funcional; staging,
+pagos SaaS/escuela, recuperación de cuenta, observabilidad y contrato de
+servicio no están construidos. Persiste la remediación pendiente de
+secretos/datos históricos en repositorios públicos. No comercializar
+ni recibir datos de menores en esta versión hasta resolverlos.

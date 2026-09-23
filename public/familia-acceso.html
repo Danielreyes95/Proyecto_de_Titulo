@@ -7,7 +7,7 @@
 <script src="/js/familia-acceso.js" defer></script>
 </head><body><main class="layout">
 <header class="cabecera"><div><span class="eyebrow">PORTAL DE FAMILIAS</span>
-<h1 id="titulo">Bienvenido a tu escuela</h1>
+<div class="marca-familia-titulo"><img id="familiaLogo" alt="Escudo de tu escuela" hidden><h1 id="titulo">Bienvenido a tu escuela</h1></div>
 <p>Información deportiva de los jugadores vinculados a tu familia.</p></div>
 <button type="button" id="salir" class="secundario" hidden>Cerrar sesión</button></header>
 <section id="loginPanel" class="panel auth-panel">
@@ -19,6 +19,7 @@
 <button type="submit">Ingresar al portal</button>
 </form></section>
 <section id="dashboard" hidden>
+<img id="familiaPortada" alt="Portada de tu escuela" class="familia-portada" hidden>
 <section class="panel"><h2>Selecciona tu escuela</h2>
 <label class="escuela-selector" for="escuela">Escuela
 <select id="escuela"><option value="">Selecciona una institución</option></select>

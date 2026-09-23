@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Estadísticas de mi escuela</title>
+<link rel="stylesheet" href="/assets/css/plataforma.css">
+<link rel="stylesheet" href="/assets/css/estadisticas-escuela.css">
+<script src="/js/estadisticas-escuela.js" defer></script>
+</head>
+<body>
+<main class="layout dashboard-deportivo">
+<header class="cabecera">
+  <div><span class="eyebrow">INFORMES DEPORTIVOS · MULTIESCUELA</span>
+    <h1 id="nombreEscuela">Estadísticas de la escuela</h1>
+    <p>Resumen automático de entrenamientos, partidos y torneos cerrados.</p>
+  </div>
+  <a href="/director-acceso.html">← Mis escuelas</a>
+</header>
+<section class="panel filtros-informe" aria-label="Seleccionar el informe">
+  <label>Categoría
+    <select id="categoria" aria-label="Categoría"><option value="">Seleccionar categoría</option></select>
+  </label>
+  <label>Año deportivo
+    <select id="anio" aria-label="Año del informe"></select>
+  </label>
+  <button type="button" id="recargar" class="secundario">Actualizar</button>
+</section>
+<p id="mensaje" role="status" aria-live="polite"></p>
+<section id="contenido" hidden>
+<div class="titulo-reporte">
+  <div><span class="eyebrow">RESUMEN DE TEMPORADA</span>
+    <h2 id="tituloCategoria">Categoría</h2>
+    <p>Solo se contabilizan actividades cerradas. Las pendientes no alteran los resultados.</p>
+  </div>
+  <a id="irCancha" class="enlace-accion" href="#">⚡ Registro rápido</a>
+</div>
+<section class="estadisticas kpis-informe" aria-label="Indicadores deportivos">
+  <div class="stat"><span>Actividades cerradas</span><strong id="totalActividades">0</strong></div>
+  <div class="stat"><span>Asistencia registrada</span><strong id="porcentajeAsistencia">—</strong><small id="detalleAsistencia"></small></div>
+  <div class="stat"><span>Goles registrados</span><strong id="totalGoles">0</strong></div>
+  <div class="stat"><span>Asistencias de gol</span><strong id="totalAsistencias">0</strong></div>
+</section>
+<div class="dos-columnas">
+  <section class="panel"><h2>Actividades por tipo</h2>
+    <p>Cantidad de actividades finalizadas durante el año seleccionado.</p>
+    <div id="tipos" class="tipos-informe"></div>
+  </section>
+  <section class="panel"><h2>Evolución por mes</h2>
+    <p>La longitud de la barra representa actividades cerradas, no rendimiento de los jugadores.</p>
+    <div id="meses" class="meses-informe"></div>
+  </section>
+</div>
+<section class="panel tabla-informe" aria-labelledby="tituloJugadores">
+  <div class="cabecera-tabla">
+    <div><h2 id="tituloJugadores">Resumen por jugador</h2>
+      <p>Acumulados del año y de la categoría seleccionados, incluidos jugadores que cambiaron de categoría.</p>
+    </div>
+    <label>Buscar nombre<input type="search" id="buscar" placeholder="Filtrar jugadores"></label>
+  </div>
+  <div class="tabla-scroll">
+    <table>
+      <thead><tr>
+        <th>Jugador</th><th>Asistencia</th><th>Goles</th>
+        <th>Asist. gol</th><th>Recuperaciones</th>
+        <th>Nota media*</th><th>Detalle</th>
+      </tr></thead>
+      <tbody id="tabla"></tbody>
+    </table>
+  </div>
+  <small>*Promedio únicamente de evaluaciones registradas (escala 1–10). «—» significa sin datos; no equivale a una calificación cero.</small>
+</section>
+<section id="detallePanel" class="panel historial-panel" hidden aria-labelledby="detalleTitulo">
+  <div class="cabecera-tabla">
+    <div><span class="eyebrow">HISTORIAL INDIVIDUAL</span><h2 id="detalleTitulo">Jugador</h2>
+      <p>Hasta las últimas 20 actividades cerradas de esta categoría y año.</p></div>
+    <button id="cerrarDetalle" type="button" class="secundario">Cerrar detalle</button>
+  </div>
+  <div class="tabla-scroll">
+    <table>
+      <thead><tr><th>Fecha</th><th>Tipo</th><th>Asistencia</th><th>Goles</th><th>Asist. gol</th><th>Nota*</th></tr></thead>
+      <tbody id="tablaDetalle"></tbody>
+    </table>
+  </div>
+  <p id="detalleMas"></p>
+</section>
+</section>
+<footer>Informes deportivos · Cada escuela consulta únicamente sus registros autorizados</footer>
+</main>
+</body></html>

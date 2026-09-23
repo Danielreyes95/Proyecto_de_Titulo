@@ -66,7 +66,7 @@ function recheck() {
     const change = changes(row, baseRow);
     if (change) dirty.set(row.jugadorId, change);
   }
-  $("guardar").disabled = evento?.cerrado || !dirty.size || saving || conflict;
+  $("guardar").disabled = evento?.cerrado || !dirty.size || saving || conflict || !navigator.onLine;
   $("deshacer").disabled = evento?.cerrado || !undoHistory.length || saving;
   const pendingCount = roster.filter(r => r.asistencia === "pendiente").length;
   $("marcarPendientes").hidden = !evento || evento.cerrado || !pendingCount;
@@ -74,7 +74,8 @@ function recheck() {
   $("marcarPendientes").textContent = "✓ Confirmar " + pendingCount + " presente(s) pendientes";
   $("cerrar").disabled = evento?.cerrado || saving || conflict;
   $("sincronizar").hidden = !conflict;
-  if (conflict) status("Otra edición detectada · Tus cambios siguen aquí");
+  if (!navigator.onLine && dirty.size) status("Sin conexión · No cierres esta pestaña; tus cambios aún NO están guardados");
+  else if (conflict) status("Otra edición detectada · Tus cambios siguen aquí");
   else if (saving) status("Guardando...");
   else if (dirty.size) status(dirty.size + " jugador(es) con cambios sin guardar");
   else status("✓ Todo guardado");
@@ -82,7 +83,7 @@ function recheck() {
 function schedule() {
   clearTimeout(timer);
   recheck();
-  if (!dirty.size || conflict || evento?.cerrado) return;
+  if (!dirty.size || conflict || evento?.cerrado || !navigator.onLine) return;
   timer = setTimeout(() => saveNow(), 1500);
 }
 function mutate(id, action) {
@@ -239,6 +240,11 @@ function renderRoster() {
 async function saveNow() {
   clearTimeout(timer);
   if (!evento || evento.cerrado || conflict || !dirty.size || saving) return false;
+  if (!navigator.onLine) {
+    note("Sin conexión. No cierres esta pestaña; las anotaciones todavía no se guardan en el servidor.");
+    recheck();
+    return false;
+  }
   saving = true; recheck();
   const payload = { revision, cambios: clone([...dirty.values()]) };
   try {
@@ -408,6 +414,16 @@ async function loadEvents() {
     $("listaEventos").append(p);
   }
 }
+window.addEventListener("offline", () => {
+  clearTimeout(timer);
+  note("Sin conexión. Los cambios pendientes no se han guardado. Mantén abierta esta pestaña.");
+  recheck();
+});
+window.addEventListener("online", () => {
+  note("Conexión recuperada. Sincronizando anotaciones pendientes...");
+  if (conflict) recheck();
+  else schedule();
+});
 $("crearEventoForm").addEventListener("submit", async event => {
   event.preventDefault();
   const button = event.submitter; button.disabled = true;

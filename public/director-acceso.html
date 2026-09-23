@@ -27,5 +27,32 @@
 <label>Acento<input type="color" id="directorColorAcento"></label>
 <label>Texto<input type="color" id="directorColorTexto"></label>
 </div><button type="submit">Guardar identidad visual</button></form>
+<section id="imagenesDirector" class="marca-imagenes" hidden aria-label="Imágenes de la escuela">
+  <h2>Escudo y portada institucional</h2>
+  <p>Sube imágenes propias o para las que tengas autorización de uso.
+  Formatos PNG, JPG o WebP (se convertirá antes de subir). Máximo 750 KB por imagen.</p>
+  <div class="marca-imagenes-grid">
+    <div class="marca-imagen-card">
+      <h3>Escudo o logo</h3>
+      <img id="previewLogo" alt="Vista previa del logo de tu escuela" hidden>
+      <p id="sinLogo">Sin logo cargado</p>
+      <label>Imagen del logo
+        <input id="archivoLogo" type="file" accept="image/png,image/jpeg,image/webp">
+      </label>
+      <div><button id="subirLogo" type="button">Subir logo</button>
+      <button id="quitarLogo" class="secundario" type="button" hidden>Retirar logo</button></div>
+    </div>
+    <div class="marca-imagen-card">
+      <h3>Imagen de portada</h3>
+      <img id="previewPortada" alt="Vista previa de la portada de tu escuela" hidden>
+      <p id="sinPortada">Sin portada cargada</p>
+      <label>Imagen de portada
+        <input id="archivoPortada" type="file" accept="image/png,image/jpeg,image/webp">
+      </label>
+      <div><button id="subirPortada" type="button">Subir portada</button>
+      <button id="quitarPortada" class="secundario" type="button" hidden>Retirar portada</button></div>
+    </div>
+  </div>
+</section>
 </section><p id="mensaje" role="status" aria-live="polite"></p>
 </main></body></html>

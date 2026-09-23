@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Administración de escuelas</title>
+  <link rel="stylesheet" href="/assets/css/plataforma.css">
+  <script src="/js/escuela-imagenes.js" defer></script>
+  <script src="/js/plataforma.js" defer></script>
+</head>
+<body>
+  <main class="layout">
+    <header class="cabecera">
+      <div>
+        <span class="eyebrow">PLATAFORMA DE GESTIÓN DEPORTIVA</span>
+        <h1>Administración de escuelas</h1>
+        <p>Crea instituciones independientes y configura sus identidades visuales.</p>
+      </div>
+      <button id="salir" class="secundario" type="button" hidden>Cerrar sesión</button>
+    </header>
+
+    <section id="inicioSesion" class="panel auth-panel" aria-labelledby="tituloLogin">
+      <h2 id="tituloLogin">Acceso del administrador general</h2>
+      <p>Este acceso es independiente de las cuentas de las escuelas.</p>
+      <form id="loginForm" class="formulario">
+        <label>Correo electrónico<input id="email" type="email" autocomplete="username" required maxlength="254"></label>
+        <label>Contraseña<input id="password" type="password" autocomplete="current-password" required></label>
+        <button type="submit">Ingresar al panel</button>
+      </form>
+    </section>
+
+    <section id="administracion" hidden>
+      <div class="estadisticas">
+        <div class="stat"><span>Escuelas registradas</span><strong id="total">0</strong></div>
+        <div class="stat"><span>Escuelas activas</span><strong id="activas">0</strong></div>
+        <div class="stat"><span>Escuelas suspendidas</span><strong id="suspendidas">0</strong></div>
+      </div>
+
+      <div class="grid">
+        <section class="panel" aria-labelledby="tituloCrear">
+          <h2 id="tituloCrear">Nueva escuela</h2>
+          <p>Registra una institución antes de asignar sus directores.</p>
+          <form id="crearForm" class="formulario">
+            <label>Nombre<input id="nombre" required maxlength="120" placeholder="Escuela Deportiva Los Leones"></label>
+            <label>Identificador único (slug)<input id="slug" required minlength="3" maxlength="64" pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="los-leones"></label>
+            <button type="submit">Crear escuela</button>
+          </form>
+        </section>
+
+        <section class="panel" aria-labelledby="tituloMarca">
+          <h2 id="tituloMarca">Identidad visual</h2>
+          <p>Selecciona una escuela. El administrador general y su director pueden personalizarla.</p>
+          <form id="marcaForm" class="formulario">
+            <label>Escuela<select id="escuelaMarca" required><option value="">Seleccionar escuela</option></select></label>
+            <label>Nombre público<input id="nombrePublico" required maxlength="100"></label>
+            <div class="colores">
+              <label>Principal<input id="colorPrimario" type="color" value="#166534"></label>
+              <label>Secundario<input id="colorSecundario" type="color" value="#ffffff"></label>
+              <label>Acento<input id="colorAcento" type="color" value="#f59e0b"></label>
+              <label>Texto<input id="colorTexto" type="color" value="#111827"></label>
+            </div>
+            <div id="vistaPrevia" class="preview">
+              <span>VISTA PREVIA</span>
+              <strong id="previaNombre">Nombre de la escuela</strong>
+              <div><button type="button" id="previaBoton">Ejemplo de botón</button></div>
+            </div>
+            <button type="submit">Guardar colores y nombre</button>
+            <small>La identidad visual se guarda exclusivamente para esta escuela.</small>
+          </form>
+          <section class="marca-imagenes" aria-labelledby="tituloImagenesAdmin">
+            <h3 id="tituloImagenesAdmin">Escudo y portada</h3>
+            <p>Selecciona una escuela activa y utiliza imágenes con autorización de uso.</p>
+            <div class="marca-imagenes-grid">
+              <div class="marca-imagen-card">
+                <h3>Escudo</h3>
+                <img id="adminPreviewLogo" alt="Escudo de escuela seleccionada" hidden>
+                <p id="adminSinLogo">Sin logo cargado</p>
+                <label>Archivo de logo<input id="adminArchivoLogo" type="file"
+                  accept="image/png,image/jpeg,image/webp"></label>
+                <div><button id="adminSubirLogo" type="button">Subir escudo</button>
+                <button id="adminQuitarLogo" class="secundario" type="button" hidden>Retirar</button></div>
+              </div>
+              <div class="marca-imagen-card">
+                <h3>Portada</h3>
+                <img id="adminPreviewPortada" alt="Portada de escuela seleccionada" hidden>
+                <p id="adminSinPortada">Sin portada cargada</p>
+                <label>Archivo de portada<input id="adminArchivoPortada" type="file"
+                  accept="image/png,image/jpeg,image/webp"></label>
+                <div><button id="adminSubirPortada" type="button">Subir portada</button>
+                <button id="adminQuitarPortada" class="secundario" type="button" hidden>Retirar</button></div>
+              </div>
+            </div>
+          </section>
+        </section>
+      </div>
+
+      <section class="panel listado" aria-labelledby="tituloInvitar">
+        <h2 id="tituloInvitar">Asignar director mediante invitación</h2>
+        <p>Se enviará un enlace de activación al correo del director. El enlace expira en 24 horas y solo puede utilizarse una vez.</p>
+        <form id="invitarForm" class="formulario">
+          <label>Escuela<select id="escuelaInvitar" required><option value="">Seleccionar escuela</option></select></label>
+          <label>Nombre del director<input id="nombreDirector" required maxlength="120" autocomplete="name"></label>
+          <label>Correo del director<input id="correoDirector" type="email" required maxlength="254" autocomplete="email"></label>
+          <button type="submit">Enviar invitación</button>
+        </form>
+      </section>
+      <section class="panel listado" aria-labelledby="tituloLista">
+        <div class="listado-header">
+          <h2 id="tituloLista">Escuelas registradas</h2>
+          <button id="recargar" class="secundario" type="button">Actualizar</button>
+        </div>
+        <div class="tabla-scroll">
+          <table>
+            <thead><tr><th>Escuela</th><th>Identificador</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody id="escuelasBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <p id="mensaje" role="status" aria-live="polite"></p>
+    <footer>Plataforma multiescuela · Versión inicial de administración</footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,77 @@
+.cancha{max-width:1120px}
+.sin-margen{margin:0}
+.crear-actividad{display:grid;grid-template-columns:2fr 1fr 1fr auto;align-items:end;gap:12px;margin:14px 0 25px}
+.eventos-lista{display:grid;gap:10px;margin-top:18px}
+.evento-item{display:flex;justify-content:space-between;align-items:center;gap:14px;border:1px solid #e1e7ed;padding:14px;border-radius:12px}
+.evento-item p{margin:3px 0;font-size:.86rem}.evento-item button{min-width:125px}
+.barra-actividad{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.toolbar{display:grid;grid-template-columns:1.25fr 1.2fr .8fr;gap:12px;margin-bottom:12px}
+.herramienta{display:grid;gap:5px;font-size:.85rem;font-weight:650}
+.ayuda-rapida{font-size:.84rem;color:#516377;margin:12px 4px}
+.guardar-flotante{position:sticky;top:4px;z-index:8;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin:8px 0 16px;border-color:#d4e4d9}
+.acciones-guardar{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.acciones-guardar button{padding:9px 12px}
+#guardarEstado{font-size:.88rem;font-weight:700;color:#145c48}
+.jugadores-rapidos{display:grid;gap:12px}
+.jugador-rapido{background:#fff;border:1px solid #dde6ef;box-shadow:0 5px 18px #1d2b4a0a;border-radius:15px;padding:14px;display:grid;gap:12px}
+.jugador-rapido.editado{border-color:#4a9b79}
+.fila-jugador{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.datos-jugador{min-width:175px;flex:1 1 210px}
+.datos-jugador strong{font-size:1.02rem}
+.datos-jugador small{display:block;margin-top:4px}
+.asistencias{display:flex;gap:5px;flex-wrap:wrap}
+.asistencias button{font-size:.87rem;min-height:46px;padding:9px 12px;background:#edf2f7;color:#304153}
+.asistencias .activo-presente{background:#146c4f;color:white}
+.asistencias .activo-ausente{background:#9d2a2a;color:white}
+.asistencias .activo-pendiente{background:#6746a5;color:white}
+.fila-metricas{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid #e8edf2;padding-top:12px}
+.marcador{display:flex;align-items:center;gap:10px}
+.marcador button{min-width:50px;min-height:51px;font-size:1.4rem;padding:0;background:#e5f3eb;color:#155d42}
+.marcador output{font-size:1.6rem;min-width:35px;text-align:center;font-weight:800}
+.marcador button:disabled{opacity:.4;cursor:not-allowed}
+.tarjetas{display:flex;gap:7px;align-items:center}
+.tarjetas button{min-height:45px;background:#f0f3f8;color:#253348}
+.tarjetas .amarilla-marcada{background:#f4d344;color:#253348}
+.tarjetas .roja-marcada{background:#ad2727;color:white}
+.nota-jugador{border-top:1px solid #e8edf2;padding-top:10px;font-size:.88rem}
+.nota-jugador summary{cursor:pointer;color:#225e7d;font-weight:650}
+.nota-jugador textarea{width:100%;font:inherit;resize:vertical;min-height:52px;border:1px solid #b8c9d8;border-radius:9px;margin-top:8px;padding:9px}
+.registro-cerrado{opacity:.86}
+#mensaje{font-weight:650}
+@media(max-width:790px){
+.crear-actividad,.toolbar{grid-template-columns:1fr}
+.barra-actividad{align-items:flex-start}
+.guardar-flotante{top:0;align-items:flex-start;flex-direction:column}
+.guardar-flotante button{font-size:.8rem}
+.fila-jugador{align-items:stretch}
+.asistencias{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}
+.asistencias button{padding:7px 4px;min-width:0}
+.tarjetas button{padding:9px 11px}
+}
+@media(max-width:390px){.fila-metricas{gap:8px}.marcador{gap:4px}.marcador button{min-width:43px}}
+
+/* Marca deportiva de la institución seleccionada; texto adaptado a contraste. */
+.cancha .guardar-flotante #guardar:not(:disabled),
+.cancha .crear-actividad button,
+.cancha .evento-item button,
+.cancha .asistencias .activo-presente {
+  background: var(--cancha-marca,#146c4f);
+  color: var(--cancha-contraste,#ffffff);
+}
+
+/* Acciones de la actividad para consulta rápida en teléfono. */
+.acciones-actividad {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+#marcarPendientes:not(:disabled) {
+  background: var(--cancha-marca, #146c4f);
+  color: var(--cancha-contraste, #fff);
+}
+@media (max-width: 790px) {
+  .barra-actividad { flex-direction: column; }
+  .acciones-actividad { width: 100%; }
+  .acciones-actividad button { flex: 1 1 180px; min-height: 46px; }
+}

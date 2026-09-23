@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Categorías de mi escuela</title>
+<link rel="stylesheet" href="/assets/css/plataforma.css">
+<script src="/js/categorias-escuela.js" defer></script>
+</head><body><main class="layout">
+<header class="cabecera"><div><span class="eyebrow">GESTIÓN DEPORTIVA</span>
+<h1 id="titulo">Categorías de la escuela</h1><p>Gestiona las categorías formativas y competitivas de tu institución.</p></div>
+<a href="/director-acceso.html">← Volver a mis escuelas</a></header>
+<section class="estadisticas" aria-label="Resumen">
+<div class="stat"><span>Categorías</span><strong id="total">0</strong></div>
+<div class="stat"><span>Activas</span><strong id="activas">0</strong></div>
+<div class="stat"><span>Inactivas</span><strong id="inactivas">0</strong></div>
+</section>
+<div class="grid">
+<section class="panel"><h2 id="formTitulo">Nueva categoría</h2>
+<p>Una misma categoría puede tener modalidad formativa y competitiva.</p>
+<form id="categoriaForm" class="formulario">
+<label>Nombre<input id="nombre" required maxlength="80" placeholder="Sub 8"></label>
+<label>Modalidad<select id="modalidad" required>
+<option value="formativo">Formativo</option>
+<option value="competitivo">Competitivo</option></select></label>
+<div class="colores"><label>Edad mínima<input id="edadMin" type="number" min="0" max="99" required></label>
+<label>Edad máxima<input id="edadMax" type="number" min="0" max="99" required></label></div>
+<label>Cupos (opcional)<input id="cupos" type="number" min="1" max="500" placeholder="Sin límite definido"></label>
+<button id="guardar" type="submit">Guardar categoría</button>
+<button id="cancelar" type="button" class="secundario" hidden>Cancelar edición</button>
+</form></section>
+<section class="panel"><h2>Reglas de gestión</h2>
+<p>Los registros pertenecen exclusivamente a esta escuela.</p>
+<p>Las categorías inactivas se conservan sin eliminar su historial. La asignación de entrenadores, jugadores y temporadas se incorporará tras completar su migración segura.</p>
+</section></div>
+<section class="panel listado"><h2>Categorías registradas</h2><div class="tabla-scroll"><table>
+<thead><tr><th>Nombre</th><th>Modalidad</th><th>Edades</th><th>Cupos</th><th>Estado</th><th>Acciones</th></tr></thead>
+<tbody id="tabla"></tbody></table></div></section>
+<p id="mensaje" role="status" aria-live="polite"></p></main></body></html>

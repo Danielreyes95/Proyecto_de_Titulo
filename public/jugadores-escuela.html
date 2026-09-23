@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Jugadores de mi escuela</title>
+<link rel="stylesheet" href="/assets/css/plataforma.css">
+<script src="/js/jugadores-escuela.js" defer></script></head><body>
+<main class="layout">
+<header class="cabecera"><div><span class="eyebrow">GESTIÓN DEPORTIVA</span>
+<h1 id="titulo">Jugadores</h1><p>Administra los registros de esta escuela y sus apoderados vinculados.</p>
+</div><a href="/director-acceso.html">← Mis escuelas</a></header>
+<section class="estadisticas">
+<div class="stat"><span>Jugadores registrados</span><strong id="total">0</strong></div>
+<div class="stat"><span>Activos</span><strong id="activos">0</strong></div>
+<div class="stat"><span>Inactivos</span><strong id="inactivos">0</strong></div>
+</section>
+<div class="grid">
+<section class="panel">
+<h2>Registrar apoderado</h2>
+<p>Primero registra al adulto responsable. Este formulario no crea automáticamente credenciales de acceso.</p>
+<form id="apoderadoForm" class="formulario">
+<label>Nombre completo<input id="nombreApoderado" required maxlength="120" autocomplete="name"></label>
+<label>RUT<input id="rutApoderado" required maxlength="12" placeholder="12.345.678-5"></label>
+<label>Correo electrónico<input id="emailApoderado" type="email" required maxlength="254"></label>
+<label>Teléfono (opcional)<input id="telefonoApoderado" maxlength="20" autocomplete="tel"></label>
+<button type="submit">Registrar apoderado</button></form>
+</section>
+<section class="panel">
+<h2 id="formTitulo">Registrar jugador</h2>
+<p>La categoría se comprueba según la edad cumplida al 1 de enero del año actual.</p>
+<form id="jugadorForm" class="formulario">
+<label>Nombre completo<input id="nombreJugador" required maxlength="120"></label>
+<label>RUT<input id="rutJugador" required maxlength="12" placeholder="12.345.678-5"></label>
+<label>Fecha de nacimiento<input id="nacimiento" type="date" required></label>
+<label>Categoría activa<select id="categoria" required></select></label>
+<label id="labelApoderado">Apoderado responsable<select id="apoderado" required></select></label>
+<button id="guardar" type="submit">Registrar jugador</button>
+<button id="cancelar" type="button" class="secundario" hidden>Cancelar edición</button>
+</form></section></div>
+<section class="panel listado"><h2>Apoderados registrados</h2>
+<p>Una invitación permite activar acceso familiar al correo guardado, sin mostrar claves ni crear cuentas automáticas.</p>
+<div class="tabla-scroll"><table><thead><tr><th>Nombre</th><th>Correo</th><th>Estado</th><th>Acceso</th></tr></thead>
+<tbody id="tablaApoderados"></tbody></table></div></section>
+<section class="panel listado"><h2>Jugadores registrados</h2><div class="tabla-scroll">
+<table><thead><tr><th>Nombre</th><th>RUT</th><th>Categoría</th><th>Apoderados</th><th>Estado</th><th>Acciones</th></tr></thead>
+<tbody id="tabla"></tbody></table></div></section>
+<p id="mensaje" role="status" aria-live="polite"></p></main></body></html>

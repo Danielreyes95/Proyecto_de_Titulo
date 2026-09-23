@@ -105,3 +105,21 @@ Ejemplo de creación (solo con token válido de administración):
 - Pruebas unitarias para campos permitidos, datos normalizados y rechazo de IDs arbitrarios.
 
 **Límites importantes:** registrar un entrenador aún NO crea sus credenciales de acceso ni le da permisos para ver jugadores: hay que extender las invitaciones/membresías y autorizar únicamente sus categorías. Tampoco se han migrado entrenadores y categorías legacy ni hay asignación de jugadores. Falta ejecutar pruebas integradas de índices únicos, solicitudes cruzadas entre escuelas y flujos SMTP/MongoDB. No debe utilizarse con datos reales hasta completar seguridad y remediación histórica.
+
+## Fase 5 - Jugadores y apoderados aislados por institución
+- Colecciones nuevas `escuela_jugadores`, `escuela_apoderados` y `vinculos_jugador_apoderado` sin reutilizar registros o contraseñas del sistema heredado.
+- Cada documento posee `escuela` obligatorio e inmutable; RUT de jugador/apoderado único por escuela, normalizado y con dígito verificador.
+- Alta de apoderado como contacto administrativo **sin crearle una contraseña ni darle acceso automático**. Un adulto puede vincularse a más de un jugador y un jugador a más de un adulto de su escuela.
+- Alta de jugador y su primer vínculo mediante transacción MongoDB: categoría activa y apoderado activo deben pertenecer a la misma institución. Si falla alguno, no se registra un jugador aislado.
+- El cambio de categoría o fecha de nacimiento vuelve a validar que la edad corresponde a la categoría: **edad cumplida al 1 de enero del año en curso** (regla inicial, revisar según reglamento de cada escuela/torneo).
+- Registro, listado y edición limitada; desactivación lógica en lugar de borrado físico. Sin campos arbitrarios de `escuela`, `password` o rol.
+- Panel `/jugadores-escuela.html?escuela=<ID>` vinculado a selección de escuela: registro de contactos, jugadores, categorías y vínculo adicional.
+- Pruebas unitarias sobre RUT, fechas, campos permitidos y edad al 1 de enero.
+
+### Límites de seguridad y producto
+- Los nuevos jugadores **no** están visibles para apoderados ni entrenadores todavía; solo los consulta un director con membresía activa para esa escuela.
+- No se incorpora identificación del apoderado a `Usuario` ni invita a que gestione el panel jugador; se requiere proceso verificado de acceso y consentimiento pertinente.
+- La regla de edad es una definición temporal de negocio; validar el año de corte y las seis categorías concretas antes de importar jugadores reales.
+- Los nuevos modelos no migran ni editan `jugadores`/`apoderados` legacy. Se necesita respaldo, tratamiento de datos personales y migración idempotente revisada.
+- Las listas iniciales están limitadas a 200; antes de uso real agregar paginación y búsquedas; automatizar también verificaciones de cupos y concurrencia.
+- **No desplegar con información real** hasta remediar exposiciones anteriores, ejecutar tests integrados de aislamiento, validar SMTP/MongoDB y auditar autorización de todos los módulos.

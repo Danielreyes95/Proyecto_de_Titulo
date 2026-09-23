@@ -6,6 +6,9 @@ function errorResponse(error, res, next) {
   if (error.status === 400 || error.name === "ValidationError") {
     return res.status(400).json({ error: error.status === 400 ? error.message : "Datos de categoría inválidos" });
   }
+  if (error.name === "VersionError") {
+    return res.status(409).json({ error: "La categoría cambió. Actualiza y vuelve a intentar." });
+  }
   if (error.code === 11000) {
     return res.status(409).json({ error: "Ya existe esta categoría y modalidad en la escuela" });
   }
@@ -43,14 +46,13 @@ async function actualizar(req, res, next) {
     }
     const cambios = validarCampos(req.body);
     const filtro = { _id: req.params.categoriaId, escuela: tenant(req) };
-    const actual = await EscuelaCategoria.findOne(filtro).lean();
+    const actual = await EscuelaCategoria.findOne(filtro);
     if (!actual) return res.status(404).json({ error: "Categoría no encontrada" });
     validarRangoFinal(actual, cambios);
 
-    const categoria = await EscuelaCategoria.findOneAndUpdate(filtro,
-      { $set: cambios }, { new: true, runValidators: true })
-      .select("nombre modalidad edadMin edadMax cupos estado");
-    if (!categoria) return res.status(404).json({ error: "Categoría no encontrada" });
+    Object.assign(actual, cambios);
+    await actual.save();
+    const categoria = actual;
     return res.json({ categoria });
   } catch (error) { return errorResponse(error, res, next); }
 }

@@ -11,3 +11,10 @@
 .familia-seccion h2 { margin-bottom: 7px; }
 .aviso-mensaje { white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 13px!important; }
 .familia-card { min-width: 0; }
+
+.confirmaciones{display:grid;gap:9px;margin-top:16px;border-top:1px solid #e1e8f0;padding-top:13px}
+.confirmacion-jugador{display:grid;gap:6px}
+.confirmacion-estado{color:#476177;font-size:.87rem}
+.confirmacion-botones{display:flex;gap:7px;flex-wrap:wrap}
+.confirmacion-botones button{min-height:42px;padding:8px 11px}
+@media(max-width:450px){.confirmacion-botones button{flex:1 1 112px}}

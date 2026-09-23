@@ -85,4 +85,4 @@ Consulta el alcance, fórmulas y pruebas previstas:
 Remediación histórica de secretos/datos en ambos repositorios; migración
 respaldada de colecciones antiguas; pruebas de aislamiento entre escuelas
 con MongoDB, pruebas reales de SMTP y móviles, política de sesiones y límites
-compartidos; autorización de apoderados; pagos seguros y subida de escudos/imágenes.
+compartidos; pruebas integradas del portal de apoderados; pagos seguros y subida de escudos/imágenes.

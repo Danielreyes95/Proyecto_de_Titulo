@@ -169,3 +169,15 @@ Ejemplo de creación (solo con token válido de administración):
 - Pantalla de estadísticas ofrece tabla institucional, actualización y salto a detalle por categoría; entrenadores conservan únicamente los informes de categorías asignadas.
 - Pruebas unitarias de pipeline, sumatorias, categorías inactivas y estado sin datos; no equivalen a una validación integrada de MongoDB ni móvil.
 - Persiste el bloqueo de despliegue: remediar historial público con datos/secretos, rotar credenciales, migración respaldada y pruebas end-to-end.
+
+## Fase 8 - Portal familiar (GitHub sin instalación local)
+- Director puede invitar desde el listado de contactos apoderados existentes.
+- Invitación por correo con token aleatorio hasheado, caducidad 24 h, aceptación de un uso y validación de escuela/contacto/correo. La aceptación de cuenta nueva o existente se ejecuta dentro de una transacción MongoDB.
+- La ficha `EscuelaApoderado.usuario` y su membresía `apoderado` identifican a la misma persona en la escuela; no se otorga acceso simplemente por conocer un correo o RUT.
+- `GET /api/escuela-sesion/:escuelaId/familia/mis-jugadores` verifica rol, contacto y vínculos activos. Devuelve solo nombres, categorías y últimas actividades cerradas de jugadores activos vinculados a esa familia.
+- Nunca devuelve RUT, datos de otros niños ni notas privadas del entrenador. Respuestas marcadas `no-store`.
+- Pantallas `/activar-apoderado.html` y `/familia-acceso.html`; acceso visual también enlazado desde `/director-acceso.html`.
+- Pruebas unitarias con filtros de escuela, rol y vínculos; CI GitHub Actions comprueba cambios sin requerir instalaciones en el computador del usuario.
+- Documentación detallada: `docs/PORTAL_FAMILIAS.md`.
+
+**No está desplegado, todavía no conecta pagos ni avisos de familia.** No subir ni reutilizar datos/credenciales publicados históricamente. Antes de usarlo con datos reales: remediación en ambos repositorios, pruebas integradas de múltiples escuelas, SMTP, seguridad y dispositivos.

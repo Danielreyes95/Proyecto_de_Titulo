@@ -9,6 +9,7 @@ const categoria = require("../controllers/escuela-categoria.controller");
 const entrenador = require("../controllers/escuela-entrenador.controller");
 const jugador = require("../controllers/escuela-jugador.controller");
 const eventoRapido = require("../controllers/registro-rapido.controller");
+const invitarCoach = require("../controllers/invitacion-entrenador.controller");
 const { requirePersonalDeportivo } = require("../middleware/escuela-deporte-auth");
 
 router.post("/auth/login", loginThrottle, session.login);
@@ -16,6 +17,11 @@ router.get("/invitaciones/consultar", invite.consultar);
 router.post("/invitaciones/aceptar", loginThrottle, invite.aceptar);
 router.post("/invitaciones/aceptar-existente", requireSchoolUser, session.aceptarExistente);
 router.get("/mis-escuelas", requireSchoolUser, session.misEscuelas);
+router.get("/invitaciones-entrenador/consultar", invitarCoach.consultar);
+router.post("/invitaciones-entrenador/aceptar",
+  loginThrottle, invitarCoach.aceptarNueva);
+router.post("/invitaciones-entrenador/aceptar-existente",
+  requireSchoolUser, invitarCoach.aceptarExistente);
 router.get("/:escuelaId/director", requireSchoolUser, requireDirector, session.miEscuela);
 router.patch("/:escuelaId/branding", requireSchoolUser, requireDirector, actualizarBrandingDirector);
 
@@ -29,6 +35,8 @@ router.get("/:escuelaId/entrenadores", requireSchoolUser, requireDirector, entre
 router.post("/:escuelaId/entrenadores", requireSchoolUser, requireDirector, entrenador.crear);
 router.patch("/:escuelaId/entrenadores/:entrenadorId", requireSchoolUser, requireDirector, entrenador.actualizar);
 router.post("/:escuelaId/entrenadores/:entrenadorId/asignaciones", requireSchoolUser, requireDirector, entrenador.asignar);
+router.post("/:escuelaId/entrenadores/:entrenadorId/invitar",
+  requireSchoolUser, requireDirector, invitarCoach.invitar);
 router.patch("/:escuelaId/entrenadores/:entrenadorId/asignaciones/:categoriaId/finalizar",
   requireSchoolUser, requireDirector, entrenador.finalizarAsignacion);
 

@@ -16,7 +16,7 @@ const EscuelaCategoriaSchema = new mongoose.Schema({
   edadMax: { type: Number, required: true, min: 0, max: 99 },
   cupos: { type: Number, min: 1, max: 500, default: null },
   estado: { type: String, enum: ["activa", "inactiva"], default: "activa", required: true }
-}, { timestamps: true, collection: "escuela_categorias" });
+}, { timestamps: true, collection: "escuela_categorias", optimisticConcurrency: true });
 
 // Dos escuelas pueden tener categorías idénticas; una misma escuela puede
 // tener modalidad competitiva y formativa con el mismo nombre.

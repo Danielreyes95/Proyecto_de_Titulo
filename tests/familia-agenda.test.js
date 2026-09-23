@@ -52,7 +52,7 @@ test("agenda filtra escuela, jugadores y categorías y no muestra otra nómina",
     return chain([
       {_id:new mongoose.Types.ObjectId(), tipoEvento:"Partido",
         categoria, fechaEvento:new Date("2099-09-23T12:00:00.000Z"),
-        horaInicio:"18:30", registros:[{jugador},{jugador:otro}]},
+        horaInicio:"18:30", registros:[{jugador,confirmacion:"asistira"},{jugador:otro,confirmacion:"no_asistira"}]},
       {_id:new mongoose.Types.ObjectId(), tipoEvento:"Entrenamiento",
         categoria:otraCategoria, fechaEvento:new Date("2099-09-24T12:00:00.000Z"),
         registros:[{jugador}]}
@@ -74,6 +74,9 @@ test("agenda filtra escuela, jugadores y categorías y no muestra otra nómina",
   assert.deepEqual(response.body.proximasActividades[0].jugadores,
     ["Jugador vinculado"]);
   assert.equal(response.body.avisos.length,2);
+  assert.deepEqual(response.body.proximasActividades[0].confirmaciones,[
+    {jugadorId:String(jugador),nombre:"Jugador vinculado",estado:"asistira"}
+  ]);
   assert.ok(!JSON.stringify(response.body).includes("Jugador ajeno"));
   assert.ok(!JSON.stringify(response.body).includes(String(otro)));
 });

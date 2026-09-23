@@ -1,7 +1,7 @@
 {
   "name": "escuelafutbolapp",
   "version": "1.0.0",
-  "description": "Backend Escuela de Futbol - Node + Express + MongoDB",
+  "description": "Plataforma comercial multiescuela para gestion de futbol formativo y competitivo",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",

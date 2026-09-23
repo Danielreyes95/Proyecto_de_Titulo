@@ -30,7 +30,7 @@ async function agenda(req, res, next) {
         escuela, cerrado: false, fechaEvento: { $gte: fechaHoyEscuela() },
         categoria: { $in: categorias },
         "registros.jugador": { $in: ids }
-      }).select("categoria fechaEvento horaInicio tipoEvento registros.jugador")
+      }).select("categoria fechaEvento horaInicio tipoEvento registros.jugador registros.confirmacion")
         .sort({ fechaEvento: 1, horaInicio: 1 }).limit(100).lean(),
       Aviso.find({
         escuela, estado: "publicado",
@@ -43,11 +43,17 @@ async function agenda(req, res, next) {
     const proximasActividades = [];
     for (const event of eventos) {
       const relacionados = [];
+      const confirmaciones = [];
       for (const entry of event.registros) {
         const jugador = porId.get(String(entry.jugador));
         // No mostrar eventos de la antigua categoría tras un traslado.
         if (jugador && String(jugador.categoria) === String(event.categoria)) {
           relacionados.push(jugador.nombre);
+          confirmaciones.push({
+            jugadorId: String(jugador._id),
+            nombre: jugador.nombre,
+            estado: entry.confirmacion || "pendiente"
+          });
         }
       }
       if (!relacionados.length) continue;
@@ -56,7 +62,8 @@ async function agenda(req, res, next) {
         tipoEvento: event.tipoEvento,
         fechaEvento: event.fechaEvento,
         horaInicio: event.horaInicio || null,
-        jugadores: relacionados
+        jugadores: relacionados,
+        confirmaciones
       });
       if (proximasActividades.length >= 15) break;
     }

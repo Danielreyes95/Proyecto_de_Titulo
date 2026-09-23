@@ -9,7 +9,7 @@ const metricas = ["goles", "asistenciasGol", "pasesClave", "recuperaciones",
   "tirosArco", "faltasCometidas", "faltasRecibidas"];
 const booleanas = ["amarilla", "roja"];
 let evento = null, revision = 0, roster = [], saved = new Map(),
-  dirty = new Map(), history = [], timer = null, saving = false,
+  dirty = new Map(), undoHistory = [], timer = null, saving = false,
   conflict = false, lastEventId = null;
 const note = message => { $("mensaje").textContent = message; };
 const status = message => { $("guardarEstado").textContent = message; };
@@ -67,7 +67,7 @@ function recheck() {
     if (change) dirty.set(row.jugadorId, change);
   }
   $("guardar").disabled = evento?.cerrado || !dirty.size || saving || conflict;
-  $("deshacer").disabled = evento?.cerrado || !history.length || saving;
+  $("deshacer").disabled = evento?.cerrado || !undoHistory.length || saving;
   $("cerrar").disabled = evento?.cerrado || saving || conflict;
   $("sincronizar").hidden = !conflict;
   if (conflict) status("Otra edición detectada · Tus cambios siguen aquí");
@@ -88,8 +88,8 @@ function mutate(id, action) {
   const old = clone(row);
   action(row);
   if (JSON.stringify(old) === JSON.stringify(row)) return;
-  history.push({ id, before: old });
-  if (history.length > 30) history.shift();
+  undoHistory.push({ id, before: old });
+  if (undoHistory.length > 30) undoHistory.shift();
   renderRoster();
   schedule();
 }
@@ -233,7 +233,7 @@ async function saveNow() {
       }
       if (change.observacion !== undefined) old.observacion = change.observacion;
     }
-    history = [];
+    undoHistory = [];
     note("");
     return true;
   } catch (error) {
@@ -312,7 +312,7 @@ async function openEvent(id) {
   revision = evento.revision;
   roster = data.jugadores.map(normalized);
   saved = new Map(roster.map(r => [r.jugadorId, clone(r)]));
-  dirty.clear(); history = []; conflict = false;
+  dirty.clear(); undoHistory = []; conflict = false;
   $("seleccionPanel").hidden = true;
   $("actividadPanel").hidden = false;
   $("eventoTitulo").textContent = evento.categoriaNombre + " · " +
@@ -321,7 +321,7 @@ async function openEvent(id) {
   $("metrica").value = evento.tipoEvento === "Entrenamiento" ?
     "recuperaciones" : "goles";
   $("cerrar").hidden = evento.cerrado;
-  history.replaceState(null, "", "?escuela=" +
+  window.history.replaceState(null, "", "?escuela=" +
     encodeURIComponent(escuelaId) + "&evento=" + encodeURIComponent(id));
   renderRoster();
   note(evento.cerrado ? "Actividad cerrada: solo lectura." : "");
@@ -386,8 +386,8 @@ $("filtro").addEventListener("change", renderRoster);
 $("guardar").addEventListener("click", saveNow);
 $("sincronizar").addEventListener("click", synchronize);
 $("deshacer").addEventListener("click", () => {
-  if (!history.length || saving || conflict) return;
-  const last = history.pop();
+  if (!undoHistory.length || saving || conflict) return;
+  const last = undoHistory.pop();
   const index = roster.findIndex(r => r.jugadorId === last.id);
   if (index >= 0) roster[index] = last.before;
   renderRoster(); schedule();
@@ -407,7 +407,7 @@ $("volver").addEventListener("click", async () => {
   if (dirty.size && !(await saveNow())) return;
   $("actividadPanel").hidden = true;
   $("seleccionPanel").hidden = false;
-  evento = null; history.replaceState(null, "",
+  evento = null; window.history.replaceState(null, "",
     "?escuela=" + encodeURIComponent(escuelaId));
   await loadEvents().catch(e => note(e.message));
 });
@@ -422,7 +422,10 @@ window.addEventListener("beforeunload", event => {
     note("Inicia sesión y selecciona tu escuela para registrar estadísticas.");
     return;
   }
-  $("fecha").value = new Date().toLocaleDateString("en-CA");
+  const hoy = new Date();
+  $("fecha").value = [hoy.getFullYear(),
+    String(hoy.getMonth() + 1).padStart(2, "0"),
+    String(hoy.getDate()).padStart(2, "0")].join("-");
   $("seleccionPanel").hidden = false;
   try {
     await loadEvents();

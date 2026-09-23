@@ -77,6 +77,12 @@ if (legacyEnabled) {
   }));
 }
 
+// La entrada predeterminada apunta al sistema nuevo cuando legacy está apagado.
+app.get("/", (req, res, next) => {
+  if (!legacyEnabled) return res.redirect(302, "/director-acceso.html");
+  return next();
+});
+
 // Servir frontend
 app.use(express.static("public"));
 

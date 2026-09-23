@@ -7,3 +7,7 @@
 .familia-card th,.familia-card td{padding:9px 6px;text-align:left;border-bottom:1px solid #e6edf3}
 .familia-card caption{text-align:left;font-weight:750;margin-bottom:9px}
 .familia-card small{display:block;margin-top:12px}
+.familia-seccion { margin-top: 23px; }
+.familia-seccion h2 { margin-bottom: 7px; }
+.aviso-mensaje { white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 13px!important; }
+.familia-card { min-width: 0; }

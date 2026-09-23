@@ -123,3 +123,16 @@ Ejemplo de creación (solo con token válido de administración):
 - Los nuevos modelos no migran ni editan `jugadores`/`apoderados` legacy. Se necesita respaldo, tratamiento de datos personales y migración idempotente revisada.
 - Las listas iniciales están limitadas a 200; antes de uso real agregar paginación y búsquedas; automatizar también verificaciones de cupos y concurrencia.
 - **No desplegar con información real** hasta remediar exposiciones anteriores, ejecutar tests integrados de aislamiento, validar SMTP/MongoDB y auditar autorización de todos los módulos.
+
+## Fase 6 - UX de registro rápido durante entrenamiento o partido
+- Nueva página móvil `/registro-rapido.html?escuela=<ID>`: una sola lista de jugadores con asistencia y controles +/- por estadística seleccionada, sin abrir fichas individuales.
+- Vista específica de partido/torneo con tarjetas, observación opcional plegada, búsqueda, filtro y resumen de pendientes.
+- Guardado automático por lote (1,5 segundos), botón guardar, deshacer reciente, aviso al abandonar con cambios sin guardar y reconciliación explícita ante edición concurrente.
+- Evento con plantilla fija de jugadores activos y asistencia `pendiente/presente/ausente`; cierre exige asistencia completa.
+- Backend nuevo `escuela_eventos` y endpoints separados del sistema anterior con control de escuela, rol, entrenador activo y categoría efectivamente asignada.
+- Invitaciones de entrenador remitidas desde su ficha administrativa; aceptación para cuenta nueva o cuenta existente del correo invitado.
+- Acceso de personal deportivo permite director o entrenador. Entrenador solo accede a sus actividades autorizadas, sin RUT, apoderados o fechas de nacimiento.
+- GitHub Actions valida sintaxis y pruebas unitarias de lotes, rangos y campos permitidos (ver ejecución correspondiente al commit actual); falta validación de extremo a extremo.
+- Especificación y escenarios de prueba manual: `docs/REGISTRO_RAPIDO_UX.md`.
+
+**Atención:** el modo de registro rápido es una NUEVA implementación multiescuela, no una modificación automática de los eventos legacy ni su frontend. No desplegar todavía para una escuela real sin remediación histórica de secretos/datos y pruebas en MongoDB, SMTP, autorización A/B y móviles.

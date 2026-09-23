@@ -50,7 +50,7 @@ function nuevoEvento(body) {
 function validarLote(body) {
   if (!plain(body) || Object.keys(body).some(k => !["revision", "cambios"].includes(k)) ||
       !Number.isInteger(body.revision) || body.revision < 0 ||
-      !Array.isArray(body.cambios) || !body.cambios.length || body.cambios.length > 100) {
+      !Array.isArray(body.cambios) || !body.cambios.length || body.cambios.length > 200) {
     fail("Lote o revisión inválidos");
   }
   const ids = new Set();

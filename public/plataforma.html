@@ -70,6 +70,16 @@
         </section>
       </div>
 
+      <section class="panel listado" aria-labelledby="tituloInvitar">
+        <h2 id="tituloInvitar">Asignar director mediante invitación</h2>
+        <p>Se enviará un enlace de activación al correo del director. El enlace expira en 24 horas y solo puede utilizarse una vez.</p>
+        <form id="invitarForm" class="formulario">
+          <label>Escuela<select id="escuelaInvitar" required><option value="">Seleccionar escuela</option></select></label>
+          <label>Nombre del director<input id="nombreDirector" required maxlength="120" autocomplete="name"></label>
+          <label>Correo del director<input id="correoDirector" type="email" required maxlength="254" autocomplete="email"></label>
+          <button type="submit">Enviar invitación</button>
+        </form>
+      </section>
       <section class="panel listado" aria-labelledby="tituloLista">
         <div class="listado-header">
           <h2 id="tituloLista">Escuelas registradas</h2>

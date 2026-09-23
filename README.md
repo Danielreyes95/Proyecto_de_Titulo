@@ -92,3 +92,10 @@ compartidos; pruebas integradas del portal de apoderados; pagos seguros y subida
 - El portal `/familia-acceso.html` muestra avisos publicados aplicables a la familia y las próximas actividades de sus jugadores vinculados.
 - La publicación NO envía correos ni notificaciones push. Los eventos sin hora muestran «Hora por confirmar».
 - Implementación inicial para Chile (`America/Santiago`); zona horaria configurable por escuela pendiente.
+
+## Vista previa para revisar sin instalar programas
+- `public/demo-confirmaciones.html`: demo **interactiva y ficticia** de acceso familiar, confirmación anticipada de actividad, previsión para el entrenador y personalización de colores.
+- Descarga solo ese archivo desde GitHub y ábrelo con el navegador; no requiere Node, MongoDB, Git ni VS Code.
+- El visor `https://htmlpreview.github.io/?<URL_DEL_ARCHIVO_GITHUB>` puede mostrar el HTML del repositorio en línea, pero **es de un tercero**: usar EXCLUSIVAMENTE demos sin login ni datos reales.
+- La demo es distinta de la plataforma funcional; cambios de la demo no se guardan, y todavía no existe servidor de pruebas público.
+- Especificación: `docs/CONFIRMACION_PARTICIPACION.md`.

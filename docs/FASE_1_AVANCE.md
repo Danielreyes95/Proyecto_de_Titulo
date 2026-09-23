@@ -94,3 +94,14 @@ Ejemplo de creación (solo con token válido de administración):
 - La edad no se calcula a partir de fecha de nacimiento en esta fase: esas reglas se introducirán al migrar el módulo de jugadores.
 - Antes de pasar a producción siguen pendientes remediación histórica de datos/secretos, tests integrados de aislamiento con MongoDB y verificación de permisos, migración controlada, límites de rate limiting compartidos, cookies/cabeceras seguras y cargas de imagen.
 - La verificación de sintaxis no prueba conexiones reales con MongoDB, SMTP ni Mercado Pago.
+
+## Fase 4 - Primer módulo de entrenadores por escuela
+- Colección NUEVA `escuela_entrenadores`: escuela inmutable, nombre, email normalizado y estado; correo único por institución (admite trabajo en más de una escuela).
+- Colección `asignaciones_entrenador`: vínculos históricos entre entrenador y categoría, con `escuela` inmutable, fecha de cierre y estado activo/finalizado.
+- Índice único parcial por `escuela + categoria` para impedir dos entrenadores principales activos simultáneos, permitiendo conservar responsables anteriores.
+- Endpoint protegido para listar, registrar, editar y activar/inactivar entrenadores, asignar categorías activas y finalizar asignaciones sin borrarlas.
+- Cada consulta, creación y actualización comprueba la escuela obtenida del middleware de membresía; se verifica que entrenador y categoría sean de la MISMA institución y estén activos antes de vincularlos.
+- Interfaz `/entrenadores-escuela.html?escuela=<ID>` y enlace desde selección de escuela, con listado, resumen, gestión y asignaciones.
+- Pruebas unitarias para campos permitidos, datos normalizados y rechazo de IDs arbitrarios.
+
+**Límites importantes:** registrar un entrenador aún NO crea sus credenciales de acceso ni le da permisos para ver jugadores: hay que extender las invitaciones/membresías y autorizar únicamente sus categorías. Tampoco se han migrado entrenadores y categorías legacy ni hay asignación de jugadores. Falta ejecutar pruebas integradas de índices únicos, solicitudes cruzadas entre escuelas y flujos SMTP/MongoDB. No debe utilizarse con datos reales hasta completar seguridad y remediación histórica.

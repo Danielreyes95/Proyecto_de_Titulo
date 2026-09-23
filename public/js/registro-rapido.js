@@ -10,7 +10,7 @@ const metricas = ["goles", "asistenciasGol", "pasesClave", "recuperaciones",
 const booleanas = ["amarilla", "roja"];
 let evento = null, revision = 0, roster = [], saved = new Map(),
   dirty = new Map(), undoHistory = [], timer = null, saving = false,
-  conflict = false, lastEventId = null;
+  conflict = false, lastEventId = null, retryMs = 3000;
 const note = message => { $("mensaje").textContent = message; };
 const status = message => { $("guardarEstado").textContent = message; };
 
@@ -67,7 +67,7 @@ function recheck() {
     if (change) dirty.set(row.jugadorId, change);
   }
   $("guardar").disabled = evento?.cerrado || !dirty.size || saving || conflict || !navigator.onLine;
-  $("deshacer").disabled = evento?.cerrado || !undoHistory.length || saving;
+  $("deshacer").disabled = evento?.cerrado || !undoHistory.length || saving || conflict;
   const pendingCount = roster.filter(r => r.asistencia === "pendiente").length;
   $("marcarPendientes").hidden = !evento || evento.cerrado || !pendingCount;
   $("marcarPendientes").disabled = saving || conflict;
@@ -263,22 +263,31 @@ async function saveNow() {
       }
       if (change.observacion !== undefined) old.observacion = change.observacion;
     }
-    undoHistory = [];
+    // Mantener deshacer también después del guardado automático: revertir
+    // una acción genera un NUEVO cambio que puede guardarse normalmente.
+    retryMs = 3000;
     note("");
     return true;
   } catch (error) {
     if (error.code === "VERSION_CONFLICT") {
       conflict = true;
       note("Otro dispositivo guardó cambios. Tus anotaciones siguen visibles. Selecciona Sincronizar cambios para revisarlas.");
+    } else if (["401", "403", "404", "409"].includes(error.code)) {
+      conflict = true;
+      note("No se pueden guardar estos cambios: " + error.message +
+        ". Revisa tu sesión o el estado de la actividad; conserva las anotaciones en pantalla.");
     } else {
+      retryMs = Math.min(retryMs * 2, 30000);
       note("No se pudo guardar: " + error.message +
-        ". Tus anotaciones permanecen visibles; vuelve a pulsar Guardar ahora.");
+        ". Tus anotaciones permanecen visibles; puedes pulsar Guardar ahora.");
     }
     return false;
   } finally {
     saving = false; recheck();
     if (dirty.size && !conflict && !evento.cerrado) {
-      timer = setTimeout(() => saveNow(), 3000);
+      if (navigator.onLine) {
+        timer = setTimeout(() => saveNow(), retryMs);
+      }
     }
   }
 }
@@ -327,6 +336,7 @@ async function synchronize() {
     }
     roster = fresh;
     revision = data.evento.revision;
+    undoHistory = [];
     conflict = false;
     renderRoster();
     schedule();

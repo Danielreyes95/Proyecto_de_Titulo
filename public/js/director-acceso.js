@@ -122,6 +122,21 @@ async function load() {
         }
         reportLink.href = "/estadisticas-escuela.html?escuela=" +
           encodeURIComponent(escuela.id);
+        let noticesLink = $("enlaceAvisos");
+        if (!noticesLink) {
+          noticesLink = document.createElement("a");
+          noticesLink.id = "enlaceAvisos";
+          noticesLink.className = "secundario";
+          noticesLink.textContent = "✉ Avisos a las familias →";
+          noticesLink.style.display = "inline-block";
+          noticesLink.style.padding = "12px 16px";
+          noticesLink.style.borderRadius = "9px";
+          noticesLink.style.marginLeft = "8px";
+          $("seleccion").append(noticesLink);
+        }
+        noticesLink.href = "/avisos-escuela.html?escuela=" +
+          encodeURIComponent(escuela.id);
+        noticesLink.hidden = detail.rol !== "director";
       } catch (error) { notify(error.message); }
     });
     $("escuelas").append(button);

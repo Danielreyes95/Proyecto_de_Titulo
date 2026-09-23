@@ -78,6 +78,7 @@ Consulta el alcance, fórmulas y pruebas previstas:
 - `docs/INFORMES_ESTADISTICAS.md`
 - `docs/FASE_1_AVANCE.md`
 - `docs/SEGURIDAD_INICIAL.md`
+- `docs/PORTAL_FAMILIAS.md`
 
 ## Pendientes antes de producción
 

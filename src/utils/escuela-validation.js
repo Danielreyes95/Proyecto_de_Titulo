@@ -1,7 +1,7 @@
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const HEX = /^#[0-9a-fA-F]{6}$/;
 const BRAND_KEYS = new Set([
-  "nombrePublico", "logoUrl", "portadaUrl", "colorPrimario",
+  "nombrePublico", "colorPrimario",
   "colorSecundario", "colorAcento", "colorTexto"
 ]);
 
@@ -39,6 +39,10 @@ function validateSlug(value) {
 }
 
 function validateBranding(input, escuelaId) {
+  if (input && typeof input === "object" &&
+      ("logoUrl" in input || "portadaUrl" in input)) {
+    throw validationError("Ruta de imagen inválida: usa la carga verificada de imágenes");
+  }
   checkKeys(input, BRAND_KEYS);
   const branding = {};
   for (const [key, value] of Object.entries(input)) {
@@ -49,17 +53,6 @@ function validateBranding(input, escuelaId) {
         throw validationError(`Color inválido: ${key}`);
       }
       branding[key] = value.toUpperCase();
-    } else {
-      // Archivos previamente cargados por un futuro endpoint de imágenes.
-      // No se aceptan URLs de terceros ni URLs javascript:/data:/SVG.
-      const prefix = `/uploads/escuelas/${escuelaId}/`;
-      const valid = typeof value === "string" && value.startsWith(prefix) &&
-        /^[-a-zA-Z0-9_/]+\.(?:png|jpe?g|webp)$/.test(value.slice(prefix.length)) &&
-        !value.includes("..") && value.length <= 500;
-      if (value !== null && !valid) {
-        throw validationError(`Ruta de imagen inválida: ${key}`);
-      }
-      branding[key] = value;
     }
   }
   return branding;

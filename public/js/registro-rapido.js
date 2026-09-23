@@ -329,7 +329,13 @@ async function openEvent(id) {
 async function loadEvents() {
   const [events, schools] = await Promise.all([
     api("/eventos"),
-    api("/mis-escuelas")
+    fetch("/api/escuela-sesion/mis-escuelas", {
+      headers: { Authorization: "Bearer " + token }
+    }).then(async response => {
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Sin autorización");
+      return result;
+    })
   ]);
   const current = schools.escuelas?.find(s => String(s.id) === escuelaId);
   $("escuelaTitulo").textContent = current?.branding?.nombrePublico ||

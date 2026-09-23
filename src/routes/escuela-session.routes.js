@@ -6,6 +6,7 @@ const { requireSchoolUser, requireDirector } = require("../middleware/escuela-au
 const { actualizarBrandingDirector } = require("../controllers/escuela-branding.controller");
 const { loginThrottle } = require("../middleware/login-throttle");
 const categoria = require("../controllers/escuela-categoria.controller");
+const entrenador = require("../controllers/escuela-entrenador.controller");
 
 router.post("/auth/login", loginThrottle, session.login);
 router.get("/invitaciones/consultar", invite.consultar);
@@ -19,5 +20,13 @@ router.patch("/:escuelaId/branding", requireSchoolUser, requireDirector, actuali
 router.get("/:escuelaId/categorias", requireSchoolUser, requireDirector, categoria.listar);
 router.post("/:escuelaId/categorias", requireSchoolUser, requireDirector, categoria.crear);
 router.patch("/:escuelaId/categorias/:categoriaId", requireSchoolUser, requireDirector, categoria.actualizar);
+
+// Entrenadores por escuela. Todas las rutas requieren membresía de director.
+router.get("/:escuelaId/entrenadores", requireSchoolUser, requireDirector, entrenador.listar);
+router.post("/:escuelaId/entrenadores", requireSchoolUser, requireDirector, entrenador.crear);
+router.patch("/:escuelaId/entrenadores/:entrenadorId", requireSchoolUser, requireDirector, entrenador.actualizar);
+router.post("/:escuelaId/entrenadores/:entrenadorId/asignaciones", requireSchoolUser, requireDirector, entrenador.asignar);
+router.patch("/:escuelaId/entrenadores/:entrenadorId/asignaciones/:categoriaId/finalizar",
+  requireSchoolUser, requireDirector, entrenador.finalizarAsignacion);
 
 module.exports = router;

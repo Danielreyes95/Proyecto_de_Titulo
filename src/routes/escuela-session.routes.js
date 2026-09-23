@@ -16,6 +16,7 @@ const { requirePersonalDeportivo } = require("../middleware/escuela-deporte-auth
 const { requireFamilia } = require("../middleware/familia-auth");
 const familias = require("../controllers/familia.controller");
 const familiaAgenda = require("../controllers/familia-agenda.controller");
+const familiaConfirmacion = require("../controllers/familia-confirmacion.controller");
 const aviso = require("../controllers/escuela-aviso.controller");
 const invitarFamilia = require("../controllers/invitacion-apoderado.controller");
 
@@ -63,6 +64,8 @@ router.get("/:escuelaId/familia/mis-jugadores", requireSchoolUser,
   requireFamilia, familias.misJugadores);
 router.get("/:escuelaId/familia/agenda", requireSchoolUser,
   requireFamilia, familiaAgenda.agenda);
+router.patch("/:escuelaId/familia/eventos/:eventoId/jugadores/:jugadorId/confirmacion",
+  requireSchoolUser, requireFamilia, familiaConfirmacion.confirmar);
 
 // Invitación familiar: solo el director autorizado puede enviarla.
 router.post("/:escuelaId/apoderados/:apoderadoId/invitar",

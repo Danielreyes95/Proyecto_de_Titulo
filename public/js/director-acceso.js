@@ -50,6 +50,19 @@ async function load() {
         $("seleccion").style.backgroundColor = detail.escuela.branding?.colorSecundario || "#ffffff";
         $("seleccion").style.color = detail.escuela.branding?.colorTexto || "#111827";
         $("seleccion").style.borderColor = detail.escuela.branding?.colorPrimario || "#166534";
+        let categoriesLink = $("enlaceCategorias");
+        if (!categoriesLink) {
+          categoriesLink = document.createElement("a");
+          categoriesLink.id = "enlaceCategorias";
+          categoriesLink.textContent = "Administrar categorías →";
+          categoriesLink.className = "secundario";
+          categoriesLink.style.display = "inline-block";
+          categoriesLink.style.padding = "12px 16px";
+          categoriesLink.style.borderRadius = "9px";
+          $("seleccion").append(categoriesLink);
+        }
+        categoriesLink.href = "/categorias-escuela.html?escuela=" +
+          encodeURIComponent(escuela.id);
       } catch (error) { notify(error.message); }
     });
     $("escuelas").append(button);

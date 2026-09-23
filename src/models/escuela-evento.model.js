@@ -19,6 +19,10 @@ const RegistroSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId, ref: "EscuelaJugador",
     required: true, immutable: true
   },
+  // Confirmación previa del apoderado. Es independiente de asistencia real.
+  confirmacion: { type: String,
+    enum: ["pendiente", "asistira", "no_asistira"],
+    required: true, default: "pendiente" },
   // Pendiente no debe convertirse implícitamente en ausente.
   asistencia: {
     type: String, enum: ["pendiente", "presente", "ausente"],

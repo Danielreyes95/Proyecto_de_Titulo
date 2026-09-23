@@ -50,3 +50,30 @@ Ejemplo de creación (solo con token válido de administración):
 2. Asegurar roles, endpoints de usuarios y recuperación de contraseñas.
 3. Migración idempotente con escuela piloto y datos exclusivamente ficticios.
 4. Construir asignación de director y autorización por pertenencia a escuela, luego carga validada de imágenes.
+
+## Fase 2 - Alta y acceso independiente de directores (nuevo avance)
+- Nueva identidad `Usuario` con contraseñas hasheadas y membresía por escuela.
+- Invitación al correo para director, con token aleatorio, hash almacenado, vigencia 24 horas y aceptación de un solo uso.
+- Si la identidad no existe, el enlace permite crear cuenta; si ya existe, exige iniciar sesión con esa misma cuenta antes de aceptar una escuela adicional.
+- Aceptación y creación de membresía en una transacción MongoDB (requiere MongoDB Atlas o replica set compatible).
+- Autenticación separada de directores mediante `SCHOOL_JWT_SECRET`. `/api/escuela-sesion/mis-escuelas` solo devuelve escuelas activas vinculadas al usuario.
+- El director puede consultar y editar únicamente la marca de una escuela con membresía activa y estado activo.
+- Formulario de invitaciones integrado en `/plataforma.html`; pantalla `/activar-director.html` y selección de escuela en `/director-acceso.html`.
+- Validación de sintaxis JS de los archivos nuevos y modificados mediante compilación V8; **no sustituye pruebas funcionales de MongoDB, SMTP o navegador**.
+
+### Flujo de desarrollo
+1. Configura credenciales REEMPLAZADAS y `PLATFORM_JWT_SECRET` y `SCHOOL_JWT_SECRET` únicos de al menos 32 caracteres cada uno.
+2. Configura `EMAIL_USER`, `EMAIL_PASS`, `FRONTEND_URL` para enviar invitaciones. En desarrollo, el correo debe llevar un enlace que resuelva al servidor local de prueba.
+3. Crea superadministrador con `npm run admin:create` tras configurar variables de bootstrap y retíralas del entorno después.
+4. Desde `/plataforma.html`, crea una escuela ficticia y envía una invitación a un correo controlado de prueba.
+5. Acepta en `/activar-director.html`, ingresa en `/director-acceso.html`, elige escuela y cambia un color.
+6. Comprueba que otra escuela y otro director no puedan editar la primera institución.
+
+### Limitaciones aún vigentes
+- No existe migración de identidades antiguas a `Usuario`. No utilizar registros reales del proyecto previo para nuevos directores sin una migración revisada.
+- El nuevo acceso de directores NO enlaza a los módulos legados de jugadores, asistencia y pagos; estos siguen sin aislamiento por escuela.
+- La página antigua `/director/director.html` continúa siendo parte del sistema heredado y NO constituye un panel multiinquilino.
+- Todavía no existe la carga de logos/portadas ni notificaciones móviles.
+- El nuevo login utiliza limitación por IP en memoria para desarrollo; despliegue real requiere rate limiting compartido, instrumentación y pruebas de seguridad.
+- El correo SMTP se envía sin cola persistente. Se requiere política de reintentos, monitoreo y auditoría antes de operar con escuelas reales.
+- **No publicar esta rama como solución de producción** mientras continúen los secretos expuestos en otras ramas/historiales y las rutas inseguras del backend previo.

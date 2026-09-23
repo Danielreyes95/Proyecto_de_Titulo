@@ -1,0 +1,9 @@
+.escuela-selector{display:grid;gap:8px;margin-top:12px;max-width:460px;font-weight:700}
+.familia-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.familia-card{padding:23px;border:1px solid #e3eaf2;border-top:5px solid var(--familia-color,#176a50);border-radius:16px;background:#fff;box-shadow:0 7px 23px #1623380b}
+.familia-card h3{margin:0 0 5px}.familia-card p{margin:2px 0 14px}
+.resumen-familia{background:#f3f8f6;padding:12px;border-radius:11px;color:#1e4d3f;margin:15px 0;font-weight:700}
+.familia-card table{width:100%;border-collapse:collapse;font-size:.88rem}
+.familia-card th,.familia-card td{padding:9px 6px;text-align:left;border-bottom:1px solid #e6edf3}
+.familia-card caption{text-align:left;font-weight:750;margin-bottom:9px}
+.familia-card small{display:block;margin-top:12px}

@@ -108,6 +108,20 @@ async function load() {
         }
         quickLink.href = "/registro-rapido.html?escuela=" +
           encodeURIComponent(escuela.id);
+        let reportLink = $("enlaceEstadisticas");
+        if (!reportLink) {
+          reportLink = document.createElement("a");
+          reportLink.id = "enlaceEstadisticas";
+          reportLink.textContent = "📊 Estadísticas y evolución →";
+          reportLink.className = "secundario";
+          reportLink.style.display = "inline-block";
+          reportLink.style.padding = "12px 16px";
+          reportLink.style.borderRadius = "9px";
+          reportLink.style.marginLeft = "8px";
+          $("seleccion").append(reportLink);
+        }
+        reportLink.href = "/estadisticas-escuela.html?escuela=" +
+          encodeURIComponent(escuela.id);
       } catch (error) { notify(error.message); }
     });
     $("escuelas").append(button);

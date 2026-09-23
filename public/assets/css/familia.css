@@ -18,3 +18,7 @@
 .confirmacion-botones{display:flex;gap:7px;flex-wrap:wrap}
 .confirmacion-botones button{min-height:42px;padding:8px 11px}
 @media(max-width:450px){.confirmacion-botones button{flex:1 1 112px}}
+
+.marca-familia-titulo{display:flex;gap:12px;align-items:center}
+.marca-familia-titulo img{width:65px;height:65px;border-radius:13px;object-fit:contain}
+.familia-portada{display:block;width:100%;height:clamp(125px,22vw,220px);object-fit:cover;border-radius:15px;margin:0 0 20px}

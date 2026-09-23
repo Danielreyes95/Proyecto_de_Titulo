@@ -69,12 +69,28 @@ async function listar(req, res, next) {
     return res.json({ eventos: eventos.map(eventSummary) });
   } catch (error) { return errorResponse(error, res, next); }
 }
+// Opciones para iniciar la actividad desde el propio teléfono. El entrenador
+// recibe SOLO sus categorías asignadas, no las categorías de otras escuelas.
+async function misCategorias(req, res, next) {
+  try {
+    const filter = { escuela: escuela(req), estado: "activa" };
+    if (req.deporteScope.rol !== "director") {
+      filter._id = { $in: req.deporteScope.categorias };
+    }
+    const categorias = await EscuelaCategoria.find(filter)
+      .select("nombre modalidad edadMin edadMax")
+      .sort({ edadMin: 1, nombre: 1, modalidad: 1 })
+      .limit(100).lean();
+    return res.json({ categorias });
+  } catch (error) { return errorResponse(error, res, next); }
+}
+
 async function crear(req, res, next) {
   try {
-    if (req.deporteScope.rol !== "director") {
-      return res.status(403).json({ error: "Solo el director programa actividades" });
-    }
     const fields = nuevoEvento(req.body);
+    if (!puedeVerCategoria(req, fields.categoriaId)) {
+      return res.status(404).json({ error: "Categoría no encontrada" });
+    }
     const categoria = await EscuelaCategoria.findOne({
       _id: fields.categoriaId, escuela: escuela(req), estado: "activa"
     }).select("_id nombre modalidad");
@@ -189,4 +205,4 @@ async function cerrar(req, res, next) {
     return res.json({ mensaje: "Actividad cerrada", revision: event.__v });
   } catch (error) { return errorResponse(error, res, next); }
 }
-module.exports = { listar, crear, detalle, guardarLote, cerrar };
+module.exports = { listar, misCategorias, crear, detalle, guardarLote, cerrar };

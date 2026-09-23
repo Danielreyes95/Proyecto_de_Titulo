@@ -52,7 +52,18 @@
         colorAcento: "#f59e0b", colorTexto: "#111827"
       })[key];
     }
+    mostrarImagenesAdmin(escuela?.branding || {});
     updatePreview();
+  }
+
+  function mostrarImagenesAdmin(branding) {
+    for (const [tipo, key] of [["Logo", "logoUrl"], ["Portada", "portadaUrl"]]) {
+      escuelaImagenes.mostrarImagen(
+        $("adminPreview" + tipo), $("adminSin" + tipo),
+        branding[key], "Sin imagen cargada"
+      );
+      $("adminQuitar" + tipo).hidden = !branding[key];
+    }
   }
 
   function updatePreview() {
@@ -212,6 +223,45 @@
     finally { button.disabled = false; }
   });
 
+  for (const [tipo, nombre] of [["logo", "Logo"], ["portada", "Portada"]]) {
+    $("adminSubir" + nombre).addEventListener("click", async event => {
+      const id = $("escuelaMarca").value;
+      const school = escuelas.find(e => e._id === id);
+      if (!school || school.estado !== "activa") {
+        return notify("Selecciona una escuela activa", true);
+      }
+      const archivo = $("adminArchivo" + nombre).files?.[0];
+      if (!archivo) return notify("Selecciona primero una imagen", true);
+      const button = event.currentTarget; button.disabled = true;
+      try {
+        notify("Preparando imagen institucional...");
+        const base64 = await escuelaImagenes.obtenerBase64(archivo, tipo);
+        const result = await request("/escuelas/" + id + "/media/" + tipo, {
+          method: "PUT", body: JSON.stringify({ base64 })
+        });
+        school.branding = result.escuela.branding;
+        $("adminArchivo" + nombre).value = "";
+        mostrarImagenesAdmin(school.branding);
+        notify("Imagen institucional guardada");
+      } catch (error) { notify(error.message, true); }
+      finally { button.disabled = false; }
+    });
+    $("adminQuitar" + nombre).addEventListener("click", async event => {
+      const id = $("escuelaMarca").value;
+      const school = escuelas.find(e => e._id === id);
+      if (!school || !confirm("¿Retirar esta imagen?")) return;
+      const button = event.currentTarget; button.disabled = true;
+      try {
+        const result = await request("/escuelas/" + id + "/media/" + tipo, {
+          method: "DELETE"
+        });
+        school.branding = result.escuela.branding;
+        mostrarImagenesAdmin(school.branding);
+        notify("Imagen retirada");
+      } catch (error) { notify(error.message, true); }
+      finally { button.disabled = false; }
+    });
+  }
   $("escuelaMarca").addEventListener("change", pickMarca);
   for (const key of ["nombrePublico", "colorPrimario", "colorSecundario",
     "colorAcento", "colorTexto"]) {

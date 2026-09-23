@@ -102,8 +102,13 @@ function attendance(id, state) {
 }
 function metric(id, key, delta) {
   mutate(id, row => {
-    const value = row.estadisticas[key] + delta;
-    if (value < 0 || value > 99) return;
+    const previous = row.estadisticas[key];
+    const value = key === "rendimiento" ?
+      (delta < 0 && previous === 1 ? null :
+        Math.max(1, Math.min(10, (previous || 0) + delta))) :
+      previous + delta;
+    if (key !== "rendimiento" && (value < 0 || value > 99)) return;
+    if (value === previous) return;
     if (row.asistencia !== "presente") {
       if (delta < 0) return;
       row.asistencia = "presente";
@@ -160,12 +165,14 @@ function renderRoster() {
     const metrica = document.createElement("div"); metrica.className = "marcador";
     const metricLabel = document.createElement("span"); metricLabel.textContent = label + ":";
     const count = document.createElement("output");
-    count.textContent = row.estadisticas[selected];
+    count.textContent = row.estadisticas[selected] ?? "—";
     const decrement = btn("−", "", () => metric(row.jugadorId, selected, -1),
-      evento.cerrado || conflict || row.estadisticas[selected] === 0);
+      evento.cerrado || conflict || row.estadisticas[selected] === 0 ||
+        (selected === "rendimiento" && row.estadisticas[selected] === null));
     decrement.setAttribute("aria-label", "Quitar " + label + " a " + row.nombre);
     const increment = btn("+", "", () => metric(row.jugadorId, selected, +1),
-      evento.cerrado || conflict || row.estadisticas[selected] >= 99);
+      evento.cerrado || conflict || row.estadisticas[selected] >=
+        (selected === "rendimiento" ? 10 : 99));
     increment.setAttribute("aria-label", "Añadir " + label + " a " + row.nombre);
     metrica.append(metricLabel, decrement, count, increment);
     bottom.append(metrica);
@@ -341,6 +348,16 @@ async function loadEvents() {
   $("escuelaTitulo").textContent = current?.branding?.nombrePublico ||
     current?.nombre || "Mi escuela";
   const director = current?.roles?.includes("director");
+  const primary = current?.branding?.colorPrimario;
+  if (/^#[0-9A-Fa-f]{6}$/.test(primary || "")) {
+    document.documentElement.style.setProperty("--cancha-marca", primary);
+    const rgb = [1, 3, 5].map(i => parseInt(primary.slice(i, i + 2), 16) / 255);
+    const luminance = rgb.map(x => x <= 0.04045 ? x / 12.92 :
+      ((x + 0.055) / 1.055) ** 2.4)
+      .reduce((sum, component, i) => sum + component * [0.2126, 0.7152, 0.0722][i], 0);
+    document.documentElement.style.setProperty("--cancha-contraste",
+      luminance > 0.179 ? "#111827" : "#ffffff");
+  }
   $("crearEventoForm").hidden = !director;
   if (director) {
     const res = await api("/categorias");

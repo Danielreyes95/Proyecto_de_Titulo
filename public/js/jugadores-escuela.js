@@ -61,6 +61,30 @@ async function refresh() {
     "Selecciona categoría", c => c.nombre + " · " + c.modalidad);
   options($("apoderado"), apoderados.filter(a => a.estado === "activo"),
     "Selecciona apoderado", a => a.nombre + " (" + a.rut + ")");
+  $("tablaApoderados").replaceChildren();
+  for (const guardian of apoderados) {
+    const row = $("tablaApoderados").insertRow();
+    addCell(row, guardian.nombre);
+    addCell(row, guardian.email);
+    addCell(row, guardian.estado);
+    const actions = row.insertCell();
+    const button = document.createElement("button");
+    button.className = "secundario";
+    button.type = "button";
+    button.textContent = guardian.usuario ? "Cuenta vinculada" :
+      "Invitar acceso familiar";
+    button.disabled = guardian.estado !== "activo" || Boolean(guardian.usuario);
+    button.addEventListener("click", async () => {
+      if (!confirm("¿Enviar una invitación al correo registrado de " +
+        guardian.nombre + "?")) return;
+      button.disabled = true;
+      try {
+        await api("/apoderados/" + guardian._id + "/invitar", "POST", {});
+        note("Invitación enviada. El acceso se activa desde el correo del apoderado.");
+      } catch (error) { note(error.message); button.disabled = false; }
+    });
+    actions.append(button);
+  }
   $("total").textContent = jugadores.length;
   $("activos").textContent = jugadores.filter(j => j.estado === "activo").length;
   $("inactivos").textContent = jugadores.filter(j => j.estado === "inactivo").length;

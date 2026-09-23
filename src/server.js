@@ -8,16 +8,9 @@ require("./config/database");
 // =============================
 // IMPORTAR RUTAS
 // =============================
-const authRoutes = require("./routes/auth.routes");
-const categoriaRoutes = require("./routes/categoria.routes");
-const jugadorRoutes = require("./routes/jugador.routes");
-const apoderadoRoutes = require("./routes/apoderado.routes");
-const entrenadorRoutes = require("./routes/entrenador.routes");
-const asistenciaRoutes = require("./routes/asistencia.routes");
-const directorRoutes = require("./routes/director.routes");
-const pagoRoutes = require("./routes/pago.routes");
-const avisoRoutes = require("./routes/aviso.routes");
-const mercadoPagoRoutes = require("./routes/mercado-pago.routes");
+// Las rutas anteriores tienen integraciones todavía no migradas (por ejemplo,
+// pagos y correo). No importarlas al iniciar la plataforma nueva: solo
+// cargarlas expresamente en desarrollo legado si se habilita su uso.
 const platformRoutes = require("./routes/platform.routes");
 const escuelaPublicRoutes = require("./routes/escuela-public.routes");
 const escuelaSessionRoutes = require("./routes/escuela-session.routes");
@@ -65,17 +58,19 @@ app.use("/api/platform", platformRoutes);
 app.use("/api/escuelas", escuelaPublicRoutes);
 app.use("/api/escuela-sesion", escuelaSessionRoutes);
 if (legacyEnabled) {
-  app.use("/api/auth", authRoutes);
-  app.use("/api/categorias", categoriaRoutes);
-  app.use("/api/jugadores", jugadorRoutes);
-  app.use("/api/apoderados", apoderadoRoutes);
-  app.use("/api/entrenadores", entrenadorRoutes);
-  app.use("/api/asistencia", asistenciaRoutes);
-  app.use("/api/directores", directorRoutes);
-  app.use("/api/pagos", pagoRoutes);
-  app.use("/api/avisos", avisoRoutes);
+  app.use("/api/auth", require("./routes/auth.routes"));
+  app.use("/api/categorias", require("./routes/categoria.routes"));
+  app.use("/api/jugadores", require("./routes/jugador.routes"));
+  app.use("/api/apoderados", require("./routes/apoderado.routes"));
+  app.use("/api/entrenadores", require("./routes/entrenador.routes"));
+  app.use("/api/asistencia", require("./routes/asistencia.routes"));
+  app.use("/api/directores", require("./routes/director.routes"));
+  app.use("/api/pagos", require("./routes/pago.routes"));
+  app.use("/api/avisos", require("./routes/aviso.routes"));
   app.use("/api/evento", require("./routes/evento.routes"));
-  app.use("/api/mercado-pago", mercadoPagoRoutes);
+  // El SDK de Mercado Pago del sistema anterior requiere actualización
+  // antes de activar esta integración. No cargarla en modo multiescuela.
+  app.use("/api/mercado-pago", require("./routes/mercado-pago.routes"));
 } else {
   // Evita que una ruta legacy ausente se confunda con una página de acceso.
   app.use("/api", (req, res) => res.status(404).json({

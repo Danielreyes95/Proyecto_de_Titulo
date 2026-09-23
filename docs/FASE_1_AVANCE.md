@@ -77,3 +77,20 @@ Ejemplo de creación (solo con token válido de administración):
 - El nuevo login utiliza limitación por IP en memoria para desarrollo; despliegue real requiere rate limiting compartido, instrumentación y pruebas de seguridad.
 - El correo SMTP se envía sin cola persistente. Se requiere política de reintentos, monitoreo y auditoría antes de operar con escuelas reales.
 - **No publicar esta rama como solución de producción** mientras continúen los secretos expuestos en otras ramas/historiales y las rutas inseguras del backend previo.
+
+## Fase 3 - Primer módulo realmente aislado: categorías (nuevo avance)
+- Modelo separado `EscuelaCategoria` en colección `escuela_categorias` con campo `escuela` obligatorio e inmutable.
+- Índice único compuesto por escuela, nombre normalizado y modalidad; permite `Sub 8 Formativo` y `Sub 8 Competitivo` en cada institución.
+- CRUD parcial: crear, listar, editar y activar/inactivar sin borrar físicamente; validar rango de edad y cupos.
+- API nueva en `/api/escuela-sesion/:escuelaId/categorias`, protegida por JWT de escuela, membresía activa de director y escuela activa.
+- Consultas/actualizaciones incluyen siempre el ID de escuela obtenido del contexto de autorización, además del ID de categoría. Una categoría de A no será encontrada con permisos de B.
+- Panel `/categorias-escuela.html?escuela=<ID>` con resumen, formulario, listado y acciones; vinculado desde `/director-acceso.html`.
+- Se incorporó GitHub Actions para validación de sintaxis y `npm test` en push/PR.
+- La API previa `/api/auth`, `/api/categorias`, `/api/jugadores`, pagos, avisos, eventos y Socket.IO legado están **deshabilitados por defecto** en esta rama. Para probar exclusivamente el sistema antiguo en desarrollo local: `LEGACY_API_ENABLED=true` y `NODE_ENV` distinto de `production`. No habilitar en servicios públicos.
+
+### Alcance y próximos pasos
+- Categorías nuevas y categorías de la colección histórica NO se mezclan ni se migran automáticamente.
+- El módulo de categorías aún no asigna entrenadores/jugadores ni produce estadísticas o pagos.
+- La edad no se calcula a partir de fecha de nacimiento en esta fase: esas reglas se introducirán al migrar el módulo de jugadores.
+- Antes de pasar a producción siguen pendientes remediación histórica de datos/secretos, tests integrados de aislamiento con MongoDB y verificación de permisos, migración controlada, límites de rate limiting compartidos, cookies/cabeceras seguras y cargas de imagen.
+- La verificación de sintaxis no prueba conexiones reales con MongoDB, SMTP ni Mercado Pago.

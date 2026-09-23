@@ -24,7 +24,7 @@ async function cargar(req, res, next) {
   let fileId;
   try {
     const tipo = req.params.tipo;
-    const mediaKey = key[tipo];
+    const mediaKey = Object.hasOwn(key, tipo) ? key[tipo] : null;
     if (!mediaKey || !mongoose.isValidObjectId(actorId(req))) {
       return res.status(400).json({ error: "Imagen o escuela inválida" });
     }
@@ -72,7 +72,8 @@ async function cargar(req, res, next) {
 }
 async function quitar(req, res, next) {
   try {
-    const mediaKey = key[req.params.tipo];
+    const mediaKey = Object.hasOwn(key, req.params.tipo) ?
+      key[req.params.tipo] : null;
     if (!mediaKey || !mongoose.isValidObjectId(actorId(req))) {
       return res.status(400).json({ error: "Imagen o escuela inválida" });
     }
@@ -97,7 +98,8 @@ async function quitar(req, res, next) {
 }
 async function obtenerPublica(req, res, next) {
   try {
-    const tipo = req.params.tipo, mediaKey = key[tipo];
+    const tipo = req.params.tipo;
+    const mediaKey = Object.hasOwn(key, tipo) ? key[tipo] : null;
     const match = /^([0-9a-f]{24})\.(png|jpg)$/i.exec(req.params.archivo || "");
     if (!mediaKey || !match ||
         !mongoose.isValidObjectId(req.params.escuelaId)) {

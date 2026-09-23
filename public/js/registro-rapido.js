@@ -68,6 +68,10 @@ function recheck() {
   }
   $("guardar").disabled = evento?.cerrado || !dirty.size || saving || conflict;
   $("deshacer").disabled = evento?.cerrado || !undoHistory.length || saving;
+  const pendingCount = roster.filter(r => r.asistencia === "pendiente").length;
+  $("marcarPendientes").hidden = !evento || evento.cerrado || !pendingCount;
+  $("marcarPendientes").disabled = saving || conflict;
+  $("marcarPendientes").textContent = "✓ Confirmar " + pendingCount + " presente(s) pendientes";
   $("cerrar").disabled = evento?.cerrado || saving || conflict;
   $("sincronizar").hidden = !conflict;
   if (conflict) status("Otra edición detectada · Tus cambios siguen aquí");
@@ -90,6 +94,19 @@ function mutate(id, action) {
   if (JSON.stringify(old) === JSON.stringify(row)) return;
   undoHistory.push({ id, before: old });
   if (undoHistory.length > 30) undoHistory.shift();
+  renderRoster();
+  schedule();
+}
+// Confirmación masiva solo para pendientes; NUNCA cambia ausentes o presentes.
+function marcarPendientesPresentes() {
+  if (!evento || evento.cerrado || conflict || saving) return;
+  const pending = roster.filter(row => row.asistencia === "pendiente");
+  if (!pending.length) return;
+  if (!confirm("¿Confirmas la presencia de " + pending.length +
+    " jugador(es) pendientes? Los ausentes registrados no cambiarán.")) return;
+  undoHistory.push({ snapshots: pending.map(clone) });
+  if (undoHistory.length > 30) undoHistory.shift();
+  for (const row of pending) row.asistencia = "presente";
   renderRoster();
   schedule();
 }
@@ -358,15 +375,14 @@ async function loadEvents() {
     document.documentElement.style.setProperty("--cancha-contraste",
       luminance > 0.179 ? "#111827" : "#ffffff");
   }
-  $("crearEventoForm").hidden = !director;
-  if (director) {
-    const res = await api("/categorias");
-    $("categoriaId").replaceChildren(new Option("Selecciona categoría", ""));
-    for (const cat of res.categorias.filter(c => c.estado === "activa")) {
-      $("categoriaId").add(new Option(
-        cat.nombre + " · " + cat.modalidad, cat._id));
-    }
+  // Director: categorías de su escuela. Entrenador: únicamente asignadas.
+  const res = await api("/mis-categorias");
+  $("categoriaId").replaceChildren(new Option("Selecciona categoría", ""));
+  for (const cat of res.categorias) {
+    $("categoriaId").add(new Option(
+      cat.nombre + " · " + cat.modalidad, cat._id));
   }
+  $("crearEventoForm").hidden = !res.categorias.length;
   $("listaEventos").replaceChildren();
   for (const e of events.eventos) {
     const item = document.createElement("div");
@@ -375,7 +391,9 @@ async function loadEvents() {
     const title = document.createElement("strong");
     title.textContent = e.tipoEvento + " · " + e.fechaEvento.slice(0, 10);
     const line = document.createElement("p");
-    line.textContent = e.cantidadJugadores + " jugadores · " +
+    const category = res.categorias.find(c => String(c._id) === String(e.categoria));
+    line.textContent = (category ? category.nombre + " · " + category.modalidad + " · " : "") +
+      e.cantidadJugadores + " jugadores · "
       e.pendientes + " pendientes" + (e.cerrado ? " · cerrado" : "");
     details.append(title, line);
     item.append(details, btn(e.cerrado ? "Ver resumen" : "Registrar ahora", "",
@@ -384,8 +402,9 @@ async function loadEvents() {
   }
   if (!events.eventos.length) {
     const p = document.createElement("p");
-    p.textContent = director ? "Crea la primera actividad para comenzar." :
-      "No tienes actividades de tus categorías asignadas.";
+    p.textContent = res.categorias.length ?
+      "Inicia el entrenamiento o partido de tu categoría para comenzar." :
+      "No tienes categorías activas asignadas.";
     $("listaEventos").append(p);
   }
 }
@@ -408,11 +427,17 @@ $("buscar").addEventListener("input", renderRoster);
 $("filtro").addEventListener("change", renderRoster);
 $("guardar").addEventListener("click", saveNow);
 $("sincronizar").addEventListener("click", synchronize);
+$("marcarPendientes").addEventListener("click", marcarPendientesPresentes);
 $("deshacer").addEventListener("click", () => {
   if (!undoHistory.length || saving || conflict) return;
   const last = undoHistory.pop();
-  const index = roster.findIndex(r => r.jugadorId === last.id);
-  if (index >= 0) roster[index] = last.before;
+  if (last.snapshots) {
+    const restored = new Map(last.snapshots.map(row => [row.jugadorId, row]));
+    roster = roster.map(row => restored.get(row.jugadorId) || row);
+  } else {
+    const index = roster.findIndex(r => r.jugadorId === last.id);
+    if (index >= 0) roster[index] = last.before;
+  }
   renderRoster(); schedule();
 });
 $("cerrar").addEventListener("click", async () => {

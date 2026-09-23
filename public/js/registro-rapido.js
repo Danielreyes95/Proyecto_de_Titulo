@@ -410,7 +410,8 @@ async function loadEvents() {
     item.className = "evento-item";
     const details = document.createElement("div");
     const title = document.createElement("strong");
-    title.textContent = e.tipoEvento + " · " + e.fechaEvento.slice(0, 10);
+    title.textContent = e.tipoEvento + " · " + e.fechaEvento.slice(0, 10) +
+      (e.horaInicio ? " · " + e.horaInicio : "");
     const line = document.createElement("p");
     const category = res.categorias.find(c => String(c._id) === String(e.categoria));
     line.textContent = (category ? category.nombre + " · " + category.modalidad + " · " : "") +
@@ -446,6 +447,7 @@ $("crearEventoForm").addEventListener("submit", async event => {
     const data = await api("/eventos", "POST", {
       categoriaId: $("categoriaId").value,
       fechaEvento: $("fecha").value,
+      horaInicio: $("horaInicio").value || null,
       tipoEvento: $("tipo").value
     });
     await loadEvents();

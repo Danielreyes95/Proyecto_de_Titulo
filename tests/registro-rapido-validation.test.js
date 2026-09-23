@@ -52,7 +52,7 @@ test("no duplica jugadores y no acepta cargas masivas", () => {
   }), /duplicado/);
   assert.throws(() => validarLote({
     revision: 0,
-    cambios: Array.from({ length: 101 }, (_, i) => ({
+    cambios: Array.from({ length: 201 }, (_, i) => ({
       jugadorId: i.toString(16).padStart(24, "0"), asistencia: "presente"
     }))
   }), /Lote o revisión/);

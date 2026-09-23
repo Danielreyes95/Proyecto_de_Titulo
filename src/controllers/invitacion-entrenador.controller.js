@@ -98,7 +98,7 @@ async function consultar(req, res, next) {
     const hasAccount = await Usuario.exists({ email: invitation.email });
     res.set("Cache-Control", "no-store");
     return res.json({
-      escuela: invitation.escuela.nombre,
+      escuela: { nombre: invitation.escuela.nombre },
       nombre: invitation.entrenador.nombre,
       email: invitation.email, requiereInicioSesion: Boolean(hasAccount)
     });

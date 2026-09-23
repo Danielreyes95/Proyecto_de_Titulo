@@ -27,6 +27,29 @@
   <button type="button" id="recargar" class="secundario">Actualizar</button>
 </section>
 <p id="mensaje" role="status" aria-live="polite"></p>
+<section id="resumenInstitucional" class="panel bloque-escuela" hidden aria-labelledby="tituloInstitucional">
+  <div class="cabecera-tabla">
+    <div><span class="eyebrow">SOLO DIRECCIÓN</span>
+      <h2 id="tituloInstitucional">Resumen general de la escuela</h2>
+      <p>Vista conjunta de categorías; únicamente actividades cerradas del año seleccionado.</p>
+    </div>
+    <button id="recargarInstitucional" type="button" class="secundario">Actualizar escuela</button>
+  </div>
+  <section class="estadisticas kpis-informe" aria-label="Indicadores institucionales">
+    <div class="stat"><span>Actividades cerradas</span><strong id="instActividades">0</strong></div>
+    <div class="stat"><span>Asistencia registrada</span><strong id="instAsistencia">—</strong></div>
+    <div class="stat"><span>Goles registrados</span><strong id="instGoles">0</strong></div>
+    <div class="stat"><span>Categorías registradas</span><strong id="instCategorias">0</strong></div>
+  </section>
+  <div class="tabla-scroll">
+  <table class="tabla-escuela">
+    <thead><tr><th>Categoría</th><th>Modalidad</th><th>Estado</th>
+      <th>Actividades</th><th>Asistencia</th><th>Goles</th><th>Detalle</th></tr></thead>
+    <tbody id="tablaInstitucional"></tbody>
+  </table>
+  </div>
+  <p id="mensajeInstitucional" role="status" aria-live="polite"></p>
+</section>
 <section id="contenido" hidden>
 <div class="titulo-reporte">
   <div><span class="eyebrow">RESUMEN DE TEMPORADA</span>

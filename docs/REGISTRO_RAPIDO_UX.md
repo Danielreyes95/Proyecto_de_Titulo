@@ -38,3 +38,11 @@ Ruta: `/registro-rapido.html?escuela=<escuelaId>`.
 - Probar realmente MongoDB, SMTP, autorizaciones cruzadas, cierres concurrentes y pantalla táctil en teléfonos; las pruebas unitarias/sintaxis no sustituyen esas verificaciones.
 - Decidir qué métricas son prioritarias según entrenador/categoría: algunas pueden ser configurables por tipo de entrenamiento para no sobrecargar el modo cancha.
 - Evaluar PWA/almacenamiento offline **cifrado y con políticas de protección de datos** solamente después de definir riesgo y sincronización, no guardar datos sensibles en caché local sin control.
+
+## Mejora adicional: iniciar actividad sin depender del director
+- El director **o el entrenador con categoría activa asignada** puede crear una actividad directamente desde el teléfono. La lista de categorías se calcula en backend: para el entrenador solo contiene sus asignaciones; la API rechaza intentos de programar una categoría ajena aunque cambie el identificador enviado.
+- Atajo **Confirmar presentes pendientes**: con confirmación expresa, marca solo los pendientes como presentes en una operación. No modifica ausentes previamente marcados ni cambia estadísticas. Se puede deshacer antes del próximo guardado automático.
+- Los lotes ahora admiten hasta 200 jugadores, en concordancia con el máximo de la actividad.
+- Se muestran nombres de categoría en la lista de actividades y solo los datos mínimos necesarios en cancha.
+- Indicador explícito **Sin conexión**: evita afirmar que se guardó cuando no hay red; mantiene los cambios en la pestaña y vuelve a intentar al restablecerse. No hay persistencia offline: cerrar la pestaña podría perder anotaciones no sincronizadas.
+- Pruebas unitarias de acceso a creación de evento para entrenador: se comprueba que no consulta categorías no asignadas y que el filtro incluye `escuela`. Falta prueba integrada real de aislamiento A/B.

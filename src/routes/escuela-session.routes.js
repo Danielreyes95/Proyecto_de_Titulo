@@ -13,12 +13,20 @@ const invitarCoach = require("../controllers/invitacion-entrenador.controller");
 const estadisticas = require("../controllers/estadisticas-escuela.controller");
 const resumenEscuela = require("../controllers/resumen-escuela.controller");
 const { requirePersonalDeportivo } = require("../middleware/escuela-deporte-auth");
+const { requireFamilia } = require("../middleware/familia-auth");
+const familias = require("../controllers/familia.controller");
+const invitarFamilia = require("../controllers/invitacion-apoderado.controller");
 
 router.post("/auth/login", loginThrottle, session.login);
 router.get("/invitaciones/consultar", invite.consultar);
 router.post("/invitaciones/aceptar", loginThrottle, invite.aceptar);
 router.post("/invitaciones/aceptar-existente", requireSchoolUser, session.aceptarExistente);
 router.get("/mis-escuelas", requireSchoolUser, session.misEscuelas);
+router.get("/invitaciones-familia/consultar", invitarFamilia.consultar);
+router.post("/invitaciones-familia/aceptar", loginThrottle,
+  invitarFamilia.aceptarNuevo);
+router.post("/invitaciones-familia/aceptar-existente", requireSchoolUser,
+  invitarFamilia.aceptarExistente);
 router.get("/invitaciones-entrenador/consultar", invitarCoach.consultar);
 router.post("/invitaciones-entrenador/aceptar",
   loginThrottle, invitarCoach.aceptarNueva);
@@ -41,6 +49,14 @@ router.post("/:escuelaId/entrenadores/:entrenadorId/invitar",
   requireSchoolUser, requireDirector, invitarCoach.invitar);
 router.patch("/:escuelaId/entrenadores/:entrenadorId/asignaciones/:categoriaId/finalizar",
   requireSchoolUser, requireDirector, entrenador.finalizarAsignacion);
+
+// Portal familiar: solo familiares vinculados a sus jugadores, no rol director.
+router.get("/:escuelaId/familia/mis-jugadores", requireSchoolUser,
+  requireFamilia, familias.misJugadores);
+
+// Invitación familiar: solo el director autorizado puede enviarla.
+router.post("/:escuelaId/apoderados/:apoderadoId/invitar",
+  requireSchoolUser, requireDirector, invitarFamilia.invitar);
 
 // Datos de menores: acceso exclusivo del director de la escuela autorizada.
 router.get("/:escuelaId/apoderados", requireSchoolUser, requireDirector, jugador.apoderados);

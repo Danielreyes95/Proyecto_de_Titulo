@@ -181,6 +181,14 @@ $("marcaDirector").addEventListener("submit", async event => {
   finally { button.disabled = false; }
 });
 function mostrarMarca(branding = {}) {
+  const logo = $("escudoSeleccionado");
+  const portada = $("portadaSeleccionada");
+  logo.hidden = !branding?.logoUrl;
+  portada.hidden = !branding?.portadaUrl;
+  if (branding?.logoUrl) logo.src = branding.logoUrl;
+  else logo.removeAttribute("src");
+  if (branding?.portadaUrl) portada.src = branding.portadaUrl;
+  else portada.removeAttribute("src");
   for (const [tipo, field] of [["Logo", "logoUrl"], ["Portada", "portadaUrl"]]) {
     escuelaImagenes.mostrarImagen(
       $("preview" + tipo), $("sin" + tipo), branding?.[field],

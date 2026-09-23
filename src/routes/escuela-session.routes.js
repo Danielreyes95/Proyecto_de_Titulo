@@ -7,6 +7,7 @@ const { actualizarBrandingDirector } = require("../controllers/escuela-branding.
 const { loginThrottle } = require("../middleware/login-throttle");
 const categoria = require("../controllers/escuela-categoria.controller");
 const entrenador = require("../controllers/escuela-entrenador.controller");
+const jugador = require("../controllers/escuela-jugador.controller");
 
 router.post("/auth/login", loginThrottle, session.login);
 router.get("/invitaciones/consultar", invite.consultar);
@@ -28,5 +29,14 @@ router.patch("/:escuelaId/entrenadores/:entrenadorId", requireSchoolUser, requir
 router.post("/:escuelaId/entrenadores/:entrenadorId/asignaciones", requireSchoolUser, requireDirector, entrenador.asignar);
 router.patch("/:escuelaId/entrenadores/:entrenadorId/asignaciones/:categoriaId/finalizar",
   requireSchoolUser, requireDirector, entrenador.finalizarAsignacion);
+
+// Datos de menores: acceso exclusivo del director de la escuela autorizada.
+router.get("/:escuelaId/apoderados", requireSchoolUser, requireDirector, jugador.apoderados);
+router.post("/:escuelaId/apoderados", requireSchoolUser, requireDirector, jugador.crearApoderado);
+router.get("/:escuelaId/jugadores", requireSchoolUser, requireDirector, jugador.listar);
+router.post("/:escuelaId/jugadores", requireSchoolUser, requireDirector, jugador.crear);
+router.patch("/:escuelaId/jugadores/:jugadorId", requireSchoolUser, requireDirector, jugador.actualizar);
+router.post("/:escuelaId/jugadores/:jugadorId/apoderados",
+  requireSchoolUser, requireDirector, jugador.vincularApoderado);
 
 module.exports = router;

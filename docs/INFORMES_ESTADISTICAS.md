@@ -45,3 +45,12 @@ Transformar los registros hechos con un toque en **Modo cancha** en un informe �
 - Una categoría inactiva conserva historia consultable para personal autorizado, pero no acepta crear eventos nuevos.
 - Si no hay actividades cerradas, el informe muestra «—» para porcentajes/medias y cero actividades.
 - Al intentar consultar los últimos eventos de un jugador de otra escuela, la API responde no encontrado.
+
+## Vista institucional agregada (director)
+- `GET /api/escuela-sesion/:escuelaId/estadisticas/resumen?anio=2026`, con `requireSchoolUser` y **`requireDirector`**. No basta ser entrenador ni pertenecer a otra escuela.
+- Agrupa exclusivamente eventos **cerrados**, por escuela y rango anual UTC, antes de extraer registros. Cuenta cada evento solo una vez mediante `$addToSet`.
+- Devuelve actividades, asistencias, ausencias y goles por categoría, más totales de toda la escuela. No incluye fichas, RUT, identificadores de jugadores ni notas individuales.
+- Incluye categorías inactivas para preservar su historia y categorías sin actividades, mostrando asistencia «—» cuando no hay denominador.
+- La pantalla de informes muestra este bloque solo al director; puede abrir los detalles de una categoría desde la misma vista.
+- Valores por categorías representan acumulados de sus eventos históricos, no una comparación de habilidad de los jugadores.
+- Pendiente: QA real con MongoDB y dos escuelas y auditoría de uso por usuarios reales antes de puesta en producción.

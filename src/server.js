@@ -54,6 +54,12 @@ app.use(express.json());
 // =============================
 // RUTAS API
 // =============================
+// Respuestas con sesiones y datos deportivos: evitar caché de intermediarios.
+app.use(["/api/platform", "/api/escuela-sesion"], (req, res, next) => {
+  res.set("Cache-Control", "no-store");
+  next();
+});
+
 // API multiescuela: acceso separado del sistema legado
 app.use("/api/platform", platformRoutes);
 app.use("/api/escuelas", escuelaPublicRoutes);

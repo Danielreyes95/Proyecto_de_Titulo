@@ -41,6 +41,7 @@ function eventSummary(event) {
     _id: event._id,
     categoria: event.categoria,
     fechaEvento: event.fechaEvento,
+    horaInicio: event.horaInicio || null,
     tipoEvento: event.tipoEvento,
     descripcion: event.descripcion,
     cerrado: event.cerrado,
@@ -64,7 +65,7 @@ async function listar(req, res, next) {
     const eventos = await EscuelaEvento.find(filter)
       .sort({ fechaEvento: -1, createdAt: -1 })
       .limit(100)
-      .select("categoria fechaEvento tipoEvento descripcion cerrado registros.asistencia")
+      .select("categoria fechaEvento horaInicio tipoEvento descripcion cerrado registros.asistencia")
       .lean();
     return res.json({ eventos: eventos.map(eventSummary) });
   } catch (error) { return errorResponse(error, res, next); }
@@ -109,7 +110,8 @@ async function crear(req, res, next) {
     });
     const evento = await EscuelaEvento.create({
       escuela: escuela(req), categoria: categoria._id,
-      fechaEvento: fields.fechaEvento, tipoEvento: fields.tipoEvento,
+      fechaEvento: fields.fechaEvento, horaInicio: fields.horaInicio,
+      tipoEvento: fields.tipoEvento,
       descripcion: fields.descripcion,
       registros: jugadores.map(j => ({
         jugador: j._id, asistencia: "pendiente", estadisticas: {}

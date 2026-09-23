@@ -7,6 +7,13 @@ const {
 
 const attempts = new Map();
 const WINDOW_MS = 15 * 60 * 1000;
+// Limpieza periódica: evita que el mapa crezca indefinidamente.
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, data] of attempts) {
+    if (data.until <= now) attempts.delete(key);
+  }
+}, WINDOW_MS).unref();
 const MAX_ATTEMPTS = 5;
 
 function checkRateLimit(key) {
@@ -67,6 +74,7 @@ async function login(req, res, next) {
     }
 
     attempts.delete(`account:${normalizedEmail}`);
+    attempts.delete(`ip:${address}`);
     return res.json({
       token,
       expiresIn: 3600,

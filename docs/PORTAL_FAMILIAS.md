@@ -44,3 +44,12 @@ vence en 24 horas y se consume una vez.
 
 No hay cobros ni notificaciones familiares conectadas aún. El portal no está
 desplegado; es código de desarrollo en un Pull Request en borrador.
+
+## Fase adicional: avisos y próximas actividades (septiembre 2026)
+- El director dispone de `/avisos-escuela.html?escuela=<ID>`: crea un aviso general para toda la escuela o uno para una categoría activa, publica inmediatamente o deja borrador y puede archivarlo. Los avisos archivados/borradores no se muestran a las familias.
+- La familia ve en `/familia-acceso.html` los **avisos publicados** de su escuela y categorías actuales de jugadores activos vinculados, más los próximos entrenamientos/partidos abiertos en cuya plantilla figure efectivamente uno de sus jugadores.
+- Agenda devuelve solamente tipo de actividad, fecha, hora local opcional y nombre de su(s) jugador(es) vinculado(s). No entrega nómina, identificadores ajenos, RUT, notas deportivas ni datos de contacto.
+- Fecha deportiva almacenada como día civil a las 12:00 UTC; para consultar «hoy» se usa provisionalmente `America/Santiago`. Es necesario incorporar zona horaria por escuela antes de extender a otros países.
+- Para nuevas actividades, `horaInicio` es opcional y se valida con formato `HH:mm`. Los eventos anteriores sin hora mostrarán «Hora por confirmar».
+- **No se envían correos ni notificaciones push cuando se publica un aviso:** únicamente aparece dentro del portal autenticado. Una entrega externa requiere infraestructura, consentimiento y políticas de privacidad adicionales.
+- Las pruebas de código cubren delimitación por institución, categoría, estado publicado y vinculaciones familiares, pero no sustituyen pruebas integradas con MongoDB y navegadores.

@@ -11,6 +11,7 @@ const jugador = require("../controllers/escuela-jugador.controller");
 const eventoRapido = require("../controllers/registro-rapido.controller");
 const invitarCoach = require("../controllers/invitacion-entrenador.controller");
 const estadisticas = require("../controllers/estadisticas-escuela.controller");
+const resumenEscuela = require("../controllers/resumen-escuela.controller");
 const { requirePersonalDeportivo } = require("../middleware/escuela-deporte-auth");
 
 router.post("/auth/login", loginThrottle, session.login);
@@ -59,6 +60,10 @@ router.get("/:escuelaId/personal", requireSchoolUser, requirePersonalDeportivo,
       branding: escuela.branding, slug: escuela.slug
     }, rol });
   });
+
+// Visión transversal de la institución: EXCLUSIVA del director, sin fichas individuales.
+router.get("/:escuelaId/estadisticas/resumen", requireSchoolUser,
+  requireDirector, resumenEscuela.resumenInstitucional);
 
 // Informes: solo categorías propias en escuela activa y eventos cerrados.
 router.get("/:escuelaId/estadisticas/categorias/:categoriaId",

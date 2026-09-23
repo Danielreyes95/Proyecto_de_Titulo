@@ -39,6 +39,8 @@ privado más abajo y abre `http://localhost:3000/plataforma.html` o
 `http://localhost:3000/director-acceso.html`. Nunca subas `.env` ni
 habilites rutas antiguas con información real.
 
+**En Windows con VS Code:** sigue `docs/INICIAR_EN_VSCODE.md` para instalar dependencias, configurar una base de pruebas, crear tu superadministrador e iniciar la aplicación sin reutilizar contraseñas antiguas.
+
 ## Preparar entorno de desarrollo privado
 
 1. Resguardar y aislar los datos existentes. Revocar/renovar claves que ya

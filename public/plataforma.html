@@ -6,6 +6,7 @@
   <meta name="robots" content="noindex,nofollow">
   <title>Administración de escuelas</title>
   <link rel="stylesheet" href="/assets/css/plataforma.css">
+  <script src="/js/escuela-imagenes.js" defer></script>
   <script src="/js/plataforma.js" defer></script>
 </head>
 <body>
@@ -49,7 +50,7 @@
 
         <section class="panel" aria-labelledby="tituloMarca">
           <h2 id="tituloMarca">Identidad visual</h2>
-          <p>Selecciona una escuela. Por ahora, la marca la configura el administrador general.</p>
+          <p>Selecciona una escuela. El administrador general y su director pueden personalizarla.</p>
           <form id="marcaForm" class="formulario">
             <label>Escuela<select id="escuelaMarca" required><option value="">Seleccionar escuela</option></select></label>
             <label>Nombre público<input id="nombrePublico" required maxlength="100"></label>
@@ -65,8 +66,32 @@
               <div><button type="button" id="previaBoton">Ejemplo de botón</button></div>
             </div>
             <button type="submit">Guardar colores y nombre</button>
-            <small>Las imágenes se incorporarán mediante carga y validación segura en una próxima etapa.</small>
+            <small>La identidad visual se guarda exclusivamente para esta escuela.</small>
           </form>
+          <section class="marca-imagenes" aria-labelledby="tituloImagenesAdmin">
+            <h3 id="tituloImagenesAdmin">Escudo y portada</h3>
+            <p>Selecciona una escuela activa y utiliza imágenes con autorización de uso.</p>
+            <div class="marca-imagenes-grid">
+              <div class="marca-imagen-card">
+                <h3>Escudo</h3>
+                <img id="adminPreviewLogo" alt="Escudo de escuela seleccionada" hidden>
+                <p id="adminSinLogo">Sin logo cargado</p>
+                <label>Archivo de logo<input id="adminArchivoLogo" type="file"
+                  accept="image/png,image/jpeg,image/webp"></label>
+                <div><button id="adminSubirLogo" type="button">Subir escudo</button>
+                <button id="adminQuitarLogo" class="secundario" type="button" hidden>Retirar</button></div>
+              </div>
+              <div class="marca-imagen-card">
+                <h3>Portada</h3>
+                <img id="adminPreviewPortada" alt="Portada de escuela seleccionada" hidden>
+                <p id="adminSinPortada">Sin portada cargada</p>
+                <label>Archivo de portada<input id="adminArchivoPortada" type="file"
+                  accept="image/png,image/jpeg,image/webp"></label>
+                <div><button id="adminSubirPortada" type="button">Subir portada</button>
+                <button id="adminQuitarPortada" class="secundario" type="button" hidden>Retirar</button></div>
+              </div>
+            </div>
+          </section>
         </section>
       </div>
 

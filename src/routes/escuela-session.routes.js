@@ -4,10 +4,11 @@ const invite = require("../controllers/invitacion-director.controller");
 const session = require("../controllers/escuela-session.controller");
 const { requireSchoolUser, requireDirector } = require("../middleware/escuela-auth");
 const { actualizarBrandingDirector } = require("../controllers/escuela-branding.controller");
+const { loginThrottle } = require("../middleware/login-throttle");
 
-router.post("/auth/login", session.login);
+router.post("/auth/login", loginThrottle, session.login);
 router.get("/invitaciones/consultar", invite.consultar);
-router.post("/invitaciones/aceptar", invite.aceptar);
+router.post("/invitaciones/aceptar", loginThrottle, invite.aceptar);
 router.post("/invitaciones/aceptar-existente", requireSchoolUser, session.aceptarExistente);
 router.get("/mis-escuelas", requireSchoolUser, session.misEscuelas);
 router.get("/:escuelaId/director", requireSchoolUser, requireDirector, session.miEscuela);

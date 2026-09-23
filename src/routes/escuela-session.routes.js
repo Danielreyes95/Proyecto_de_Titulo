@@ -15,6 +15,8 @@ const resumenEscuela = require("../controllers/resumen-escuela.controller");
 const { requirePersonalDeportivo } = require("../middleware/escuela-deporte-auth");
 const { requireFamilia } = require("../middleware/familia-auth");
 const familias = require("../controllers/familia.controller");
+const familiaAgenda = require("../controllers/familia-agenda.controller");
+const aviso = require("../controllers/escuela-aviso.controller");
 const invitarFamilia = require("../controllers/invitacion-apoderado.controller");
 
 router.post("/auth/login", loginThrottle, session.login);
@@ -50,9 +52,17 @@ router.post("/:escuelaId/entrenadores/:entrenadorId/invitar",
 router.patch("/:escuelaId/entrenadores/:entrenadorId/asignaciones/:categoriaId/finalizar",
   requireSchoolUser, requireDirector, entrenador.finalizarAsignacion);
 
+// Comunicaciones: solo dirección crea y publica; borradores no salen a familias.
+router.get("/:escuelaId/avisos", requireSchoolUser, requireDirector, aviso.listar);
+router.post("/:escuelaId/avisos", requireSchoolUser, requireDirector, aviso.crear);
+router.patch("/:escuelaId/avisos/:avisoId/estado", requireSchoolUser,
+  requireDirector, aviso.cambiarEstado);
+
 // Portal familiar: solo familiares vinculados a sus jugadores, no rol director.
 router.get("/:escuelaId/familia/mis-jugadores", requireSchoolUser,
   requireFamilia, familias.misJugadores);
+router.get("/:escuelaId/familia/agenda", requireSchoolUser,
+  requireFamilia, familiaAgenda.agenda);
 
 // Invitación familiar: solo el director autorizado puede enviarla.
 router.post("/:escuelaId/apoderados/:apoderadoId/invitar",

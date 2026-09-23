@@ -49,3 +49,12 @@
 .tarjetas button{padding:9px 11px}
 }
 @media(max-width:390px){.fila-metricas{gap:8px}.marcador{gap:4px}.marcador button{min-width:43px}}
+
+/* Marca deportiva de la institución seleccionada; texto adaptado a contraste. */
+.cancha .guardar-flotante #guardar:not(:disabled),
+.cancha .crear-actividad button,
+.cancha .evento-item button,
+.cancha .asistencias .activo-presente {
+  background: var(--cancha-marca,#146c4f);
+  color: var(--cancha-contraste,#ffffff);
+}

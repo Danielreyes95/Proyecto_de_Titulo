@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const EscuelaCategoria = require("../models/escuela-categoria.model");
 const EscuelaJugador = require("../models/escuela-jugador.model");
 const EscuelaEvento = require("../models/escuela-evento.model");
@@ -44,13 +43,7 @@ async function resumenCategoria(req, res, next) {
     const [rows, players] = await Promise.all([
       EscuelaEvento.aggregate(pipeline(escuela, categoria._id, periodo)),
       EscuelaJugador.find({
-        escuela,
-        $or: [
-          { categoria: categoria._id },
-          // Incluye jugadores que cambiaron de categoría pero participaron
-          // en esta categoría durante el año consultado.
-          { _id: { $in: [] } }
-        ]
+        escuela, categoria: categoria._id
       }).select("nombre estado categoria").lean()
     ]);
     const facet = rows[0] || { porJugador: [], porMes: [], porTipo: [] };
@@ -83,7 +76,7 @@ async function detalleJugador(req, res, next) {
     const escuela = req.deporteScope.escuela._id;
     const jugador = await EscuelaJugador.findOne({
       _id: req.params.jugadorId, escuela
-    }).select("nombre").lean();
+    }).select("nombre categoria").lean();
     if (!jugador) return res.status(404).json({ error: "Jugador no encontrado" });
 
     const filtro = {

@@ -24,6 +24,9 @@ function respondValidation(res, error) {
 
 async function invitar(req, res, next) {
   const { escuelaId } = req.params;
+  if (!req.body || typeof req.body !== "object" || Array.isArray(req.body)) {
+    return res.status(400).json({ error: "Solicitud inválida" });
+  }
   if (!mongoose.isValidObjectId(escuelaId)) return res.status(400).json({ error: "Escuela inválida" });
   const email = validarCorreo(req.body?.email);
   const nombre = validarNombre(req.body?.nombre);

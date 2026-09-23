@@ -34,7 +34,7 @@ function validCategory(categoria, birth) {
 async function apoderados(req, res, next) {
   try {
     const docs = await EscuelaApoderado.find({ escuela: tenant(req) })
-      .select("nombre rut email telefono estado")
+      .select("nombre rut email telefono estado usuario")
       .sort({ nombre: 1 }).limit(200).lean();
     return res.json({ apoderados: docs });
   } catch (error) { next(error); }

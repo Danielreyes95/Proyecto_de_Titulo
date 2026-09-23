@@ -1,0 +1,31 @@
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Familias · Plataforma multiescuela</title>
+<link rel="stylesheet" href="/assets/css/plataforma.css">
+<link rel="stylesheet" href="/assets/css/familia.css">
+<script src="/js/familia-acceso.js" defer></script>
+</head><body><main class="layout">
+<header class="cabecera"><div><span class="eyebrow">PORTAL DE FAMILIAS</span>
+<h1 id="titulo">Bienvenido a tu escuela</h1>
+<p>Información deportiva de los jugadores vinculados a tu familia.</p></div>
+<button type="button" id="salir" class="secundario" hidden>Cerrar sesión</button></header>
+<section id="loginPanel" class="panel auth-panel">
+<h2>Inicia sesión</h2>
+<p>Usa el correo donde recibiste la invitación de la escuela.</p>
+<form id="login" class="formulario">
+<label>Correo electrónico<input id="email" type="email" maxlength="254" autocomplete="username" required></label>
+<label>Contraseña<input id="password" type="password" autocomplete="current-password" required></label>
+<button type="submit">Ingresar al portal</button>
+</form></section>
+<section id="dashboard" hidden>
+<section class="panel"><h2>Selecciona tu escuela</h2>
+<label class="escuela-selector" for="escuela">Escuela
+<select id="escuela"><option value="">Selecciona una institución</option></select>
+</label></section>
+<section id="contenido" hidden><h2 style="margin:22px 0 12px">Mis jugadores</h2>
+<div id="jugadores" class="familia-grid"></div>
+</section></section>
+<p id="mensaje" role="status" aria-live="polite"></p>
+<footer>Los datos de otros jugadores de la escuela no están disponibles desde este portal.</footer>
+</main></body></html>

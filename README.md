@@ -19,6 +19,7 @@ varias escuelas, con usuarios, categorías, entrenadores y jugadores independien
 | Jugadores | `/jugadores-escuela.html?escuela=<ID>` | Registro y apoderados vinculados |
 | Modo cancha | `/registro-rapido.html?escuela=<ID>` | Asistencia y estadísticas con pocos toques |
 | Informes | `/estadisticas-escuela.html?escuela=<ID>` | Acumulados por año, categoría y jugador |
+| Familias | `/familia-acceso.html` | Acceso mediante invitación y consulta de jugadores vinculados |
 
 Los enlaces internos validan roles/pertenencia también desde el backend.
 Los informes únicamente contabilizan eventos cerrados; no trasladan automáticamente

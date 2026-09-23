@@ -26,18 +26,18 @@ async function api(path, data, method = "POST") {
 async function load() {
   const data = await api("/mis-escuelas");
   $("escuelas").replaceChildren();
-  for (const escuela of data.escuelas.filter(s => s.roles.includes("director"))) {
+  for (const escuela of data.escuelas.filter(s => s.roles.includes("director") || s.roles.includes("entrenador"))) {
     const button = document.createElement("button");
     button.type = "button";
-    button.textContent = escuela.nombre;
+    button.textContent = escuela.nombre + " · " + (escuela.roles.includes("director") ? "Dirección" : "Entrenador");
     button.addEventListener("click", async () => {
       try {
-        const detail = await api("/" + escuela.id + "/director");
+        const detail = await api("/" + escuela.id + "/personal");
         $("seleccion").hidden = false;
         $("titulo").textContent = detail.escuela.branding?.nombrePublico || detail.escuela.nombre;
         $("slug").textContent = detail.escuela.slug;
         selectedSchool = escuela.id;
-        $("marcaDirector").hidden = false;
+        $("marcaDirector").hidden = detail.rol !== "director";
         $("directorNombrePublico").value = detail.escuela.branding?.nombrePublico || detail.escuela.nombre;
         const defaults = {
           colorPrimario: "#166534", colorSecundario: "#ffffff",
@@ -77,6 +77,8 @@ async function load() {
         }
         coachesLink.href = "/entrenadores-escuela.html?escuela=" +
           encodeURIComponent(escuela.id);
+        coachesLink.hidden = detail.rol !== "director";
+        categoriesLink.hidden = detail.rol !== "director";
         let playersLink = $("enlaceJugadores");
         if (!playersLink) {
           playersLink = document.createElement("a");
@@ -90,6 +92,21 @@ async function load() {
           $("seleccion").append(playersLink);
         }
         playersLink.href = "/jugadores-escuela.html?escuela=" +
+          encodeURIComponent(escuela.id);
+        playersLink.hidden = detail.rol !== "director";
+        let quickLink = $("enlaceRegistroRapido");
+        if (!quickLink) {
+          quickLink = document.createElement("a");
+          quickLink.id = "enlaceRegistroRapido";
+          quickLink.textContent = "⚡ Registro rápido en cancha →";
+          quickLink.className = "secundario";
+          quickLink.style.display = "inline-block";
+          quickLink.style.padding = "12px 16px";
+          quickLink.style.borderRadius = "9px";
+          quickLink.style.marginLeft = "8px";
+          $("seleccion").append(quickLink);
+        }
+        quickLink.href = "/registro-rapido.html?escuela=" +
           encodeURIComponent(escuela.id);
       } catch (error) { notify(error.message); }
     });

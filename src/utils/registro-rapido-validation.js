@@ -30,7 +30,7 @@ function id(value) {
 }
 function nuevoEvento(body) {
   if (!plain(body) || Object.keys(body).some(k =>
-    !["categoriaId", "fechaEvento", "tipoEvento", "descripcion"].includes(k))) {
+    !["categoriaId", "fechaEvento", "tipoEvento", "descripcion", "horaInicio"].includes(k))) {
     fail("Campos no permitidos");
   }
   const categoriaId = id(body.categoriaId);
@@ -42,9 +42,15 @@ function nuevoEvento(body) {
       (typeof body.descripcion !== "string" || body.descripcion.length > 300)) {
     fail("Descripción inválida");
   }
+  if (body.horaInicio !== undefined && body.horaInicio !== null &&
+      (typeof body.horaInicio !== "string" ||
+       !/^([01]\\d|2[0-3]):[0-5]\\d$/.test(body.horaInicio))) {
+    fail("Hora de actividad inválida");
+  }
   return {
     categoriaId, fechaEvento: fecha, tipoEvento: body.tipoEvento,
-    descripcion: body.descripcion?.trim() || ""
+    descripcion: body.descripcion?.trim() || "",
+    horaInicio: body.horaInicio || null
   };
 }
 function validarLote(body) {

@@ -51,6 +51,54 @@ function setColor(primary) {
   document.documentElement.style.setProperty("--informe-contraste",
     light > .179 ? "#111827" : "#ffffff");
 }
+// Dirección dispone de una síntesis institucional sin exponer fichas privadas.
+async function loadInstitutional() {
+  if ($("resumenInstitucional").hidden) return;
+  const requestedYear = $("anio").value;
+  $("recargarInstitucional").disabled = true;
+  $("mensajeInstitucional").textContent = "Actualizando resumen institucional...";
+  try {
+    const data = await api("/estadisticas/resumen?anio=" +
+      encodeURIComponent(requestedYear));
+    if ($("anio").value !== requestedYear) return;
+    $("instActividades").textContent = data.totales.actividades;
+    $("instAsistencia").textContent = perc(data.totales.porcentajeAsistencia);
+    $("instGoles").textContent = data.totales.goles;
+    $("instCategorias").textContent = data.categorias.length;
+    $("tablaInstitucional").replaceChildren();
+    for (const cat of data.categorias) {
+      const tr = $("tablaInstitucional").insertRow();
+      cell(tr, cat.nombre);
+      cell(tr, cat.modalidad);
+      cell(tr, cat.estado);
+      cell(tr, cat.actividades);
+      cell(tr, perc(cat.porcentajeAsistencia));
+      cell(tr, cat.goles);
+      const actions = tr.insertCell();
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "secundario";
+      button.textContent = "Ver categoría";
+      button.addEventListener("click", () => {
+        $("categoria").value = cat.categoriaId;
+        loadReport();
+        $("contenido").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      actions.append(button);
+    }
+    if (!data.categorias.length) {
+      const row = $("tablaInstitucional").insertRow();
+      const td = row.insertCell();
+      td.colSpan = 7;
+      td.textContent = "Esta escuela todavía no tiene categorías registradas.";
+    }
+    $("mensajeInstitucional").textContent = "";
+  } catch (error) {
+    $("mensajeInstitucional").textContent = error.message;
+  } finally {
+    $("recargarInstitucional").disabled = false;
+  }
+}
 function renderTypes(list) {
   const root = $("tipos"); root.replaceChildren();
   for (const item of list) {
@@ -194,7 +242,11 @@ async function loadReport() {
   } finally { $("recargar").disabled = false; }
 }
 $("categoria").addEventListener("change", loadReport);
-$("anio").addEventListener("change", loadReport);
+$("anio").addEventListener("change", () => {
+  loadReport();
+  loadInstitutional();
+});
+$("recargarInstitucional").addEventListener("click", loadInstitutional);
 $("recargar").addEventListener("click", loadReport);
 $("buscar").addEventListener("input", () => {
   if (resultado) renderPlayers(resultado.jugadores);
@@ -215,6 +267,7 @@ $("cerrarDetalle").addEventListener("click", () => {
     $("nombreEscuela").textContent = personal.escuela.branding?.nombrePublico ||
       personal.escuela.nombre;
     setColor(personal.escuela.branding?.colorPrimario);
+    $("resumenInstitucional").hidden = personal.rol !== "director";
     const yearNow = new Date().getUTCFullYear();
     for (let year = yearNow + 1; year >= 2020; year--) {
       $("anio").add(new Option(String(year), String(year)));
@@ -231,7 +284,7 @@ $("cerrarDetalle").addEventListener("click", () => {
     }
     $("categoria").value = categoriesSorted.some(c => c._id === selectedFromLink) ?
       selectedFromLink : (categoriesSorted[0]?._id || "");
-    await loadReport();
+    await Promise.all([loadReport(), loadInstitutional()]);
   } catch (error) { status(error.message, true); }
 })();
 })();

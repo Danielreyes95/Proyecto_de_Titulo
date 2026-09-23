@@ -10,6 +10,7 @@ const entrenador = require("../controllers/escuela-entrenador.controller");
 const jugador = require("../controllers/escuela-jugador.controller");
 const eventoRapido = require("../controllers/registro-rapido.controller");
 const invitarCoach = require("../controllers/invitacion-entrenador.controller");
+const estadisticas = require("../controllers/estadisticas-escuela.controller");
 const { requirePersonalDeportivo } = require("../middleware/escuela-deporte-auth");
 
 router.post("/auth/login", loginThrottle, session.login);
@@ -58,6 +59,12 @@ router.get("/:escuelaId/personal", requireSchoolUser, requirePersonalDeportivo,
       branding: escuela.branding, slug: escuela.slug
     }, rol });
   });
+
+// Informes: solo categorías propias en escuela activa y eventos cerrados.
+router.get("/:escuelaId/estadisticas/categorias/:categoriaId",
+  requireSchoolUser, requirePersonalDeportivo, estadisticas.resumenCategoria);
+router.get("/:escuelaId/estadisticas/categorias/:categoriaId/jugadores/:jugadorId",
+  requireSchoolUser, requirePersonalDeportivo, estadisticas.detalleJugador);
 
 // Registro rápido en cancha: director o entrenador con categoría asignada.
 router.get("/:escuelaId/mis-categorias", requireSchoolUser,

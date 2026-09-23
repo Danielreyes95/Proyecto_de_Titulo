@@ -60,9 +60,11 @@ router.get("/:escuelaId/personal", requireSchoolUser, requirePersonalDeportivo,
   });
 
 // Registro rápido en cancha: director o entrenador con categoría asignada.
+router.get("/:escuelaId/mis-categorias", requireSchoolUser,
+  requirePersonalDeportivo, eventoRapido.misCategorias);
 router.get("/:escuelaId/eventos", requireSchoolUser, requirePersonalDeportivo, eventoRapido.listar);
 router.post("/:escuelaId/eventos", requireSchoolUser, requirePersonalDeportivo,
-  requireDirector, eventoRapido.crear);
+  eventoRapido.crear);
 router.get("/:escuelaId/eventos/:eventoId", requireSchoolUser,
   requirePersonalDeportivo, eventoRapido.detalle);
 router.patch("/:escuelaId/eventos/:eventoId/registros", requireSchoolUser,

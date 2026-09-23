@@ -136,3 +136,11 @@ Ejemplo de creación (solo con token válido de administración):
 - Especificación y escenarios de prueba manual: `docs/REGISTRO_RAPIDO_UX.md`.
 
 **Atención:** el modo de registro rápido es una NUEVA implementación multiescuela, no una modificación automática de los eventos legacy ni su frontend. No desplegar todavía para una escuela real sin remediación histórica de secretos/datos y pruebas en MongoDB, SMTP, autorización A/B y móviles.
+
+## Fase 6.1 - Optimización solicitada para entrenador
+- Entrenador puede **iniciar actividad desde su teléfono**, sin esperar que el director la programe. La categoría se valida con su asignación activa en la misma escuela.
+- Pantalla de cancha incluye atajo de asistencia masiva con confirmación, limitado a pendientes y con opción de deshacer antes de guardar.
+- Guardado por lote ampliado a 200 registros para el tamaño máximo actual de un evento.
+- Se informa desconexión explícita; no hay almacenamiento offline persistente y se indica mantener la pestaña abierta si existen cambios sin sincronizar.
+- Prueba unitaria del permiso para iniciar actividad solo en categoría asignada, adicional a pruebas de validación de lote.
+- Seguir bloqueando producción y el merge hasta remediar credenciales/datos previos, ejecutar pruebas con base de datos, correo y teléfonos reales.

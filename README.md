@@ -24,6 +24,21 @@ Los enlaces internos validan roles/pertenencia también desde el backend.
 Los informes únicamente contabilizan eventos cerrados; no trasladan automáticamente
 estadísticas de colecciones del proyecto original.
 
+## Ver la interfaz antes de configurar MongoDB
+
+Existe una demostración **autónoma con datos completamente ficticios**:
+`public/demo-visual.html`. Descárgala y ábrela en Chrome o Edge. No requiere
+Node.js, correo, MongoDB ni cuenta: permite cambiar de escuela, ver el panel,
+probar un registro rápido simulado y personalizar los colores.
+
+**No es un despliegue real ni representa datos guardados**: el archivo de prueba
+no llama a la API y sus cambios se pierden al recargar.
+
+Para ver **la aplicación funcional de desarrollo**, sigue los pasos de entorno
+privado más abajo y abre `http://localhost:3000/plataforma.html` o
+`http://localhost:3000/director-acceso.html`. Nunca subas `.env` ni
+habilites rutas antiguas con información real.
+
 ## Preparar entorno de desarrollo privado
 
 1. Resguardar y aislar los datos existentes. Revocar/renovar claves que ya

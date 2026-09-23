@@ -8,6 +8,8 @@ const { loginThrottle } = require("../middleware/login-throttle");
 const categoria = require("../controllers/escuela-categoria.controller");
 const entrenador = require("../controllers/escuela-entrenador.controller");
 const jugador = require("../controllers/escuela-jugador.controller");
+const eventoRapido = require("../controllers/registro-rapido.controller");
+const { requirePersonalDeportivo } = require("../middleware/escuela-deporte-auth");
 
 router.post("/auth/login", loginThrottle, session.login);
 router.get("/invitaciones/consultar", invite.consultar);
@@ -38,5 +40,16 @@ router.post("/:escuelaId/jugadores", requireSchoolUser, requireDirector, jugador
 router.patch("/:escuelaId/jugadores/:jugadorId", requireSchoolUser, requireDirector, jugador.actualizar);
 router.post("/:escuelaId/jugadores/:jugadorId/apoderados",
   requireSchoolUser, requireDirector, jugador.vincularApoderado);
+
+// Registro rápido en cancha: director o entrenador con categoría asignada.
+router.get("/:escuelaId/eventos", requireSchoolUser, requirePersonalDeportivo, eventoRapido.listar);
+router.post("/:escuelaId/eventos", requireSchoolUser, requirePersonalDeportivo,
+  requireDirector, eventoRapido.crear);
+router.get("/:escuelaId/eventos/:eventoId", requireSchoolUser,
+  requirePersonalDeportivo, eventoRapido.detalle);
+router.patch("/:escuelaId/eventos/:eventoId/registros", requireSchoolUser,
+  requirePersonalDeportivo, eventoRapido.guardarLote);
+router.post("/:escuelaId/eventos/:eventoId/cerrar", requireSchoolUser,
+  requirePersonalDeportivo, eventoRapido.cerrar);
 
 module.exports = router;

@@ -49,6 +49,16 @@ router.patch("/:escuelaId/jugadores/:jugadorId", requireSchoolUser, requireDirec
 router.post("/:escuelaId/jugadores/:jugadorId/apoderados",
   requireSchoolUser, requireDirector, jugador.vincularApoderado);
 
+// Identidad visual y rol de personal autorizado, sin datos privados de jugadores.
+router.get("/:escuelaId/personal", requireSchoolUser, requirePersonalDeportivo,
+  (req, res) => {
+    const { escuela, rol } = req.deporteScope;
+    res.json({ escuela: {
+      id: escuela._id, nombre: escuela.nombre,
+      branding: escuela.branding, slug: escuela.slug
+    }, rol });
+  });
+
 // Registro rápido en cancha: director o entrenador con categoría asignada.
 router.get("/:escuelaId/eventos", requireSchoolUser, requirePersonalDeportivo, eventoRapido.listar);
 router.post("/:escuelaId/eventos", requireSchoolUser, requirePersonalDeportivo,

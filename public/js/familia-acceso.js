@@ -84,7 +84,54 @@ function renderAgenda(data) {
       "Hora: " + activity.horaInicio : "Hora por confirmar";
     const players = document.createElement("small");
     players.textContent = "Para: " + activity.jugadores.join(", ");
-    card.append(heading, time, players); $("agenda").append(card);
+    card.append(heading, time, players);
+    const list = document.createElement("div");
+    list.className = "confirmaciones";
+    for (const confirmacion of activity.confirmaciones || []) {
+      const row = document.createElement("div");
+      row.className = "confirmacion-jugador";
+      const name = document.createElement("strong");
+      name.textContent = confirmacion.nombre;
+      const status = document.createElement("span");
+      const names = {
+        pendiente: "Sin confirmar", asistira: "Asistirá",
+        no_asistira: "No asistirá"
+      };
+      status.textContent = names[confirmacion.estado] || names.pendiente;
+      status.className = "confirmacion-estado";
+      const buttons = document.createElement("div");
+      buttons.className = "confirmacion-botones";
+      for (const [estado, label] of [
+        ["asistira", "✓ Asistirá"],
+        ["no_asistira", "✕ No asistirá"],
+        ["pendiente", "Restablecer"]
+      ]) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "secundario";
+        button.textContent = label;
+        button.disabled = confirmacion.estado === estado;
+        button.setAttribute("aria-label", label + ": " + confirmacion.nombre);
+        button.addEventListener("click", async () => {
+          buttons.querySelectorAll("button").forEach(b => { b.disabled = true; });
+          try {
+            await api("/" + encodeURIComponent($("escuela").value) +
+              "/familia/eventos/" + encodeURIComponent(activity.id) +
+              "/jugadores/" + encodeURIComponent(confirmacion.jugadorId) +
+              "/confirmacion", "PATCH", { estado });
+            await loadFamily();
+            note("Participación prevista actualizada. La asistencia real se registra en cancha.");
+          } catch (error) {
+            note(error.message);
+            buttons.querySelectorAll("button").forEach(b => { b.disabled = false; });
+          }
+        });
+        buttons.append(button);
+      }
+      row.append(name, status, buttons);
+      list.append(row);
+    }
+    card.append(list); $("agenda").append(card);
   }
   if (!data.proximasActividades.length) {
     emptyMessage($("agenda"), "Sin actividades próximas registradas.");

@@ -86,3 +86,9 @@ Remediación histórica de secretos/datos en ambos repositorios; migración
 respaldada de colecciones antiguas; pruebas de aislamiento entre escuelas
 con MongoDB, pruebas reales de SMTP y móviles, política de sesiones y límites
 compartidos; pruebas integradas del portal de apoderados; pagos seguros y subida de escudos/imágenes.
+
+## Avisos y agenda
+- `/avisos-escuela.html?escuela=<ID>`: el director redacta avisos generales o por categoría, publica y archiva.
+- El portal `/familia-acceso.html` muestra avisos publicados aplicables a la familia y las próximas actividades de sus jugadores vinculados.
+- La publicación NO envía correos ni notificaciones push. Los eventos sin hora muestran «Hora por confirmar».
+- Implementación inicial para Chile (`America/Santiago`); zona horaria configurable por escuela pendiente.

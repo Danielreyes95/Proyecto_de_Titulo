@@ -112,6 +112,21 @@ async function refresh() {
       } catch (error) { notify(error.message); state.disabled = false; }
     });
     actions.append(state);
+    if (person.estado === "activo") {
+      const invite = document.createElement("button");
+      invite.type = "button"; invite.className = "secundario";
+      invite.textContent = "Invitar acceso";
+      invite.addEventListener("click", async () => {
+        if (!confirm("¿Enviar invitación de acceso a " + person.email + "?")) return;
+        invite.disabled = true;
+        try {
+          await api("/entrenadores/" + person._id + "/invitar", "POST", {});
+          notify("Invitación enviada. El entrenador recibirá un enlace válido 24 horas.");
+        } catch (error) { notify(error.message); }
+        finally { invite.disabled = false; }
+      });
+      actions.append(invite);
+    }
   }
 }
 $("entrenadorForm").addEventListener("submit", async event => {

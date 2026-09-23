@@ -162,3 +162,10 @@ Ejemplo de creación (solo con token válido de administración):
 - No permite exportar fichas de menores ni compartir informes públicamente; solo sesiones autenticadas autorizadas.
 - Falta remediación de secretos y datos publicados en ramas/historial para usar clientes reales.
 - Las fórmulas y aceptación se describen en `docs/INFORMES_ESTADISTICAS.md`; instrucciones generales en `README.md`.
+
+## Fase 7.1 - Visión institucional de dirección
+- Nuevo resumen general anual por escuela, por categoría y total: actividades cerradas, asistencias, ausencias y goles sin datos personales de menores.
+- Endpoint restringido a director activo y escuela activa. Filtro de tenant y fecha aplicado antes de agrupar; no admite consultar otras escuelas mediante ID arbitrario.
+- Pantalla de estadísticas ofrece tabla institucional, actualización y salto a detalle por categoría; entrenadores conservan únicamente los informes de categorías asignadas.
+- Pruebas unitarias de pipeline, sumatorias, categorías inactivas y estado sin datos; no equivalen a una validación integrada de MongoDB ni móvil.
+- Persiste el bloqueo de despliegue: remediar historial público con datos/secretos, rotar credenciales, migración respaldada y pruebas end-to-end.

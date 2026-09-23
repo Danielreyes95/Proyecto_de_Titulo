@@ -347,6 +347,9 @@ async function openEvent(id) {
   $("actividadPanel").hidden = false;
   $("eventoTitulo").textContent = evento.categoriaNombre + " · " +
     evento.fechaEvento.slice(0, 10);
+  $("verInforme").href = "/estadisticas-escuela.html?escuela=" +
+    encodeURIComponent(escuelaId) + "&categoria=" +
+    encodeURIComponent(evento.categoria);
   $("tipoEvento").textContent = evento.tipoEvento + (evento.cerrado ? " · CERRADO" : "");
   $("metrica").value = evento.tipoEvento === "Entrenamiento" ?
     "recuperaciones" : "goles";
@@ -370,6 +373,8 @@ async function loadEvents() {
   const current = schools.escuelas?.find(s => String(s.id) === escuelaId);
   $("escuelaTitulo").textContent = current?.branding?.nombrePublico ||
     current?.nombre || "Mi escuela";
+  $("verInforme").href = "/estadisticas-escuela.html?escuela=" +
+    encodeURIComponent(escuelaId);
   const director = current?.roles?.includes("director");
   const primary = current?.branding?.colorPrimario;
   if (/^#[0-9A-Fa-f]{6}$/.test(primary || "")) {

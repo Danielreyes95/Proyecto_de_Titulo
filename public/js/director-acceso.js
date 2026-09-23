@@ -10,6 +10,7 @@ function logout() {
   $("loginPanel").hidden = false; $("dashboard").hidden = true; $("salir").hidden = true;
   $("seleccion").hidden = true;
   $("marcaDirector").hidden = true;
+  $("imagenesDirector").hidden = true;
   selectedSchool = null;
 }
 async function api(path, data, method = "POST") {
@@ -38,6 +39,8 @@ async function load() {
         $("slug").textContent = detail.escuela.slug;
         selectedSchool = escuela.id;
         $("marcaDirector").hidden = detail.rol !== "director";
+        $("imagenesDirector").hidden = detail.rol !== "director";
+        mostrarMarca(detail.escuela.branding);
         $("directorNombrePublico").value = detail.escuela.branding?.nombrePublico || detail.escuela.nombre;
         const defaults = {
           colorPrimario: "#166534", colorSecundario: "#ffffff",
@@ -177,6 +180,49 @@ $("marcaDirector").addEventListener("submit", async event => {
   } catch (error) { notify(error.message); }
   finally { button.disabled = false; }
 });
+function mostrarMarca(branding = {}) {
+  for (const [tipo, field] of [["Logo", "logoUrl"], ["Portada", "portadaUrl"]]) {
+    escuelaImagenes.mostrarImagen(
+      $("preview" + tipo), $("sin" + tipo), branding?.[field],
+      "Sin imagen cargada"
+    );
+    $("quitar" + tipo).hidden = !branding?.[field];
+  }
+}
+for (const [tipo, nombre] of [["logo", "Logo"], ["portada", "Portada"]]) {
+  $("subir" + nombre).addEventListener("click", async event => {
+    if (!selectedSchool) return notify("Selecciona una escuela");
+    const archivo = $("archivo" + nombre).files?.[0];
+    if (!archivo) return notify("Selecciona una imagen primero");
+    const button = event.currentTarget;
+    button.disabled = true;
+    try {
+      notify("Preparando imagen...");
+      const base64 = await escuelaImagenes.obtenerBase64(archivo, tipo);
+      const result = await api("/" + selectedSchool + "/media/" + tipo,
+        { base64 }, "PUT");
+      mostrarMarca(result.escuela.branding);
+      $("archivo" + nombre).value = "";
+      notify("Imagen institucional actualizada");
+    } catch (error) { notify(error.message); }
+    finally { button.disabled = false; }
+  });
+  $("quitar" + nombre).addEventListener("click", async event => {
+    if (!selectedSchool || !confirm("¿Retirar esta imagen de tu escuela?")) return;
+    const button = event.currentTarget; button.disabled = true;
+    try {
+      const response = await fetch(BASE + "/" + selectedSchool + "/media/" + tipo, {
+        method: "DELETE",
+        headers: { Authorization: "Bearer " + token() }
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "No se pudo retirar la imagen");
+      mostrarMarca(data.escuela.branding);
+      notify("Imagen retirada");
+    } catch (error) { notify(error.message); }
+    finally { button.disabled = false; }
+  });
+}
 $("salir").addEventListener("click", () => { logout(); notify("Sesión cerrada"); });
 if (token()) load().catch(e => { logout(); notify(e.message); });
 })();

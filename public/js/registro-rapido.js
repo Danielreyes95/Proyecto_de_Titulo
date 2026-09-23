@@ -39,6 +39,7 @@ function normalized(row) {
   return {
     jugadorId: row.jugadorId, nombre: row.nombre,
     asistencia: row.asistencia || "pendiente",
+    confirmacion: row.confirmacion || "pendiente",
     estadisticas: { ...defaults(), ...row.estadisticas },
     observacion: row.observacion || ""
   };
@@ -167,8 +168,13 @@ function renderRoster() {
     const name = document.createElement("div"); name.className = "datos-jugador";
     const title = document.createElement("strong"); title.textContent = row.nombre;
     const badge = document.createElement("small");
-    badge.textContent = row.asistencia === "presente" ? "Presente" :
-      row.asistencia === "ausente" ? "Ausente" : "Pendiente de asistencia";
+    const prevista = {
+      pendiente: "Familia sin confirmar", asistira: "Familia: asistirá",
+      no_asistira: "Familia: no asistirá"
+    };
+    badge.textContent = (prevista[row.confirmacion] || prevista.pendiente) + " · " +
+      (row.asistencia === "presente" ? "Presente en cancha" :
+        row.asistencia === "ausente" ? "Ausente en cancha" : "Asistencia pendiente");
     name.append(title, badge);
     const options = document.createElement("div"); options.className = "asistencias";
     for (const [value, title] of [
@@ -415,8 +421,11 @@ async function loadEvents() {
     const line = document.createElement("p");
     const category = res.categorias.find(c => String(c._id) === String(e.categoria));
     line.textContent = (category ? category.nombre + " · " + category.modalidad + " · " : "") +
-      e.cantidadJugadores + " jugadores · "
-      e.pendientes + " pendientes" + (e.cerrado ? " · cerrado" : "");
+      e.cantidadJugadores + " jugadores · " +
+      (e.confirmaciones?.asistiran || 0) + " asistirán · " +
+      (e.confirmaciones?.noAsistiran || 0) + " no asistirán · " +
+      (e.confirmaciones?.sinResponder ?? e.cantidadJugadores) + " sin confirmar · " +
+      e.pendientes + " asistencias por registrar" + (e.cerrado ? " · cerrado" : "");
     details.append(title, line);
     item.append(details, btn(e.cerrado ? "Ver resumen" : "Registrar ahora", "",
       () => openEvent(e._id).catch(err => note(err.message))));

@@ -75,7 +75,7 @@ function recheck() {
   $("cerrar").disabled = evento?.cerrado || saving || conflict;
   $("sincronizar").hidden = !conflict;
   if (!navigator.onLine && dirty.size) status("Sin conexión · No cierres esta pestaña; tus cambios aún NO están guardados");
-  else if (conflict) status("Otra edición detectada · Tus cambios siguen aquí");
+  else if (conflict) status("Guardado detenido · Revisa el mensaje. Tus cambios siguen aquí");
   else if (saving) status("Guardando...");
   else if (dirty.size) status(dirty.size + " jugador(es) con cambios sin guardar");
   else status("✓ Todo guardado");

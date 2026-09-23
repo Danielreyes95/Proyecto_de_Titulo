@@ -181,3 +181,13 @@ Ejemplo de creación (solo con token válido de administración):
 - Documentación detallada: `docs/PORTAL_FAMILIAS.md`.
 
 **No está desplegado, todavía no conecta pagos ni avisos de familia.** No subir ni reutilizar datos/credenciales publicados históricamente. Antes de usarlo con datos reales: remediación en ambos repositorios, pruebas integradas de múltiples escuelas, SMTP, seguridad y dispositivos.
+
+## Fase 9 - Comunicaciones y agenda familiar
+- Colección `escuela_avisos` para mensajes generales o por categoría, estados borrador/publicado/archivado, autor director y fecha de publicación.
+- API de dirección protegida para crear/listar/publicar/archivar avisos sin aceptar IDs arbitrarios de escuela o autor.
+- API `/familia/agenda` usa membresía y contacto activo, consulta vínculos y jugadores activos y restringe eventos futuros abiertos a categorías actuales y plantilla de sus jugadores.
+- Panel de avisos para director y módulos «Próximas actividades»/«Avisos de la escuela» para el portal familiar.
+- Horario `HH:mm` opcional al crear una actividad; visualización explícita cuando falta hora. Fecha «hoy» provisional con zona `America/Santiago`, pendiente de parametrizar por escuela.
+- Test unitarios para avisos, fecha deportiva y filtros escuela/jugador/categoría. Se corrigió la expresión regular de hora tras detectar un test fallido y se volvió a verificar mediante Actions.
+
+**BLOQUEOS:** todavía sin despliegue, correo masivo ni push de avisos; sin remediar secretos/datos de ramas/historiales; faltan pruebas MongoDB de extremo a extremo, zona horaria por escuela y migración segura.

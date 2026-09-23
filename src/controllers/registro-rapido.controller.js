@@ -47,7 +47,13 @@ function eventSummary(event) {
     cerrado: event.cerrado,
     revision: event.__v,
     cantidadJugadores: event.registros.length,
-    pendientes: event.registros.filter(r => r.asistencia === "pendiente").length
+    pendientes: event.registros.filter(r => r.asistencia === "pendiente").length,
+    confirmaciones: {
+      asistiran: event.registros.filter(r => r.confirmacion === "asistira").length,
+      noAsistiran: event.registros.filter(r => r.confirmacion === "no_asistira").length,
+      sinResponder: event.registros.filter(r =>
+        !r.confirmacion || r.confirmacion === "pendiente").length
+    }
   };
 }
 async function listar(req, res, next) {
@@ -142,7 +148,9 @@ async function detalle(req, res, next) {
         categoria ? categoria.nombre + " · " + categoria.modalidad : "Categoría" },
       jugadores: event.registros.map(r => ({
         jugadorId: String(r.jugador), nombre: nombres.get(String(r.jugador)) || "Jugador sin ficha",
-        asistencia: r.asistencia, estadisticas: r.estadisticas,
+        asistencia: r.asistencia,
+        confirmacion: r.confirmacion || "pendiente",
+        estadisticas: r.estadisticas,
         observacion: r.observacion
       }))
     });

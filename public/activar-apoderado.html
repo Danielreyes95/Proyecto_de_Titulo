@@ -1,0 +1,23 @@
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Activación de acceso familiar</title>
+<link rel="stylesheet" href="/assets/css/plataforma.css">
+<script src="/js/activar-apoderado.js" defer></script></head>
+<body><main class="layout">
+<header class="cabecera"><div><span class="eyebrow">PLATAFORMA MULTIESCUELA</span>
+<h1>Activa tu acceso familiar</h1><p>Consulta la actividad de tus jugadores vinculados.</p></div></header>
+<section class="panel auth-panel">
+<h2 id="escuela">Comprobando invitación...</h2><p id="correo"></p>
+<form id="nuevo" class="formulario" hidden>
+<label>Tu nombre<input id="nombre" maxlength="120" autocomplete="name" required></label>
+<label>Contraseña nueva (mínimo 12 caracteres)
+<input id="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label>
+<button type="submit">Crear mi acceso familiar</button></form>
+<form id="existente" class="formulario" hidden>
+<p>Este correo ya tiene una cuenta. Ingresa con ella para vincular a tu familia.</p>
+<label>Correo<input id="email" type="email" autocomplete="username" readonly></label>
+<label>Contraseña<input id="passwordExistente" type="password" autocomplete="current-password" required></label>
+<button type="submit">Vincular mi familia</button></form>
+<p id="resultado" role="status" aria-live="polite"></p>
+<a href="/familia-acceso.html">Ir al portal de familias</a>
+</section></main></body></html>

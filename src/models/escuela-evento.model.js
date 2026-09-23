@@ -39,7 +39,7 @@ const EscuelaEventoSchema = new mongoose.Schema({
   },
   fechaEvento: { type: Date, required: true },
   // Hora local informativa, sin convertir la fecha deportiva a UTC.
-  horaInicio: { type: String, default: null, match: /^([01]\\d|2[0-3]):[0-5]\\d$/ },
+  horaInicio: { type: String, default: null, match: /^([01]\d|2[0-3]):[0-5]\d$/ },
   tipoEvento: {
     type: String, enum: ["Entrenamiento", "Partido", "Torneo"], required: true
   },

@@ -168,6 +168,14 @@ async function loadFamily() {
     /^#[a-f0-9]{6}$/i.test(primary || "") ? primary : "#176a50");
   $("titulo").textContent = data.escuela.branding?.nombrePublico ||
     data.escuela.nombre;
+  const logo = data.escuela.branding?.logoUrl;
+  const cover = data.escuela.branding?.portadaUrl;
+  $("familiaLogo").hidden = !logo;
+  $("familiaPortada").hidden = !cover;
+  if (logo) $("familiaLogo").src = logo;
+  else $("familiaLogo").removeAttribute("src");
+  if (cover) $("familiaPortada").src = cover;
+  else $("familiaPortada").removeAttribute("src");
   for (const player of data.jugadores) $("jugadores").append(card(player));
   renderAgenda(agenda);
   if (!data.jugadores.length) note("Aún no hay jugadores activos vinculados a esta cuenta.");

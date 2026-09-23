@@ -42,6 +42,21 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   credentials: false
 }));
+// Solo las rutas de carga de marca admiten un JSON base64 de hasta 1.25 MB.
+const mediaJson = express.json({ limit: "1.25mb" });
+app.use((req, res, next) => {
+  const p = req.path.split("/");
+  const validId = value => /^[a-f0-9]{24}$/i.test(value || "");
+  const schoolMedia = p.length === 6 && p[1] === "api" &&
+    p[2] === "escuela-sesion" && validId(p[3]) &&
+    p[4] === "media" && ["logo", "portada"].includes(p[5]);
+  const adminMedia = p.length === 7 && p[1] === "api" &&
+    p[2] === "platform" && p[3] === "escuelas" &&
+    validId(p[4]) && p[5] === "media" &&
+    ["logo", "portada"].includes(p[6]);
+  return req.method === "PUT" && (schoolMedia || adminMedia)
+    ? mediaJson(req, res, next) : next();
+});
 app.use(express.json());
 
 // =============================
@@ -83,6 +98,10 @@ app.get("/", (req, res, next) => {
   if (!legacyEnabled) return res.redirect(302, "/director-acceso.html");
   return next();
 });
+
+// Solo imágenes institucionales vigentes de escuelas activas.
+app.get("/uploads/escuelas/:escuelaId/:tipo/:archivo",
+  require("./controllers/escuela-media.controller").obtenerPublica);
 
 // Servir frontend
 app.use(express.static("public"));

@@ -44,7 +44,7 @@ function nuevoEvento(body) {
   }
   if (body.horaInicio !== undefined && body.horaInicio !== null &&
       (typeof body.horaInicio !== "string" ||
-       !/^([01]\\d|2[0-3]):[0-5]\\d$/.test(body.horaInicio))) {
+       !/^([01]\d|2[0-3]):[0-5]\d$/.test(body.horaInicio))) {
     fail("Hora de actividad inválida");
   }
   return {

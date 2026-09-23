@@ -5,7 +5,9 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "test": "node --test",
+    "admin:create": "node scripts/create-platform-admin.js"
   },
   "keywords": [],
   "author": "",

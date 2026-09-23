@@ -144,3 +144,21 @@ Ejemplo de creación (solo con token válido de administración):
 - Se informa desconexión explícita; no hay almacenamiento offline persistente y se indica mantener la pestaña abierta si existen cambios sin sincronizar.
 - Prueba unitaria del permiso para iniciar actividad solo en categoría asignada, adicional a pruebas de validación de lote.
 - Seguir bloqueando producción y el merge hasta remediar credenciales/datos previos, ejecutar pruebas con base de datos, correo y teléfonos reales.
+
+## Fase 7 - Informes acumulados de entrenamientos y partidos
+- `GET /api/escuela-sesion/:escuelaId/estadisticas/categorias/:categoriaId?anio=<YYYY>` reúne por MongoDB `$facet`: actividades por tipo, actividad y goles por mes, acumulados por jugador en categoría/año.
+- El reporte filtra `escuela` + `categoria` + periodo UTC + `cerrado:true` **antes de agrupar**, y exige membresía de director o entrenador activo con categoría asignada.
+- Indicadores de actividades cerradas, asistencias confirmadas, goles, asistencias de gol, notas medias efectivamente registradas y métricas deportivas individuales. La estadística de un evento abierto no se cuenta hasta cerrarlo.
+- Diferencia de manera explícita un **dato no registrado («—»)** frente a un valor cero. Las estadísticas deportivas solo se suman a quien figura presente.
+- `GET /api/escuela-sesion/:escuelaId/estadisticas/categorias/:categoriaId/jugadores/:jugadorId?anio=<YYYY>`: solo últimas 20 actividades del jugador y categoría autorizada; no devuelve plantel completo ni RUT.
+- Panel adaptable `/estadisticas-escuela.html?escuela=<ID>` con tarjetas, barras mensuales, filtro de año/categoría, tabla de jugadores y detalle. No presenta rankings de jugadores.
+- Acceso desde la selección de escuela y desde el registro rápido. Se permiten informes de categorías inactivas para consultar historia sin habilitar su creación de eventos.
+- Pruebas unitarias de cálculos/periodos y control de acceso antes de ejecutar consultas; comprobadas por el workflow de GitHub Actions al último commit verificado.
+
+### Notas pendientes para QA
+- No sustituye análisis con base de datos real ni verifica todos los índices, permisos y concurrencia de forma integrada. No hay datos de prueba montados en este entorno.
+- No migra los `Evento`/`Jugador` históricos; para comparar períodos antiguos primero hay que migrar con respaldo y validación.
+- Las cifras de asistencia se calculan sobre los jugadores capturados al CREAR la actividad, no sobre el censo actual de la categoría.
+- No permite exportar fichas de menores ni compartir informes públicamente; solo sesiones autenticadas autorizadas.
+- Falta remediación de secretos y datos publicados en ramas/historial para usar clientes reales.
+- Las fórmulas y aceptación se describen en `docs/INFORMES_ESTADISTICAS.md`; instrucciones generales en `README.md`.

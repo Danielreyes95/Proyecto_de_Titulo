@@ -2,16 +2,19 @@
 "use strict";
 const $ = id => document.getElementById(id);
 const BASE = "/api/escuela-sesion";
+let selectedSchool = null;
 const notify = text => { $("mensaje").textContent = text; };
 const token = () => sessionStorage.getItem("schoolToken");
 function logout() {
   sessionStorage.removeItem("schoolToken");
   $("loginPanel").hidden = false; $("dashboard").hidden = true; $("salir").hidden = true;
   $("seleccion").hidden = true;
+  $("marcaDirector").hidden = true;
+  selectedSchool = null;
 }
-async function api(path, data) {
+async function api(path, data, method = "POST") {
   const r = await fetch(BASE + path, {
-    method: data ? "POST" : "GET",
+    method: data ? method : "GET",
     headers: { "Content-Type": "application/json",
       ...(token() ? { Authorization: "Bearer " + token() } : {}) },
     ...(data ? { body: JSON.stringify(data) } : {})
@@ -33,6 +36,17 @@ async function load() {
         $("seleccion").hidden = false;
         $("titulo").textContent = detail.escuela.branding?.nombrePublico || detail.escuela.nombre;
         $("slug").textContent = detail.escuela.slug;
+        selectedSchool = escuela.id;
+        $("marcaDirector").hidden = false;
+        $("directorNombrePublico").value = detail.escuela.branding?.nombrePublico || detail.escuela.nombre;
+        const defaults = {
+          colorPrimario: "#166534", colorSecundario: "#ffffff",
+          colorAcento: "#f59e0b", colorTexto: "#111827"
+        };
+        for (const key of Object.keys(defaults)) {
+          const id = "director" + key[0].toUpperCase() + key.slice(1);
+          $(id).value = detail.escuela.branding?.[key] || defaults[key];
+        }
         $("seleccion").style.backgroundColor = detail.escuela.branding?.colorSecundario || "#ffffff";
         $("seleccion").style.color = detail.escuela.branding?.colorTexto || "#111827";
         $("seleccion").style.borderColor = detail.escuela.branding?.colorPrimario || "#166534";
@@ -52,6 +66,27 @@ $("login").addEventListener("submit", async event => {
     sessionStorage.setItem("schoolToken", result.token);
     $("password").value = "";
     await load(); notify("Sesión iniciada");
+  } catch (error) { notify(error.message); }
+  finally { button.disabled = false; }
+});
+$("marcaDirector").addEventListener("submit", async event => {
+  event.preventDefault();
+  const button = event.submitter;
+  if (!selectedSchool) return notify("Selecciona una escuela");
+  button.disabled = true;
+  try {
+    const data = await api("/" + selectedSchool + "/branding", {
+      nombrePublico: $("directorNombrePublico").value.trim(),
+      colorPrimario: $("directorColorPrimario").value,
+      colorSecundario: $("directorColorSecundario").value,
+      colorAcento: $("directorColorAcento").value,
+      colorTexto: $("directorColorTexto").value
+    }, "PATCH");
+    $("titulo").textContent = data.escuela.branding.nombrePublico || data.escuela.nombre;
+    $("seleccion").style.backgroundColor = data.escuela.branding.colorSecundario;
+    $("seleccion").style.color = data.escuela.branding.colorTexto;
+    $("seleccion").style.borderColor = data.escuela.branding.colorPrimario;
+    notify("Identidad visual actualizada");
   } catch (error) { notify(error.message); }
   finally { button.disabled = false; }
 });

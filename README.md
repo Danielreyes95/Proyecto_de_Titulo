@@ -1,8 +1,12 @@
-# Escuela de Fútbol — plataforma multiescuela (en desarrollo)
+## Plataforma comercial de gestión de escuelas de fútbol (SaaS en desarrollo)
 
-Este repositorio contiene el Proyecto de Título original y una evolución en la rama
-`feature/base-multiescuela-seguridad` hacia una plataforma para administrar
-varias escuelas, con usuarios, categorías, entrenadores y jugadores independientes.
+El repositorio conserva su nombre histórico, pero el objetivo actual es construir
+un **producto comercial** para varias escuelas: cada cliente dispone de su
+identidad visual, directores, categorías, entrenadores, jugadores y familias
+sin mezclar información entre instituciones.
+
+La evolución del producto se desarrolla en la rama
+`feature/base-multiescuela-seguridad`.
 
 > **No desplegar aún para escuelas reales.** Este Pull Request está en borrador.
 > Antes de producción deben remediarse la exposición histórica de claves/datos,
@@ -79,13 +83,14 @@ Consulta el alcance, fórmulas y pruebas previstas:
 - `docs/FASE_1_AVANCE.md`
 - `docs/SEGURIDAD_INICIAL.md`
 - `docs/PORTAL_FAMILIAS.md`
+- `docs/PRODUCTO_COMERCIAL.md`
 
 ## Pendientes antes de producción
 
 Remediación histórica de secretos/datos en ambos repositorios; migración
 respaldada de colecciones antiguas; pruebas de aislamiento entre escuelas
 con MongoDB, pruebas reales de SMTP y móviles, política de sesiones y límites
-compartidos; pruebas integradas del portal de apoderados; pagos seguros y subida de escudos/imágenes.
+compartidos; pruebas integradas del portal de apoderados; pagos seguros, pruebas integradas de carga de escudos/portadas, continuidad y soporte comercial.
 
 ## Avisos y agenda
 - `/avisos-escuela.html?escuela=<ID>`: el director redacta avisos generales o por categoría, publica y archiva.
@@ -99,3 +104,24 @@ compartidos; pruebas integradas del portal de apoderados; pagos seguros y subida
 - El visor `https://htmlpreview.github.io/?<URL_DEL_ARCHIVO_GITHUB>` puede mostrar el HTML del repositorio en línea, pero **es de un tercero**: usar EXCLUSIVAMENTE demos sin login ni datos reales.
 - La demo es distinta de la plataforma funcional; cambios de la demo no se guardan, y todavía no existe servidor de pruebas público.
 - Especificación: `docs/CONFIRMACION_PARTICIPACION.md`.
+
+## Identidad visual de cada escuela
+- Director y superadministrador pueden elegir colores, nombre, logo y portada de
+  una institución activa. Las nuevas pantallas del director y familias muestran
+  su imagen actual.
+- El backend incorpora carga PNG/JPEG con comprobación de tipo real,
+  dimensiones y tamaño (máximo 750 KB), transformación previa en navegador y
+  almacenamiento GridFS de MongoDB. No admite SVG o URL externa arbitraria.
+- La imagen antigua se retira cuando se reemplaza o elimina. Solo se entrega
+  públicamente la imagen vigente de una escuela activa.
+- Es una implementación en desarrollo: falta comprobar la subida y retirada
+  end-to-end contra MongoDB real, calidad de compresión y límites con fotos
+  representativas antes de producción.
+- Usar escudos/fotos con permiso; los colores o logos de un club conocido
+  no están incluidos ni licenciados por esta aplicación.
+
+## Modelo comercial previsto
+Consulta `docs/PRODUCTO_COMERCIAL.md`. La suscripción de la institución a
+la plataforma es **distinta** de los pagos de mensualidad de familias a
+su escuela. No se han configurado precios, suscripciones ni cobros automáticos
+de la plataforma, y nunca deben reutilizarse integraciones legacy sin auditoría.

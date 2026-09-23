@@ -46,3 +46,11 @@ footer{margin-top:30px}
 .mes-item{grid-template-columns:36px minmax(30px,1fr) 64px}
 }
 @media(prefers-reduced-motion:reduce){.barra-valor{transition:none}}
+
+/* Resumen transversal: información agregada, sin identificación de jugadores. */
+.bloque-escuela { margin: 18px 0 24px; }
+.bloque-escuela .kpis-informe { margin: 15px 0; }
+.bloque-escuela .tabla-escuela { min-width: 680px; }
+.bloque-escuela .tabla-escuela th,
+.bloque-escuela .tabla-escuela td { white-space: nowrap; }
+#mensajeInstitucional { min-height: 18px; margin: 9px 0 0; }

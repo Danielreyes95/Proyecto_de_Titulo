@@ -77,6 +77,20 @@ async function load() {
         }
         coachesLink.href = "/entrenadores-escuela.html?escuela=" +
           encodeURIComponent(escuela.id);
+        let playersLink = $("enlaceJugadores");
+        if (!playersLink) {
+          playersLink = document.createElement("a");
+          playersLink.id = "enlaceJugadores";
+          playersLink.textContent = "Administrar jugadores →";
+          playersLink.className = "secundario";
+          playersLink.style.display = "inline-block";
+          playersLink.style.padding = "12px 16px";
+          playersLink.style.borderRadius = "9px";
+          playersLink.style.marginLeft = "8px";
+          $("seleccion").append(playersLink);
+        }
+        playersLink.href = "/jugadores-escuela.html?escuela=" +
+          encodeURIComponent(escuela.id);
       } catch (error) { notify(error.message); }
     });
     $("escuelas").append(button);

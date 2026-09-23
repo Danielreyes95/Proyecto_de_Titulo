@@ -34,3 +34,7 @@ footer{font-size:.8rem;color:#65768e;margin:32px 0;text-align:center}small{line-
 .marca-imagen-card img[id*="Portada"]{object-fit:cover}
 .marca-imagen-card button{margin:4px 5px 4px 0}
 @media(max-width:780px){.marca-imagenes-grid{grid-template-columns:1fr}}
+
+.marca-portada{width:100%;max-height:210px;object-fit:cover;border-radius:12px}
+.marca-encabezado{display:flex;gap:13px;align-items:center}
+.marca-escudo{width:69px;height:69px;border-radius:12px;object-fit:contain;background:#f7f9fb}

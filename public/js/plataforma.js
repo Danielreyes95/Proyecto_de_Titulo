@@ -76,6 +76,9 @@
     const selected = $("escuelaMarca").value;
     const select = $("escuelaMarca");
     select.replaceChildren();
+    const inviteSelect = $("escuelaInvitar");
+    inviteSelect.replaceChildren();
+    inviteSelect.add(new Option("Seleccionar escuela", ""));
     const blank = new Option("Seleccionar escuela", "");
     select.add(blank);
     const body = $("escuelasBody");
@@ -83,6 +86,7 @@
 
     for (const escuela of escuelas) {
       select.add(new Option(escuela.nombre, escuela._id));
+      if (escuela.estado === "activa") inviteSelect.add(new Option(escuela.nombre, escuela._id));
       const row = body.insertRow();
       addTextCell(row, escuela.nombre);
       addTextCell(row, escuela.slug);
@@ -163,6 +167,24 @@
       $("escuelaMarca").value = school.escuela._id;
       pickMarca();
       notify("Escuela creada correctamente");
+    } catch (error) { notify(error.message, true); }
+    finally { button.disabled = false; }
+  });
+
+  $("invitarForm").addEventListener("submit", async event => {
+    event.preventDefault();
+    const button = event.submitter;
+    button.disabled = true;
+    try {
+      await request(`/escuelas/${$("escuelaInvitar").value}/invitar-director`, {
+        method: "POST",
+        body: JSON.stringify({
+          nombre: field("nombreDirector"),
+          email: field("correoDirector")
+        })
+      });
+      $("invitarForm").reset();
+      notify("Invitación enviada al correo del director.");
     } catch (error) { notify(error.message, true); }
     finally { button.disabled = false; }
   });

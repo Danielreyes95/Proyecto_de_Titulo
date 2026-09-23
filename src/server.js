@@ -18,6 +18,8 @@ const directorRoutes = require("./routes/director.routes");
 const pagoRoutes = require("./routes/pago.routes");
 const avisoRoutes = require("./routes/aviso.routes");
 const mercadoPagoRoutes = require("./routes/mercado-pago.routes");
+const platformRoutes = require("./routes/platform.routes");
+const escuelaPublicRoutes = require("./routes/escuela-public.routes");
 
 // =============================
 // CONFIGURACIÓN EXPRESS + HTTP + SOCKET.IO
@@ -44,6 +46,9 @@ app.use(express.json());
 // =============================
 // RUTAS API
 // =============================
+// API multiescuela: acceso separado del sistema legado
+app.use("/api/platform", platformRoutes);
+app.use("/api/escuelas", escuelaPublicRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/categorias", categoriaRoutes);
 app.use("/api/jugadores", jugadorRoutes);

@@ -63,6 +63,20 @@ async function load() {
         }
         categoriesLink.href = "/categorias-escuela.html?escuela=" +
           encodeURIComponent(escuela.id);
+        let coachesLink = $("enlaceEntrenadores");
+        if (!coachesLink) {
+          coachesLink = document.createElement("a");
+          coachesLink.id = "enlaceEntrenadores";
+          coachesLink.textContent = "Administrar entrenadores →";
+          coachesLink.className = "secundario";
+          coachesLink.style.display = "inline-block";
+          coachesLink.style.padding = "12px 16px";
+          coachesLink.style.borderRadius = "9px";
+          coachesLink.style.marginLeft = "8px";
+          $("seleccion").append(coachesLink);
+        }
+        coachesLink.href = "/entrenadores-escuela.html?escuela=" +
+          encodeURIComponent(escuela.id);
       } catch (error) { notify(error.message); }
     });
     $("escuelas").append(button);

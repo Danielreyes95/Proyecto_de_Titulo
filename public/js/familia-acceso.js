@@ -8,6 +8,8 @@ function logout() {
   $("loginPanel").hidden = false; $("dashboard").hidden = true;
   $("contenido").hidden = true; $("salir").hidden = true;
   $("jugadores").replaceChildren();
+  $("agenda").replaceChildren();
+  $("avisos").replaceChildren();
 }
 async function api(path, method = "GET", data) {
   const response = await fetch("/api/escuela-sesion" + path, {
@@ -60,18 +62,67 @@ function card(player) {
   root.append(title, category, stats, table, foot);
   return root;
 }
+function emptyMessage(root, message) {
+  const p = document.createElement("p"); p.textContent = message; root.append(p);
+}
+function formatDate(date) {
+  return new Date(date).toLocaleDateString("es-CL", {
+    timeZone: "UTC", day: "2-digit", month: "2-digit", year: "numeric"
+  });
+}
+function renderAgenda(data) {
+  $("agenda").replaceChildren();
+  $("avisos").replaceChildren();
+  for (const activity of data.proximasActividades) {
+    const card = document.createElement("article");
+    card.className = "familia-card";
+    const heading = document.createElement("h3");
+    heading.textContent = activity.tipoEvento + " · " +
+      formatDate(activity.fechaEvento);
+    const time = document.createElement("p");
+    time.textContent = activity.horaInicio ?
+      "Hora: " + activity.horaInicio : "Hora por confirmar";
+    const players = document.createElement("small");
+    players.textContent = "Para: " + activity.jugadores.join(", ");
+    card.append(heading, time, players); $("agenda").append(card);
+  }
+  if (!data.proximasActividades.length) {
+    emptyMessage($("agenda"), "Sin actividades próximas registradas.");
+  }
+  for (const aviso of data.avisos) {
+    const card = document.createElement("article");
+    card.className = "familia-card";
+    const heading = document.createElement("h3");
+    heading.textContent = aviso.titulo;
+    const when = document.createElement("small");
+    when.textContent = (aviso.alcance === "escuela" ?
+      "Toda la escuela" : "Tu categoría") + " · " +
+      formatDate(aviso.publicadoEn);
+    const message = document.createElement("p");
+    message.className = "aviso-mensaje"; message.textContent = aviso.mensaje;
+    card.append(heading, when, message); $("avisos").append(card);
+  }
+  if (!data.avisos.length) emptyMessage($("avisos"), "Sin avisos publicados.");
+}
 async function loadFamily() {
   const id = $("escuela").value;
   $("jugadores").replaceChildren();
   $("contenido").hidden = !id;
+  $("agenda").replaceChildren();
+  $("avisos").replaceChildren();
   if (!id) return;
-  const data = await api("/" + encodeURIComponent(id) + "/familia/mis-jugadores");
+  const [data, agenda] = await Promise.all([
+    api("/" + encodeURIComponent(id) + "/familia/mis-jugadores"),
+    api("/" + encodeURIComponent(id) + "/familia/agenda")
+  ]);
+  if ($("escuela").value !== id) return;
   const primary = data.escuela.branding?.colorPrimario;
   document.documentElement.style.setProperty("--familia-color",
     /^#[a-f0-9]{6}$/i.test(primary || "") ? primary : "#176a50");
   $("titulo").textContent = data.escuela.branding?.nombrePublico ||
     data.escuela.nombre;
   for (const player of data.jugadores) $("jugadores").append(card(player));
+  renderAgenda(agenda);
   if (!data.jugadores.length) note("Aún no hay jugadores activos vinculados a esta cuenta.");
   else note("");
 }

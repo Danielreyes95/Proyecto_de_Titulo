@@ -58,3 +58,20 @@
   background: var(--cancha-marca,#146c4f);
   color: var(--cancha-contraste,#ffffff);
 }
+
+/* Acciones de la actividad para consulta rápida en teléfono. */
+.acciones-actividad {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+#marcarPendientes:not(:disabled) {
+  background: var(--cancha-marca, #146c4f);
+  color: var(--cancha-contraste, #fff);
+}
+@media (max-width: 790px) {
+  .barra-actividad { flex-direction: column; }
+  .acciones-actividad { width: 100%; }
+  .acciones-actividad button { flex: 1 1 180px; min-height: 46px; }
+}

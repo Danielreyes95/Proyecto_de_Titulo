@@ -18,10 +18,16 @@ main{max-width:1090px;padding:26px 18px 60px;margin:auto}.demo{background:#ffefb
 .roster{display:grid;gap:10px}.player{padding:15px;border:1px solid #dee6ee;border-radius:14px;background:white;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.player strong,.player small{display:block}.player small{color:#58728b;margin-top:5px}.attendance{display:flex;gap:8px}.attendance button{min-height:43px;background:#eef2f6;color:#33485b}.attendance button.marked{color:white;background:var(--marca)}
 .alert{margin:20px 0;background:white;border-radius:14px;padding:18px;border-left:5px solid var(--marca)}.alert p{margin:5px 0;color:#586b81}.colorpicker{display:flex;gap:10px;align-items:center;margin-top:15px}.colorpicker input{width:62px;height:49px;border:1px solid #cad4dc;background:white;border-radius:10px}.footer{font-size:.84rem;color:#58677d;margin-top:27px}
 @media(max-width:700px){.kpis{grid-template-columns:repeat(2,1fr)}.player{align-items:stretch}.attendance{width:100%}.attendance button{flex:1}header{padding:20px}}
+.brand #demoLogo{width:55px;height:55px;border-radius:16px;object-fit:contain;background:#fff}
+.demo-portada{display:block;width:100%;height:clamp(130px,22vw,210px);object-fit:cover;border-radius:14px;margin:0 0 20px}
+.controls input[type=file]{max-width:210px;font-size:.8rem}
 </style></head><body>
-<header><div class="brand"><div class="emblema" id="initials">LL</div><div><div style="font-size:.72rem;letter-spacing:.11em;color:#c9e3dd">GESTIÓN DEPORTIVA</div><h1 id="schoolName">Academia Los Leones</h1><p>Un portal con la identidad de tu escuela.</p></div></div><strong>⚽ MULTIESCUELA</strong></header>
-<main><div class="demo"><strong>VISTA INTERACTIVA DE PRUEBA</strong> · Todas las escuelas y personas que aparecen son ficticias. Los botones simulan confirmaciones; <strong>no hay sesión ni servidor ni base de datos</strong>. Los cambios se pierden al recargar.</div>
-<div class="controls"><label>Escuela de ejemplo<select id="school"><option value="leones">Academia Los Leones</option><option value="estrellas">Escuela Las Estrellas</option><option value="sur">Deportiva del Sur</option></select></label><div class="colorpicker"><label for="color">Color de la escuela</label><input id="color" type="color" value="#176a50"></div></div>
+<header><div class="brand"><div class="emblema" id="initials">LL</div><img id="demoLogo" alt="Escudo elegido para la demostración" hidden><div><div style="font-size:.72rem;letter-spacing:.11em;color:#c9e3dd">GESTIÓN DEPORTIVA</div><h1 id="schoolName">Academia Los Leones</h1><p>Un portal con la identidad de tu escuela.</p></div></div><strong>⚽ MULTIESCUELA</strong></header>
+<main><div class="demo"><strong>VISTA INTERACTIVA DE PRUEBA</strong> · Todas las escuelas y personas que aparecen son ficticias. Los botones simulan confirmaciones y puedes visualizar colores e imágenes ficticias. <strong>No hay sesión ni servidor ni base de datos</strong>. Los cambios se pierden al recargar. No selecciones imágenes personales o sensibles en este visor externo.</div>
+<div class="controls"><label>Escuela de ejemplo<select id="school"><option value="leones">Academia Los Leones</option><option value="estrellas">Escuela Las Estrellas</option><option value="sur">Deportiva del Sur</option></select></label><div class="colorpicker"><label for="color">Color de la escuela</label><input id="color" type="color" value="#176a50"></div>
+<label>Escudo de prueba<input id="demoLogoInput" type="file" accept="image/png,image/jpeg,image/webp"></label>
+<label>Portada de prueba<input id="demoCoverInput" type="file" accept="image/png,image/jpeg,image/webp"></label></div>
+<img id="demoCover" class="demo-portada" alt="Portada elegida para la demostración" hidden>
 <div class="tabs" role="group" aria-label="Vista de rol"><button class="active" data-tab="familia">🏠 Apoderado</button><button data-tab="entrenador">⚽ Entrenador</button><button data-tab="director">▦ Director</button></div>
 <section class="page active" id="familia"><div class="intro"><span class="tag">PORTAL DE FAMILIAS</span><h2>Próximas actividades de tus jugadores</h2><p>Confirma por cada jugador en pocos toques. La escuela ve la intención de participar; la asistencia real se registra después en cancha.</p></div><div id="events" class="grid"></div><div class="alert"><strong>📣 Aviso de la escuela</strong><p>El próximo entrenamiento se realizará en la cancha principal. ¡Nos vemos!</p></div></section>
 <section class="page" id="entrenador"><div class="intro"><span class="tag">MODO CANCHA</span><h2>Asistencia prevista y registro real</h2><p>La familia responde antes. Durante la actividad, el entrenador confirma quién llegó realmente, sin abrir fichas individuales.</p></div><section class="kpis"><div class="kpi"><span>Asistirán</span><strong id="yes">0</strong></div><div class="kpi"><span>No asistirán</span><strong id="no">0</strong></div><div class="kpi"><span>Sin responder</span><strong id="pending">0</strong></div><div class="kpi"><span>Presentes en cancha</span><strong id="real">0</strong></div></section><div id="roster" class="roster"></div></section>
@@ -36,7 +42,12 @@ const confirmations=Object.fromEntries(Object.keys(schools).map(k=>[k,{}]));
 const confirmation=(id,playerId)=>confirmations[$("school").value][id+":"+playerId]||"pendiente";
 const events=[{id:1,type:"Entrenamiento",category:"Sub 8 Formativo",date:"Jueves · 17:30",players:[1,2]},{id:2,type:"Partido",category:"Sub 10 Competitivo",date:"Sábado · 10:00",players:[1]}];
 const rows=()=>data[$("school").value];
-function applyTheme(){const s=schools[$("school").value];$("schoolName").textContent=s.name;$("initials").textContent=s.initials;document.documentElement.style.setProperty("--marca",s.color);$("color").value=s.color}
+function applyTheme(){const s=schools[$("school").value];$("schoolName").textContent=s.name;$("initials").textContent=s.initials;document.documentElement.style.setProperty("--marca",s.color);$("color").value=s.color;
+$("demoLogo").hidden=!s.logo;$("initials").hidden=Boolean(s.logo);
+if(s.logo)$("demoLogo").src=s.logo;else $("demoLogo").removeAttribute("src");
+$("demoCover").hidden=!s.cover;
+if(s.cover)$("demoCover").src=s.cover;else $("demoCover").removeAttribute("src");
+}
 function updateConfirmacion(eventId,id,state){confirmations[$("school").value][eventId+":"+id]=state;draw()}
 function updateAsistencia(id,state){const p=rows().find(x=>x.id===id);p.asistencia=state;draw()}
 function statusText(s){return ({pendiente:"Sin confirmar",asistira:"Confirmó que asistirá",no_asistira:"Avisó que no asistirá"})[s]}
@@ -45,6 +56,10 @@ function draw(){const root=$("events");root.replaceChildren();for(const e of eve
 const yes=rows().filter(p=>confirmation(1,p.id)==="asistira").length,no=rows().filter(p=>confirmation(1,p.id)==="no_asistira").length,real=rows().filter(p=>p.asistencia==="presente").length;
 $("yes").textContent=yes;$("no").textContent=no;$("pending").textContent=rows().length-yes-no;$("real").textContent=real;
 const roster=$("roster");roster.replaceChildren();for(const p of rows()){const card=document.createElement("article");card.className="player";const name=document.createElement("div");const strong=document.createElement("strong");strong.textContent=p.name;const small=document.createElement("small");small.textContent=statusText(confirmation(1,p.id))+" · "+(p.asistencia==="pendiente"?"Asistencia real pendiente":p.asistencia==="presente"?"Presente en cancha":"Ausente en cancha");name.append(strong,small);const actions=document.createElement("div");actions.className="attendance";for(const [state,label]of [["presente","✓ Presente"],["ausente","✕ Ausente"]]){const b=button(label,p.asistencia===state,()=>updateAsistencia(p.id,state));if(p.asistencia===state)b.classList.add("marked");actions.append(b)}card.append(name,actions);roster.append(card)}}
+for(const [input,key]of [["demoLogoInput","logo"],["demoCoverInput","cover"]]){$(input).onchange=e=>{const file=e.target.files?.[0];if(!file)return;
+if(!["image/png","image/jpeg","image/webp"].includes(file.type)||file.size>5*1024*1024){alert("Selecciona PNG, JPEG o WebP de hasta 5 MB");e.target.value="";return;}
+const s=schools[$("school").value];if(s[key])URL.revokeObjectURL(s[key]);s[key]=URL.createObjectURL(file);applyTheme();};}
+window.addEventListener("pagehide",()=>{for(const s of Object.values(schools))for(const k of ["logo","cover"])if(s[k])URL.revokeObjectURL(s[k]);});
 $("school").onchange=()=>{applyTheme();draw()};$("color").oninput=e=>{schools[$("school").value].color=e.target.value;applyTheme()};
 document.querySelectorAll("[data-tab]").forEach(tab=>tab.onclick=()=>{document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b===tab));document.querySelectorAll(".page").forEach(section=>section.classList.toggle("active",section.id===tab.dataset.tab))});applyTheme();draw();
 })();

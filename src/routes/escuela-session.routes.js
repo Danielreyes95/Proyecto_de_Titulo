@@ -5,6 +5,7 @@ const session = require("../controllers/escuela-session.controller");
 const { requireSchoolUser, requireDirector } = require("../middleware/escuela-auth");
 const { actualizarBrandingDirector } = require("../controllers/escuela-branding.controller");
 const { loginThrottle } = require("../middleware/login-throttle");
+const media = require("../controllers/escuela-media.controller");
 const categoria = require("../controllers/escuela-categoria.controller");
 const entrenador = require("../controllers/escuela-entrenador.controller");
 const jugador = require("../controllers/escuela-jugador.controller");
@@ -37,6 +38,8 @@ router.post("/invitaciones-entrenador/aceptar-existente",
   requireSchoolUser, invitarCoach.aceptarExistente);
 router.get("/:escuelaId/director", requireSchoolUser, requireDirector, session.miEscuela);
 router.patch("/:escuelaId/branding", requireSchoolUser, requireDirector, actualizarBrandingDirector);
+router.put("/:escuelaId/media/:tipo", requireSchoolUser, requireDirector, media.cargar);
+router.delete("/:escuelaId/media/:tipo", requireSchoolUser, requireDirector, media.quitar);
 
 // Módulo NUEVO independiente del legacy /api/categorias.
 router.get("/:escuelaId/categorias", requireSchoolUser, requireDirector, categoria.listar);

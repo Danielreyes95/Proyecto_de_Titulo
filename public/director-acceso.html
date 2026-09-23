@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Acceso de directores</title>
+<link rel="stylesheet" href="/assets/css/plataforma.css"><script src="/js/director-acceso.js" defer></script>
+</head><body><main class="layout">
+<header class="cabecera"><div><span class="eyebrow">ESCUELAS DE FÚTBOL</span><h1>Acceso de directores</h1>
+<p>Ingresa y selecciona tu escuela. Este acceso es independiente de la versión anterior.</p></div>
+<button id="salir" class="secundario" type="button" hidden>Salir</button></header>
+<section id="loginPanel" class="panel auth-panel"><h2>Iniciar sesión</h2>
+<form id="login" class="formulario">
+<label>Correo electrónico<input id="email" type="email" autocomplete="username" required></label>
+<label>Contraseña<input id="password" type="password" autocomplete="current-password" required></label>
+<button type="submit">Ingresar</button></form></section>
+<section id="dashboard" class="panel" hidden>
+<h2>Mis escuelas</h2><p>Selecciona la institución de la que eres director.</p>
+<div id="escuelas" class="estadisticas"></div>
+<section id="seleccion" class="preview" hidden><strong id="titulo"></strong><p id="slug"></p>
+<p>Las funciones de gestión de jugadores y pagos se activarán tras completar la separación de datos.</p>
+</section>
+</section><p id="mensaje" role="status" aria-live="polite"></p>
+</main></body></html>

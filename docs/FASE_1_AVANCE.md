@@ -191,3 +191,12 @@ Ejemplo de creación (solo con token válido de administración):
 - Test unitarios para avisos, fecha deportiva y filtros escuela/jugador/categoría. Se corrigió la expresión regular de hora tras detectar un test fallido y se volvió a verificar mediante Actions.
 
 **BLOQUEOS:** todavía sin despliegue, correo masivo ni push de avisos; sin remediar secretos/datos de ramas/historiales; faltan pruebas MongoDB de extremo a extremo, zona horaria por escuela y migración segura.
+
+## Fase 10 - Confirmación familiar antes de cancha
+- El apoderado activo puede confirmar para cada hijo vinculado si `asistira`, `no_asistira` o continúa `pendiente` en una actividad abierta, actual o futura de su categoría.
+- Nueva propiedad `registros.confirmacion` independiente de `registros.asistencia`; confirmar asistencia prevista no modifica la asistencia observada por el entrenador.
+- El controlador verifica escuela, vínculo, categoría, evento abierto y fecha al escribir; el incremento `__v` activa control de conflicto frente a edición deportiva concurrente.
+- La familia ve botones por jugador y evento, mientras el entrenador ve respuesta previa y totales sin abrir fichas.
+- Demo visual autónoma ficticia `public/demo-confirmaciones.html` para revisarla en un computador restringido y pruebas de autorización con mocks en GitHub Actions.
+- Aún NO está desplegada la plataforma funcional, NO hay envío automático de correos/push por confirmación ni persistencia de la demo.
+- Ver especificación y escenarios `docs/CONFIRMACION_PARTICIPACION.md`.

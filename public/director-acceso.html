@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Acceso de directores y entrenadores</title>
+<link rel="stylesheet" href="/assets/css/plataforma.css"><script src="/js/escuela-imagenes.js" defer></script><script src="/js/director-acceso.js" defer></script>
+</head><body><main class="layout">
+<header class="cabecera"><div><span class="eyebrow">ESCUELAS DE FÚTBOL</span><h1>Acceso de directores y entrenadores</h1>
+<p>Ingresa y selecciona tu escuela. Este acceso es independiente de la versión anterior.</p></div>
+<button id="salir" class="secundario" type="button" hidden>Salir</button></header>
+<section id="loginPanel" class="panel auth-panel"><h2>Iniciar sesión</h2>
+<form id="login" class="formulario">
+<label>Correo electrónico<input id="email" type="email" autocomplete="username" required></label>
+<label>Contraseña<input id="password" type="password" autocomplete="current-password" required></label>
+<button type="submit">Ingresar</button></form>
+<p style="margin-top:18px">¿Eres apoderado? <a href="/familia-acceso.html">Ingresa al portal de familias</a>.</p></section>
+<section id="dashboard" class="panel" hidden>
+<h2>Mis escuelas</h2><p>Selecciona una institución donde tengas acceso autorizado.</p>
+<div id="escuelas" class="estadisticas"></div>
+<section id="seleccion" class="preview" hidden>
+<img id="portadaSeleccionada" class="marca-portada" alt="Portada institucional" hidden>
+<div class="marca-encabezado"><img id="escudoSeleccionado" class="marca-escudo" alt="Escudo institucional" hidden><strong id="titulo"></strong></div><p id="slug"></p>
+<p>Gestiona las categorías, entrenadores, jugadores y estadísticas de esta escuela. El módulo de pagos multiescuela sigue en desarrollo.</p>
+</section>
+<form id="marcaDirector" class="formulario" hidden>
+<h2>Personaliza tu escuela</h2><p>Estos cambios afectarán solamente la institución seleccionada.</p>
+<label>Nombre público<input id="directorNombrePublico" maxlength="100" required></label>
+<div class="colores">
+<label>Principal<input type="color" id="directorColorPrimario"></label>
+<label>Secundario<input type="color" id="directorColorSecundario"></label>
+<label>Acento<input type="color" id="directorColorAcento"></label>
+<label>Texto<input type="color" id="directorColorTexto"></label>
+</div><button type="submit">Guardar identidad visual</button></form>
+<section id="imagenesDirector" class="marca-imagenes" hidden aria-label="Imágenes de la escuela">
+  <h2>Escudo y portada institucional</h2>
+  <p>Sube imágenes propias o para las que tengas autorización de uso.
+  Formatos PNG, JPG o WebP (se convertirá antes de subir). Máximo 750 KB por imagen.</p>
+  <div class="marca-imagenes-grid">
+    <div class="marca-imagen-card">
+      <h3>Escudo o logo</h3>
+      <img id="previewLogo" alt="Vista previa del logo de tu escuela" hidden>
+      <p id="sinLogo">Sin logo cargado</p>
+      <label>Imagen del logo
+        <input id="archivoLogo" type="file" accept="image/png,image/jpeg,image/webp">
+      </label>
+      <div><button id="subirLogo" type="button">Subir logo</button>
+      <button id="quitarLogo" class="secundario" type="button" hidden>Retirar logo</button></div>
+    </div>
+    <div class="marca-imagen-card">
+      <h3>Imagen de portada</h3>
+      <img id="previewPortada" alt="Vista previa de la portada de tu escuela" hidden>
+      <p id="sinPortada">Sin portada cargada</p>
+      <label>Imagen de portada
+        <input id="archivoPortada" type="file" accept="image/png,image/jpeg,image/webp">
+      </label>
+      <div><button id="subirPortada" type="button">Subir portada</button>
+      <button id="quitarPortada" class="secundario" type="button" hidden>Retirar portada</button></div>
+    </div>
+  </div>
+</section>
+</section><p id="mensaje" role="status" aria-live="polite"></p>
+</main></body></html>

@@ -1,0 +1,56 @@
+.dashboard-deportivo{max-width:1230px}
+.filtros-informe{display:grid;grid-template-columns:2fr 1fr auto;gap:14px;align-items:end}
+.filtros-informe label,.cabecera-tabla label{display:grid;gap:7px;font-size:.88rem;font-weight:700}
+.filtros-informe button{min-height:46px}
+.titulo-reporte,.cabecera-tabla{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.titulo-reporte{margin:25px 0 6px}
+.titulo-reporte h2{font-size:1.5rem;margin:6px 0}
+.titulo-reporte p{margin-bottom:8px}
+.enlace-accion{background:var(--informe-marca,#146c4f);color:var(--informe-contraste,#fff);
+ text-decoration:none;border-radius:9px;padding:12px 17px;font-weight:750}
+.enlace-accion:focus-visible{outline:3px solid #92bde5;outline-offset:3px}
+.kpis-informe{grid-template-columns:repeat(4,minmax(0,1fr))}
+.kpis-informe .stat{border-top:4px solid var(--informe-marca,#146c4f)}
+.kpis-informe small{color:#5d6e86;font-size:.76rem}
+.dos-columnas{display:grid;grid-template-columns:.8fr 1.2fr;gap:18px}
+.tipos-informe{display:grid;gap:10px}
+.tipo-item{display:flex;justify-content:space-between;align-items:center;padding:15px;
+ background:#f3f7fb;border-radius:11px;font-weight:700}
+.tipo-item strong{font-size:1.45rem;color:var(--informe-marca,#146c4f)}
+.meses-informe{display:grid;gap:6px}
+.mes-item{display:grid;grid-template-columns:50px minmax(50px,1fr) 90px;
+ align-items:center;gap:9px;font-size:.82rem}
+.mes-item .mes-nombre{font-weight:700;color:#46566c}
+.barra-base{height:14px;background:#edf1f5;border-radius:18px;overflow:hidden}
+.barra-valor{height:100%;background:var(--informe-marca,#146c4f);border-radius:18px;
+ min-width:0;transition:width .2s ease}
+.mes-valor{color:#53647a;font-variant-numeric:tabular-nums}
+.tabla-informe,.historial-panel{margin-top:18px}
+.tabla-informe table,.historial-panel table{min-width:690px}
+.tabla-informe td,.historial-panel td{font-variant-numeric:tabular-nums}
+.tabla-informe td:first-child{font-weight:650}
+.tabla-informe small{display:block;margin-top:12px}
+#detalleMas{margin-top:15px}
+footer{margin-top:30px}
+@media(max-width:930px){
+.kpis-informe{grid-template-columns:repeat(2,minmax(0,1fr))}
+.dos-columnas{grid-template-columns:1fr}
+}
+@media(max-width:680px){
+.filtros-informe{grid-template-columns:1fr}
+.kpis-informe{grid-template-columns:repeat(2,minmax(0,1fr))}
+.kpis-informe .stat{padding:14px}
+.kpis-informe .stat strong{font-size:1.55rem}
+.cabecera-tabla label{width:100%}
+.enlace-accion{width:100%;text-align:center}
+.mes-item{grid-template-columns:36px minmax(30px,1fr) 64px}
+}
+@media(prefers-reduced-motion:reduce){.barra-valor{transition:none}}
+
+/* Resumen transversal: información agregada, sin identificación de jugadores. */
+.bloque-escuela { margin: 18px 0 24px; }
+.bloque-escuela .kpis-informe { margin: 15px 0; }
+.bloque-escuela .tabla-escuela { min-width: 680px; }
+.bloque-escuela .tabla-escuela th,
+.bloque-escuela .tabla-escuela td { white-space: nowrap; }
+#mensajeInstitucional { min-height: 18px; margin: 9px 0 0; }

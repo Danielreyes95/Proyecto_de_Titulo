@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Registro rápido · Entrenamientos y partidos</title>
+<link rel="stylesheet" href="/assets/css/plataforma.css">
+<link rel="stylesheet" href="/assets/css/registro-rapido.css">
+<script src="/js/registro-rapido.js" defer></script></head>
+<body><main class="layout cancha">
+<header class="cabecera"><div>
+<span class="eyebrow">MODO CANCHA · MULTIESCUELA</span>
+<h1 id="escuelaTitulo">Registro rápido</h1>
+<p id="subtitulo">Asistencia y estadísticas desde un solo listado, sin abrir cada ficha.</p>
+</div><div class="acciones-actividad">
+<a id="verInforme" href="#">📊 Ver estadísticas</a>
+<a href="/director-acceso.html">← Mis escuelas</a></div></header>
+<section id="seleccionPanel" class="panel" hidden>
+<h2>Selecciona un entrenamiento o partido</h2>
+<form id="crearEventoForm" class="crear-actividad formulario" hidden>
+<label>Categoría<select id="categoriaId" required></select></label>
+<label>Fecha<input id="fecha" type="date" required></label>
+<label>Hora (opcional)<input id="horaInicio" type="time"></label>
+<label>Tipo<select id="tipo">
+<option>Entrenamiento</option><option>Partido</option><option>Torneo</option>
+</select></label>
+<button type="submit">Preparar actividad</button>
+</form>
+<div id="listaEventos" class="eventos-lista"></div></section>
+<section id="actividadPanel" hidden>
+<div class="barra-actividad panel">
+<div><span id="tipoEvento" class="eyebrow"></span><h2 id="eventoTitulo"></h2>
+<p id="contador" class="sin-margen"></p></div>
+<div class="acciones-actividad">
+<button id="marcarPendientes" class="secundario" type="button" hidden>✓ Marcar pendientes presentes</button>
+<button id="volver" class="secundario" type="button">Otra actividad</button>
+</div></div>
+<div class="toolbar panel">
+<label class="herramienta">Estadística que estoy anotando
+<select id="metrica">
+<option value="goles">⚽ Goles</option>
+<option value="asistenciasGol">🎯 Asistencias de gol</option>
+<option value="pasesClave">↗ Pases clave</option>
+<option value="recuperaciones">↺ Recuperaciones</option>
+<option value="tirosArco">◎ Tiros al arco</option>
+<option value="faltasCometidas">Faltas cometidas</option>
+<option value="faltasRecibidas">Faltas recibidas</option>
+<option value="rendimiento">⭐ Rendimiento (1–10)</option>
+</select></label>
+<label class="herramienta">Buscar jugador<input id="buscar" type="search" placeholder="Nombre del jugador"></label>
+<label class="herramienta">Mostrar<select id="filtro">
+<option value="todos">Todos</option>
+<option value="pendiente">Pendientes</option>
+<option value="presente">Presentes</option>
+<option value="ausente">Ausentes</option>
+</select></label>
+</div>
+<div class="ayuda-rapida">Marca asistencia de un toque. Usa <strong>− / +</strong> para sumar estadísticas sin entrar a otra pantalla. Selecciona otra métrica arriba para cambiar lo que registras.</div>
+<div class="guardar-flotante panel">
+<span id="guardarEstado" role="status" aria-live="polite">Sin cambios pendientes</span>
+<div class="acciones-guardar">
+<button id="deshacer" class="secundario" type="button" disabled>Deshacer</button>
+<button id="sincronizar" class="secundario" type="button" hidden>Sincronizar cambios</button>
+<button id="guardar" type="button" disabled>Guardar ahora</button>
+<button id="cerrar" type="button" class="secundario">Cerrar actividad</button>
+</div></div>
+<div id="jugadores" class="jugadores-rapidos"></div>
+</section>
+<p id="mensaje" role="alert" aria-live="assertive"></p>
+</main></body></html>

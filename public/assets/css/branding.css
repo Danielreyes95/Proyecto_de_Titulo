@@ -1,0 +1,16 @@
+/* Identidad visual predeterminada.
+   En la fase de integración se cargarán estos valores desde la escuela
+   autenticada; nunca desde una escuelaId arbitraria del navegador. */
+:root {
+  --escuela-primario: #166534;
+  --escuela-secundario: #ffffff;
+  --escuela-acento: #f59e0b;
+  --escuela-texto: #111827;
+}
+
+.escuela-fondo-primario { background-color: var(--escuela-primario); }
+.escuela-fondo-secundario { background-color: var(--escuela-secundario); }
+.escuela-fondo-acento { background-color: var(--escuela-acento); }
+.escuela-texto { color: var(--escuela-texto); }
+.escuela-texto-primario { color: var(--escuela-primario); }
+.escuela-borde-primario { border-color: var(--escuela-primario); }

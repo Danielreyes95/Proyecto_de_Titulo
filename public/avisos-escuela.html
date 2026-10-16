@@ -1,0 +1,34 @@
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Avisos de escuela</title>
+<link rel="stylesheet" href="/assets/css/plataforma.css">
+<script src="/js/avisos-escuela.js" defer></script></head>
+<body><main class="layout">
+<header class="cabecera"><div><span class="eyebrow">COMUNICACIONES DE LA ESCUELA</span>
+<h1 id="titulo">Avisos para las familias</h1>
+<p>Comunica novedades a toda tu escuela o a una categoría determinada.</p></div>
+<a href="/director-acceso.html">← Mis escuelas</a></header>
+<section class="grid">
+<div class="panel"><h2>Nuevo aviso</h2>
+<p>Los borradores no se muestran a las familias hasta que los publiques.</p>
+<form id="formulario" class="formulario">
+<label>Título<input id="asunto" maxlength="120" required placeholder="Cambio de horario"></label>
+<label>Destinatarios<select id="categoria" required>
+<option value="">Toda la escuela</option></select></label>
+<label>Mensaje<textarea id="texto" required maxlength="1000" rows="6"
+placeholder="Escribe la información que necesitas comunicar..."></textarea></label>
+<label><input id="publicar" type="checkbox" checked>
+Publicar inmediatamente</label>
+<button type="submit" id="guardar">Guardar aviso</button>
+</form></div>
+<div class="panel"><h2>Cómo se entrega</h2>
+<p>Un aviso general será visible para las familias con jugadores activos vinculados
+en esta escuela. Un aviso por categoría será visible únicamente para las
+familias con jugadores activos en esa categoría.</p>
+<p>El aviso aparecerá en el portal familiar. El envío de correos y las
+notificaciones push se incorporarán en una etapa posterior.</p></div>
+</section>
+<section class="panel listado"><h2>Avisos registrados</h2>
+<div id="listado" class="formulario"></div></section>
+<p id="mensaje" role="status" aria-live="polite"></p>
+</main></body></html>

@@ -40,7 +40,7 @@ function rutPrueba(cuerpo) {
 }
 
 function fechaNacimientoParaEdad(anio, edad, indice) {
-  const mes = 6 + (indice % 4); // julio-octubre; después del 1 de enero.
+  const mes = 6 + (indice % 4);
   const dia = 5 + (indice % 20);
   const nacimientoAnio = anio - edad - 1;
   return new Date(Date.UTC(nacimientoAnio, mes, dia, 12, 0, 0));
@@ -50,11 +50,8 @@ function fechaDeportiva(anio, mes, dia) {
   return new Date(Date.UTC(anio, mes - 1, dia, 12, 0, 0));
 }
 
-function fechaFutura() {
-  const fecha = new Date();
-  fecha.setUTCDate(fecha.getUTCDate() + 14);
-  fecha.setUTCHours(12, 0, 0, 0);
-  return fecha;
+function fechaAbiertaDemo(anio) {
+  return fechaDeportiva(anio, 12, 15);
 }
 
 async function asegurarCategoria(escuelaId, datos) {
@@ -257,7 +254,7 @@ async function main() {
     const futuro = await asegurarEvento({
       escuelaId: escuela._id,
       categoria,
-      fechaEvento: fechaFutura(),
+      fechaEvento: fechaAbiertaDemo(anio),
       horaInicio: "18:00",
       tipoEvento: "Entrenamiento",
       descripcion: `Próximo entrenamiento · ${categoria.nombre}`,
@@ -274,7 +271,7 @@ async function main() {
   console.log(`- Vínculos jugador-apoderado: ${global}`);
   console.log(`- Eventos demo guardados/actualizados: ${eventosGuardados}`);
   if (eventosOmitidos) console.log(`- Eventos omitidos por colisión con datos no demo: ${eventosOmitidos}`);
-  console.log("\nPuedes volver a ejecutar el seed: reutiliza los mismos RUT demo y no duplica jugadores ni apoderados.");
+  console.log("\nPuedes volver a ejecutar el seed: reutiliza los mismos RUT demo y actualiza los mismos eventos demo sin duplicarlos.");
 }
 
 main()

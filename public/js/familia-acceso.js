@@ -163,6 +163,7 @@ async function loadFamily() {
     api("/" + encodeURIComponent(id) + "/familia/agenda")
   ]);
   if ($("escuela").value !== id) return;
+  window.UIPropuesta2?.applyBrand(data.escuela.branding);
   const primary = data.escuela.branding?.colorPrimario;
   document.documentElement.style.setProperty("--familia-color",
     /^#[a-f0-9]{6}$/i.test(primary || "") ? primary : "#176a50");

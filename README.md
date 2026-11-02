@@ -1,4 +1,4 @@
-## Plataforma comercial de gestión de escuelas de fútbol (SaaS en desarrollo)
+# Plataforma comercial de gestión de escuelas de fútbol (SaaS en desarrollo)
 
 El repositorio conserva su nombre histórico, pero el objetivo actual es construir
 un **producto comercial** para varias escuelas: cada cliente dispone de su
@@ -11,6 +11,13 @@ La evolución del producto se desarrolla en la rama
 > **No desplegar aún para escuelas reales.** Este Pull Request está en borrador.
 > Antes de producción deben remediarse la exposición histórica de claves/datos,
 > la seguridad del backend anterior y las pruebas de extremo a extremo.
+
+## Interfaz propuesta 2 · Moderna y dinámica
+
+La presentación seleccionada tiene tarjetas deportivas, navegación lateral por roles,
+versión adaptable a móviles y colores/logo/portada por escuela. El panel del Director
+muestra indicadores reales de la institución. Consulta `docs/PROPUESTA_2_UI.md`
+para actualización en VS Code y lista de comprobación.
 
 ## Funciones nuevas en esta rama
 
@@ -114,9 +121,9 @@ compartidos; pruebas integradas del portal de apoderados; pagos seguros, pruebas
   almacenamiento GridFS de MongoDB. No admite SVG o URL externa arbitraria.
 - La imagen antigua se retira cuando se reemplaza o elimina. Solo se entrega
   públicamente la imagen vigente de una escuela activa.
-- Es una implementación en desarrollo: falta comprobar la subida y retirada
-  end-to-end contra MongoDB real, calidad de compresión y límites con fotos
-  representativas antes de producción.
+- Es una implementación en desarrollo: la subida y visualización persistente se probaron
+  manualmente en una escuela ficticia; faltan pruebas automatizadas de subida/retirada,
+  calidad de compresión y límites con fotos representativas antes de producción.
 - Usar escudos/fotos con permiso; los colores o logos de un club conocido
   no están incluidos ni licenciados por esta aplicación.
 

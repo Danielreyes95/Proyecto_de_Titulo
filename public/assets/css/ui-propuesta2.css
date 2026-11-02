@@ -6,6 +6,8 @@
   --ui-primary-soft:#f1eafa;
   --ui-on-primary:#fff;
   --ui-accent:#f27686;
+  --ui-secondary-brand:#ffffff;
+  --ui-secondary-soft:#faf7ff;
   --ui-cyan:#19bdc6;
   --ui-ink:#20243d;
   --ui-muted:#66728c;
@@ -187,3 +189,7 @@ td button{margin:3px}
 #imagenesDirector{margin-top:22px}
 #seleccion.preview>.marca-portada{width:100%;max-height:235px;object-fit:cover}
 @media(max-width:650px){#resumenDirector.estadisticas{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* El color secundario se conserva como parte del branding institucional. */
+.app-topbar{border-bottom:3px solid var(--ui-secondary-brand)}
+.app-brand .app-logo{background:var(--ui-secondary-soft)}

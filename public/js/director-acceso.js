@@ -25,6 +25,53 @@ async function api(path, data, method = "POST") {
   if (!r.ok) throw new Error(j.error || "Error de conexión");
   return j;
 }
+async function cargarResumenEscuela(id, rol) {
+  const root = $("resumenDirector");
+  root.replaceChildren();
+  root.hidden = rol !== "director";
+  if (rol !== "director") return;
+  const year = new Date().getUTCFullYear();
+  const items = [
+    ["Categorías activas", "—"],
+    ["Jugadores activos", "—"],
+    ["Entrenadores activos", "—"],
+    ["Actividades cerradas · " + year, "—"]
+  ];
+  for (const [label, count] of items) {
+    const card = document.createElement("div");
+    card.className = "stat";
+    const title = document.createElement("span");
+    title.textContent = label;
+    const value = document.createElement("strong");
+    value.textContent = count;
+    card.append(title, value);
+    root.append(card);
+  }
+  try {
+    const [cats, players, trainers, totals] = await Promise.all([
+      api("/" + id + "/categorias"),
+      api("/" + id + "/jugadores"),
+      api("/" + id + "/entrenadores"),
+      api("/" + id + "/estadisticas/resumen?anio=" + year)
+    ]);
+    if (selectedSchool !== id) return;
+    const values = [
+      (cats.categorias || []).filter(x => x.estado === "activa").length,
+      (players.jugadores || []).filter(x => x.estado === "activo").length,
+      (trainers.entrenadores || []).filter(x => x.estado === "activo").length,
+      totals.totales?.actividades ?? 0
+    ];
+    root.querySelectorAll(".stat strong").forEach((node, index) => {
+      node.textContent = String(values[index]);
+    });
+  } catch {
+    if (selectedSchool === id) {
+      root.querySelectorAll(".stat strong").forEach(node => { node.textContent = "—"; });
+      notify("Escuela seleccionada. Los indicadores no están disponibles por ahora.");
+    }
+  }
+}
+
 async function load() {
   const data = await api("/mis-escuelas");
   $("escuelas").replaceChildren();
@@ -142,6 +189,7 @@ async function load() {
         noticesLink.href = "/avisos-escuela.html?escuela=" +
           encodeURIComponent(escuela.id);
         noticesLink.hidden = detail.rol !== "director";
+        cargarResumenEscuela(escuela.id, detail.rol);
       } catch (error) { notify(error.message); }
     });
     $("escuelas").append(button);

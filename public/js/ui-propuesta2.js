@@ -46,6 +46,8 @@
       ? branding.colorPrimario : "#6738a8";
     const accent = HEX_RE.test(branding.colorAcento || "")
       ? branding.colorAcento : "#f27686";
+    const secondary = HEX_RE.test(branding.colorSecundario || "")
+      ? branding.colorSecundario : "#ffffff";
     const text = HEX_RE.test(branding.colorTexto || "")
       ? branding.colorTexto : "#20243d";
     const accessiblePrimary = luminance(primary) > .55 ? blend(primary, "#24203c", .62) : primary;
@@ -54,9 +56,12 @@
     $root.style.setProperty("--ui-primary-soft", blend(primary, "#ffffff", .91));
     $root.style.setProperty("--ui-on-primary", contrastText(accessiblePrimary));
     $root.style.setProperty("--ui-accent", accent);
+    $root.style.setProperty("--ui-secondary-brand", secondary);
+    $root.style.setProperty("--ui-secondary-soft", blend(secondary, "#ffffff", .88));
     $root.style.setProperty("--ui-ink", luminance(text) > .7 ? "#20243d" : text);
     $root.style.setProperty("--escuela-primario", primary);
     $root.style.setProperty("--escuela-acento", accent);
+    $root.style.setProperty("--escuela-secundario", secondary);
   }
 
   function node(tag, className, value) {
@@ -92,6 +97,7 @@
     backdrop = null;
     mountedSchool = "";
     document.body.classList.remove("app-shell-active", "app-menu-open");
+    applyBrand({});
   }
   function mountSchool(schoolId, role, school) {
     if (!SCHOOL_RE.test(schoolId || "") || !school ||

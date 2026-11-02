@@ -177,3 +177,13 @@ td button{margin:3px}
  body{background:#fff}
  .panel,.stat{break-inside:avoid;box-shadow:none}
 }
+/* Indicadores reales de inicio y vista de personalización */
+#resumenDirector.estadisticas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:19px 0}
+#resumenDirector .stat{padding:17px 14px}
+#resumenDirector .stat strong{font-size:1.85rem}
+#resumenDirector .stat span{font-size:.77rem}
+#marcaDirector{border:1px solid var(--ui-border);border-radius:16px;background:#fbfaff;padding:20px;margin-top:24px}
+#marcaDirector h2{margin-top:0}
+#imagenesDirector{margin-top:22px}
+#seleccion.preview>.marca-portada{width:100%;max-height:235px;object-fit:cover}
+@media(max-width:650px){#resumenDirector.estadisticas{grid-template-columns:repeat(2,minmax(0,1fr))}}

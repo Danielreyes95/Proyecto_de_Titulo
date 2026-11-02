@@ -12,6 +12,7 @@ function logout() {
   $("marcaDirector").hidden = true;
   $("imagenesDirector").hidden = true;
   selectedSchool = null;
+  window.UIPropuesta2?.clearShell();
 }
 async function api(path, data, method = "POST") {
   const r = await fetch(BASE + path, {
@@ -38,6 +39,7 @@ async function load() {
         $("titulo").textContent = detail.escuela.branding?.nombrePublico || detail.escuela.nombre;
         $("slug").textContent = detail.escuela.slug;
         selectedSchool = escuela.id;
+        window.UIPropuesta2?.mountSchool(escuela.id, detail.rol, detail.escuela);
         $("marcaDirector").hidden = detail.rol !== "director";
         $("imagenesDirector").hidden = detail.rol !== "director";
         mostrarMarca(detail.escuela.branding);
@@ -176,6 +178,7 @@ $("marcaDirector").addEventListener("submit", async event => {
     $("seleccion").style.backgroundColor = data.escuela.branding.colorSecundario;
     $("seleccion").style.color = data.escuela.branding.colorTexto;
     $("seleccion").style.borderColor = data.escuela.branding.colorPrimario;
+    window.UIPropuesta2?.applyBrand(data.escuela.branding);
     notify("Identidad visual actualizada");
   } catch (error) { notify(error.message); }
   finally { button.disabled = false; }

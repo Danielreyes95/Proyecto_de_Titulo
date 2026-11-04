@@ -1,44 +1,75 @@
 <!doctype html><html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Familias · Plataforma multiescuela</title>
-<link rel="stylesheet" href="/assets/css/plataforma.css">
-<link rel="stylesheet" href="/assets/css/familia.css">
-<script src="/js/familia-acceso.js" defer></script>
-<link rel="stylesheet" href="/assets/css/ui-propuesta2.css?v=2.1.0">
-<script src="/js/ui-propuesta2.js?v=2.1.0" defer></script>
-</head><body><main class="layout">
-<header class="cabecera"><div><span class="eyebrow">PORTAL DE FAMILIAS</span>
-<div class="marca-familia-titulo"><img id="familiaLogo" alt="Escudo de tu escuela" hidden><h1 id="titulo">Bienvenido a tu escuela</h1></div>
-<p>Información deportiva de los jugadores vinculados a tu familia.</p></div>
-<button type="button" id="salir" class="secundario" hidden>Cerrar sesión</button></header>
-<section id="loginPanel" class="panel auth-panel">
-<h2>Inicia sesión</h2>
-<p>Usa el correo donde recibiste la invitación de la escuela.</p>
-<form id="login" class="formulario">
-<label>Correo electrónico<input id="email" type="email" maxlength="254" autocomplete="username" required></label>
-<label>Contraseña<input id="password" type="password" autocomplete="current-password" required></label>
-<button type="submit">Ingresar al portal</button>
-</form></section>
-<section id="dashboard" hidden>
-<img id="familiaPortada" alt="Portada de tu escuela" class="familia-portada" hidden>
-<section class="panel"><h2>Selecciona tu escuela</h2>
-<label class="escuela-selector" for="escuela">Escuela
-<select id="escuela"><option value="">Selecciona una institución</option></select>
-</label></section>
-<section id="contenido" hidden>
-<section class="familia-seccion" aria-labelledby="tituloAgenda">
-  <h2 id="tituloAgenda">Próximas actividades</h2>
-  <p>Entrenamientos y partidos programados para tus jugadores vinculados.</p>
-  <div id="agenda" class="familia-grid"></div>
+<title>Portal familiar · Plataforma de Fútbol</title>
+<link rel="stylesheet" href="/assets/css/app-v2.css?v=3.0.0">
+<script src="/js/ui-propuesta2.js?v=3.0.0" defer></script>
+<script src="/js/familia-acceso.js?v=3.0.0" defer></script>
+</head><body><main class="layout family-app">
+<header class="cabecera family-public-header">
+  <div><span class="eyebrow">PORTAL DE FAMILIAS</span>
+    <div class="marca-familia-titulo">
+      <img id="familiaLogo" alt="Escudo de tu escuela" hidden>
+      <h1 id="titulo">Bienvenido a tu escuela</h1>
+    </div>
+    <p>Horarios, confirmaciones y avances deportivos de tus jugadores vinculados.</p></div>
+  <button type="button" id="salir" class="secundario" hidden>Cerrar sesión</button>
+</header>
+<section id="loginPanel" class="role-login-grid" aria-labelledby="familiaAccesoTitulo">
+  <div class="role-login-story family-login-story">
+    <span class="admin-login-tag">APODERADOS · FAMILIAS</span>
+    <span class="role-story-ball" aria-hidden="true">⚽</span>
+    <h2>Cerca de su<br><em>pasión.</em></h2>
+    <p>Consulta próximas actividades, acompaña su progreso y confirma su participación.</p>
+    <div class="role-benefits" aria-hidden="true">
+      <span>✓ Próximos partidos</span><span>✓ Asistencia</span><span>✓ Avisos</span>
+    </div>
+  </div>
+  <section class="panel auth-panel role-auth">
+    <span class="eyebrow">TU PORTAL FAMILIAR</span><h2 id="familiaAccesoTitulo">Inicia sesión</h2>
+    <p>Utiliza el correo donde recibiste la invitación de la escuela.</p>
+    <form id="login" class="formulario">
+      <label>Correo electrónico<input id="email" type="email" maxlength="254" autocomplete="username" required></label>
+      <label>Contraseña<input id="password" type="password" autocomplete="current-password" required></label>
+      <button type="submit">Ingresar al portal →</button>
+    </form>
+    <p class="auth-alternative">¿Eres entrenador o director? <a href="/director-acceso.html">Acceso del personal</a></p>
+  </section>
 </section>
-<section class="familia-seccion" aria-labelledby="tituloAvisos">
-  <h2 id="tituloAvisos">Avisos de la escuela</h2>
-  <div id="avisos" class="familia-grid"></div>
+<section id="dashboard" class="family-dashboard" hidden>
+  <img id="familiaPortada" alt="Portada institucional" class="familia-portada" hidden>
+  <section class="panel family-school-selector">
+    <span class="eyebrow">MI INSTITUCIÓN</span><h2>Tu escuela y tus jugadores</h2>
+    <label class="escuela-selector" for="escuela">Escuela
+      <select id="escuela"><option value="">Selecciona una institución</option></select>
+    </label>
+  </section>
+  <section id="contenido" hidden>
+    <section class="estadisticas module-kpis family-kpis" aria-label="Resumen familiar">
+      <div class="stat"><span>Mis jugadores</span><strong id="familiaPlayersCount">0</strong><small>Vinculados a tu cuenta</small></div>
+      <div class="stat"><span>Próximas actividades</span><strong id="familiaEventsCount">0</strong><small>Entrenamientos y partidos</small></div>
+      <div class="stat"><span>Comunicados</span><strong id="familiaNoticesCount">0</strong><small>Noticias para tu familia</small></div>
+    </section>
+    <section class="familia-seccion" aria-labelledby="tituloAgenda">
+      <div class="section-heading"><div><span class="eyebrow">CALENDARIO DEPORTIVO</span>
+        <h2 id="tituloAgenda">Próximas actividades</h2>
+        <p>Confirma si tus jugadores podrán participar antes del evento.</p></div></div>
+      <div id="agenda" class="familia-grid"></div>
+    </section>
+    <section class="familia-seccion" aria-labelledby="tituloAvisos">
+      <div class="section-heading"><div><span class="eyebrow">COMUNICACIÓN</span>
+        <h2 id="tituloAvisos">Comunicados de la escuela</h2>
+        <p>Información oficial publicada para tu familia o categoría.</p></div></div>
+      <div id="avisos" class="familia-grid"></div>
+    </section>
+    <section class="familia-seccion" aria-labelledby="tituloJugadoresFamilia">
+      <div class="section-heading"><div><span class="eyebrow">DESARROLLO Y ASISTENCIA</span>
+        <h2 id="tituloJugadoresFamilia">Mis jugadores</h2>
+        <p>Resumen individual basado en actividades deportivas cerradas.</p></div></div>
+      <div id="jugadores" class="familia-grid"></div>
+    </section>
+  </section>
 </section>
-<h2 style="margin:22px 0 12px">Mis jugadores</h2>
-<div id="jugadores" class="familia-grid"></div>
-</section></section>
 <p id="mensaje" role="status" aria-live="polite"></p>
-<footer>Los datos de otros jugadores de la escuela no están disponibles desde este portal.</footer>
+<footer>El portal familiar solo muestra datos de los jugadores vinculados a tu cuenta.</footer>
 </main></body></html>

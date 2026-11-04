@@ -1,39 +1,32 @@
-# ENTREGABLE COMPLETO · PROPUESTA VISUAL 2 (moderna y dinámica)
+# Entrega V3 · Propuesta 2 — Plataforma de Fútbol
 
-Actualización visual real de la plataforma multiescuela de fútbol.
+## Alcance
+La interfaz multiescuela se reconstruyó por completo, no solo se recoloreó. Las doce páginas activas utilizan **una única hoja de diseño**: `public/assets/css/app-v2.css?v=3.0.0`, y la navegación `public/js/ui-propuesta2.js?v=3.0.0`.
 
-## Qué cambia
+Los CSS antiguos ya no se cargan por separado; las reglas funcionales necesarias quedaron unificadas. Las pantallas históricas del sistema legado permanecen en el repositorio solo como referencia. Con `LEGACY_API_ENABLED=false`, sus antiguas rutas HTML redirigen a los accesos nuevos.
 
-- **Superadministrador**: nuevo panel con sidebar, topbar, hero morado/turquesa, KPIs, catálogo de tarjetas de escuelas, formularios y gestión de branding.
-- **Director/Entrenador**: pantalla de acceso renovada; menú por rol, dashboard de escuela, indicadores reales, formularios y tablas con el diseño transversal.
-- **Familia**: menú y componentes visuales del mismo sistema, y colores institucionales de la escuela autorizada.
-- **Módulos incluidos**: Categorías, Entrenadores, Jugadores, Apoderados, Registro rápido, Estadísticas, Avisos y activaciones.
-- **Responsive**: a partir de 959 px el menú pasa a botón desplegable; tablas anchas se desplazan horizontalmente.
-- **Personalización**: color principal/secundario/acento/texto, escudo, portada y nombre público por escuela; colores guardados en MongoDB.
-- **Caché visual**: CSS/JS de la interfaz llevan query de versión `v=2.1.0`, para que los navegadores descarguen los archivos nuevos.
-
-Los datos son reales de la base de desarrollo, no cifras fijas del mockup: el dashboard del Superadmin consulta el listado, estados y branding; el Director consulta sus categorías, jugadores, entrenadores y actividades cerradas.
-
-## Código y estructura
-
-| Archivo | Función |
+## Páginas incluidas
+| Página | Diseño y función |
 | --- | --- |
-| `public/plataforma.html` | Panel Superadmin reestructurado |
-| `public/js/plataforma.js` | Catálogo de escuelas real, sin HTML inyectado |
-| `public/director-acceso.html` | Login/panel Director y Entrenador |
-| `public/js/director-acceso.js` | Integra navegación, indicadores y edición de imagen |
-| `public/js/familia-acceso.js` | Portal familiar y marca por escuela |
-| `public/js/ui-propuesta2.js` | Sidebar/topbar, menú móvil, roles, marca |
-| `public/assets/css/ui-propuesta2.css` | Estilos completos (responsive) |
-| `tests/ui-propuesta2.test.js` | Pruebas de regresión |
+| `plataforma.html` | Dashboard Superadmin, identidad por escuela, tarjetas e invitaciones |
+| `director-acceso.html` | Acceso, portada de academia, 4 indicadores reales, agenda, asistencia y accesos directos |
+| `categorias-escuela.html` | Tarjetas formativas/competitivas, listado y editor plegable |
+| `entrenadores-escuela.html` | Tarjetas del cuerpo técnico, invitaciones, asignaciones y edición |
+| `jugadores-escuela.html` | Plantel con filtros y buscador, apoderados y vínculo mediante diálogo |
+| `registro-rapido.html` | Flujo de tres pasos, asistencia, estadísticas, guardado y cierre |
+| `estadisticas-escuela.html` | KPIs, resumen institucional, donut de asistencia y gráficos reales por mes |
+| `avisos-escuela.html` | Indicadores, tarjetas de comunicados y formulario plegable |
+| `familia-acceso.html` | Acceso, banner institucional, calendario, avisos y estadísticas familiares |
+| `activar-director.html` | Activación de Director |
+| `activar-entrenador.html` | Activación de Entrenador |
+| `activar-apoderado.html` | Activación de Familia |
 
-**No** se sustituyeron las rutas API, modelos de MongoDB, cuentas ni permisos existentes. El frontend nunca decide quién puede ver una escuela: lo sigue decidiendo el backend autenticado.
+## Colores y marca editables
+Los datos de branding se leen desde la escuela autorizada: nombre, escudo, portada y colores principal, secundario, acento y texto. Para acercarte a la referencia de diseño puedes establecer desde **Personalización**: principal `#683AC6`, secundario `#FFFFFF`, acento `#F27686`, texto `#24243D`.
+Si tu escuela ya tenía un color verde en MongoDB, se conservará hasta que tú lo modifiques; el rediseño no sobreescribe datos ni presenta métricas inventadas.
 
-## Windows / VS Code: cuando YA tienes una carpeta clonada
-
-1. Cierra el servidor que ocupa el puerto 3000 (`Ctrl + C`).
-2. Abre la terminal de VS Code dentro de la carpeta del repositorio.
-3. Comprueba cambios locales antes de actualizar (no uses comandos destructivos):
+## Actualizar en VS Code
+Detén Node con Ctrl+C y ejecuta estos comandos dentro de la carpeta del repositorio. Si tienes cambios locales pendientes, consérvalos antes de actualizar:
 
 ```powershell
 git status
@@ -44,53 +37,22 @@ npm.cmd ci
 npm.cmd test
 ```
 
-**Si `git status` informa cambios propios sin guardar, guárdalos o registra un commit antes de cambiar de rama o traer actualizaciones.**
-
-4. Inicia el servidor. Para el equipo donde fallaba la resolución DNS SRV:
+Con tu configuración local de MongoDB Atlas, inicia el servidor (el comando incluye el ajuste DNS necesario en tu equipo):
 
 ```powershell
 node -e "const dns=require('node:dns'); dns.setServers(['1.1.1.1','8.8.8.8']); require('./src/server.js')"
 ```
 
-5. Abre `http://localhost:3000/plataforma.html`, inicia sesión y deberías ver una **barra lateral morada**, el encabezado "Una plataforma. Múltiples escuelas." y un **catálogo de tarjetas**. Esta es una comprobación inequívoca de la entrega 2.1.
-6. Si Chrome sigue mostrando algo viejo: `Ctrl + Shift + R` y comprueba en DevTools > Network que se carguen `ui-propuesta2.css?v=2.1.0` y `ui-propuesta2.js?v=2.1.0`.
+Abrir: `http://localhost:3000/plataforma.html`, `http://localhost:3000/director-acceso.html` y `http://localhost:3000/familia-acceso.html`. El archivo `.env` debe permanecer privado y no se incluye en el ZIP.
 
-## Windows / VS Code: instalación DESDE CERO
+## Pruebas de diseño
+- `npm.cmd test`: sintaxis y pruebas unitarias/estructura en GitHub Actions.
+- `node scripts/ui-visual-smoke.js`: abre 12 páginas en Chromium con respuestas API **ficticias**, comprueba que se utiliza la nueva hoja, que aparecen componentes y gráficos, y genera capturas de escritorio y móvil para ocho módulos.
+- Workflow `UI visual V3`: ejecuta ese script y adjunta el artefacto `pantallas-propuesta2-v3` con las capturas. No se conecta a la base de datos real ni utiliza contraseñas.
+- En la comprobación manual final, realizar CRUD, invitaciones, permisos cruzados entre dos escuelas y flujos de asistencia con datos exclusivamente ficticios en MongoDB Atlas de pruebas.
 
-```powershell
-cd "$HOME\Documents"
-git clone --branch feature/base-multiescuela-seguridad --single-branch https://github.com/Danielreyes95/Proyecto_de_Titulo.git Plataforma_Futbol
-cd Plataforma_Futbol
-code .
-npm.cmd ci
-npm.cmd test
-Copy-Item .env.example .env
-```
+## Descarga completa
+El proyecto se entrega como un ZIP del código de la rama. Incluye frontend, backend, scripts, pruebas y documentación; no incluye `.env`, contraseñas, `node_modules` ni la información almacenada en MongoDB Atlas. Se recomienda usar `git pull` para actualizar una carpeta ya clonada.
 
-Edita `.env` **sin compartir claves**. Configura `MONGO_URI` con una base **de pruebas**, `JWT_SECRET`, `PLATFORM_JWT_SECRET`, `SCHOOL_JWT_SECRET`, `FRONTEND_URL` y `BACKEND_URL`. Los tres JWT secretos deben ser únicos, fuertes y distintos. No necesitas recrear la cuenta Superadmin si ya existe en la misma base de pruebas: solo inicia sesión con tus credenciales existentes.
-
-Si Atlas rechaza conexiones, autoriza únicamente la IP actual del equipo, revisa URI/usuario y el estado del clúster. No habilites acceso de todas las IP.
-
-**No subas `.env` a GitHub.** La base de datos de pruebas es independiente de la descarga ZIP: no está incluida dentro del código fuente.
-
-## Instalación desde ZIP, sin Git
-
-En GitHub, selecciona la rama `feature/base-multiescuela-seguridad` y usa **Code > Download ZIP**. Extrae el proyecto, ábrelo en VS Code y ejecuta `npm.cmd ci`, `npm.cmd test`. Crea `.env` desde `.env.example`. La carpeta `node_modules` y las contraseñas no se distribuyen.
-
-## Pantallas a comprobar
-
-- `http://localhost:3000/plataforma.html` → Superadmin
-- `http://localhost:3000/director-acceso.html` → Director o Entrenador
-- `http://localhost:3000/familia-acceso.html` → Familia
-
-En la prueba de aceptación:
-1. Superadmin: sidebar visible, hero visual, 1 escuela en el catálogo (si esa es tu base de desarrollo).
-2. Cambia la selección de escuela y verifica colores/escudo; no se inventan escuelas.
-3. Entra al Director, abre una escuela y recorre categorías, jugadores, entrenador, registro y estadísticas.
-4. En móvil o ventana menor a 960 px, usa el botón del menú.
-5. Verifica que un Entrenador no obtiene acceso a funciones de Director y que un Apoderado ve únicamente a sus propios jugadores.
-6. Cambia la identidad de una escuela y verifica que la marca se actualice sin alterar otra escuela.
-
-## Pruebas y límites
-
-GitHub Actions ejecuta `node --check` sobre los archivos JavaScript y `npm test`. Las pruebas de UI son comprobaciones automatizadas de estructura/integración; **no equivalen a pruebas E2E** con navegador, MongoDB ni teléfonos reales. Antes de comercializar faltan pruebas de seguridad y aislamiento multiescuela, accesibilidad, rendimiento, correo, recuperaciones, despliegue, copias de seguridad y remediación histórica de secretos potencialmente expuestos. Los mockups tienen ilustraciones y cifras conceptuales: no equivalen a módulos de cobro o notificaciones push implementados.
+## Pendientes antes de la venta
+Las pruebas de maquetación con mocks no sustituyen pruebas E2E con MongoDB real ni revisiones de accesibilidad, seguridad y privacidad de menores. El historial antiguo incluye dependencias y posibles secretos que deben revisarse; hay que remediar vulnerabilidades de dependencias y validar backups, permisos entre instituciones y despliegue. Pagos, notificaciones push y recuperación pública de contraseñas siguen pendientes.

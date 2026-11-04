@@ -15,6 +15,7 @@ function logout() {
   $("familiaLogo").removeAttribute("src");
   $("familiaPortada").removeAttribute("src");
   $("titulo").textContent = "Bienvenido a tu escuela";
+  $("familiaHeroName").textContent = "Mi escuela";
   window.UIPropuesta2?.clearShell();
 }
 async function api(path, method = "GET", data) {
@@ -175,6 +176,7 @@ async function loadFamily() {
     /^#[a-f0-9]{6}$/i.test(primary || "") ? primary : "#176a50");
   $("titulo").textContent = data.escuela.branding?.nombrePublico ||
     data.escuela.nombre;
+  $("familiaHeroName").textContent = $("titulo").textContent;
   const logo = data.escuela.branding?.logoUrl;
   const cover = data.escuela.branding?.portadaUrl;
   $("familiaLogo").hidden = !logo;

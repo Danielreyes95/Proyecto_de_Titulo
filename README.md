@@ -12,6 +12,19 @@ La evolución del producto se desarrolla en la rama
 > Antes de producción deben remediarse la exposición histórica de claves/datos,
 > la seguridad del backend anterior y las pruebas de extremo a extremo.
 
+## ENTREGA VISUAL COMPLETA · PROPUESTA 2 (v2.1.0)
+
+El Superadmin ahora muestra barra lateral morada, dashboard de bienvenida
+**«Una plataforma. Múltiples escuelas.»**, indicadores e instituciones en tarjetas
+interactivas. El mismo sistema visual se aplica a Director, Entrenador, Familia
+y los módulos deportivos.
+
+**Si sigues viendo la antigua pantalla verde**, actualiza la rama en VS Code
+con `git pull origin feature/base-multiescuela-seguridad`, reinicia Node y
+recarga el navegador. Los CSS/JS usan `?v=2.1.0` para evitar caché desactualizada.
+
+Guía completa y comprobación: `docs/PROPUESTA_2_UI.md`.
+
 ## Interfaz propuesta 2 · Moderna y dinámica
 
 La presentación seleccionada tiene tarjetas deportivas, navegación lateral por roles,

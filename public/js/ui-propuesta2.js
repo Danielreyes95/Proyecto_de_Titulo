@@ -34,7 +34,8 @@
     ["Jugadores y familias", "jugadores-escuela.html", "users", ["director"]],
     ["Registro rápido", "registro-rapido.html", "bolt", ["director","entrenador"]],
     ["Estadísticas", "estadisticas-escuela.html", "chart", ["director","entrenador"]],
-    ["Comunicados", "avisos-escuela.html", "message", ["director"]]
+    ["Comunicados", "avisos-escuela.html", "message", ["director"]],
+    ["Personalización", "director-acceso.html#personalizacion", "palette", ["director"]]
   ];
 
   const platformLinks = [
@@ -160,8 +161,10 @@
       item.href = link;
       item.append(icon(symbol), element("span", "", label));
       const selected = link.startsWith("#")
-        ? (location.hash ? location.hash === link : link === "#inicio" && kind === "platform")
-        : link.split("?")[0].split("/").pop() === page;
+        ? (location.hash ? location.hash === link : link === "#inicio" && kind === "admin")
+        : (link.split("?")[0].split("#")[0].split("/").pop() === page &&
+          ((link.includes("#personalizacion") && location.hash === "#personalizacion") ||
+            (!link.includes("#personalizacion") && location.hash !== "#personalizacion")));
       if (selected) item.setAttribute("aria-current", "page");
       item.addEventListener("click", () => {
         closeMenu();
@@ -199,6 +202,14 @@
     const initial = element("span", "app-user-avatar", role.slice(0,1).toUpperCase());
     identity.append(initial, element("span", "app-user-role", role));
     topbar.append(menu, breadcrumb, identity);
+    const existingLogout = document.getElementById("salir");
+    if (existingLogout) {
+      const logoutButton = element("button", "app-topbar-logout", "Salir");
+      logoutButton.type = "button";
+      logoutButton.setAttribute("aria-label", "Cerrar sesión");
+      logoutButton.addEventListener("click", () => existingLogout.click());
+      topbar.append(logoutButton);
+    }
 
     document.body.prepend(backdrop, sidebar);
     main.prepend(topbar);
@@ -222,7 +233,8 @@
     const items = schoolLinks
       .filter(entry => entry[3].includes(role))
       .map(([label, file, symbol]) => [label,
-        file === "director-acceso.html" ? "/" + file : "/" + file + "?escuela=" + encodeURIComponent(schoolId),
+        "/" + file.split("#")[0] + "?escuela=" + encodeURIComponent(schoolId) +
+          (file.includes("#") ? "#personalizacion" : ""),
         symbol
       ]);
     buildShell({

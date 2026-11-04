@@ -1,40 +1,59 @@
-<!doctype html>
-<html lang="es"><head>
+<!doctype html><html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow"><title>Entrenadores de mi escuela</title>
-<link rel="stylesheet" href="/assets/css/plataforma.css">
-<script src="/js/entrenadores-escuela.js" defer></script>
-<link rel="stylesheet" href="/assets/css/ui-propuesta2.css?v=2.1.0">
-<script src="/js/ui-propuesta2.js?v=2.1.0" defer></script>
-</head><body><main class="layout">
-<header class="cabecera"><div><span class="eyebrow">GESTIÓN DEPORTIVA</span>
-<h1 id="titulo">Entrenadores de la escuela</h1>
-<p>Registra integrantes y asigna un entrenador principal por categoría.</p></div>
-<a href="/director-acceso.html">← Volver a mis escuelas</a></header>
-<section class="estadisticas" aria-label="Resumen">
-<div class="stat"><span>Entrenadores</span><strong id="total">0</strong></div>
-<div class="stat"><span>Activos</span><strong id="activos">0</strong></div>
-<div class="stat"><span>Inactivos</span><strong id="inactivos">0</strong></div>
+<meta name="robots" content="noindex,nofollow">
+<title>Entrenadores · Plataforma de Fútbol</title>
+<link rel="stylesheet" href="/assets/css/app-v2.css?v=3.0.0">
+<script src="/js/ui-propuesta2.js?v=3.0.0" defer></script>
+<script src="/js/entrenadores-escuela.js?v=3.0.0" defer></script>
+</head><body><main class="layout app-module">
+<header class="cabecera module-header"><div>
+  <span class="eyebrow">GESTIÓN DEPORTIVA · CUERPO TÉCNICO</span>
+  <h1 id="titulo">Entrenadores de la escuela</h1>
+  <p>Gestiona a tus entrenadores, invitaciones de acceso y categorías asignadas.</p>
+</div><button id="nuevoEntrenador" class="button-accent" type="button">+ Añadir entrenador</button></header>
+<section class="estadisticas module-kpis" aria-label="Resumen de entrenadores">
+  <div class="stat"><span>Entrenadores</span><strong id="total">0</strong><small>Registrados en la escuela</small></div>
+  <div class="stat"><span>Activos</span><strong id="activos">0</strong><small>Habilitados para asignación</small></div>
+  <div class="stat"><span>Inactivos</span><strong id="inactivos">0</strong><small>Historial conservado</small></div>
 </section>
-<div class="grid">
-<section class="panel"><h2 id="formTitulo">Registrar entrenador</h2>
-<p>Registra al entrenador y, desde la tabla de entrenadores, utiliza «Invitar acceso» para enviarle su enlace de activación.</p>
-<form id="entrenadorForm" class="formulario">
-<label>Nombre completo<input id="nombre" autocomplete="name" maxlength="120" required></label>
-<label>Correo electrónico<input id="email" type="email" autocomplete="email" maxlength="254" required></label>
-<button id="guardar" type="submit">Guardar entrenador</button>
-<button id="cancelar" class="secundario" type="button" hidden>Cancelar edición</button>
-</form></section>
-<section class="panel"><h2>Asignación a categorías</h2>
-<p>Selecciona un entrenador y una categoría activa sin responsable principal. El historial de asignaciones finalizadas permanece registrado.</p>
-<form id="asignacionForm" class="formulario">
-<label>Entrenador activo<select id="entrenadorId" required></select></label>
-<label>Categoría disponible<select id="categoriaId" required></select></label>
-<button type="submit">Asignar entrenador</button>
-</form></section>
-</div>
-<section class="panel listado"><h2>Entrenadores registrados</h2>
-<div class="tabla-scroll"><table>
-<thead><tr><th>Nombre</th><th>Correo</th><th>Categorías asignadas</th><th>Estado</th><th>Acciones</th></tr></thead>
-<tbody id="tabla"></tbody></table></div></section>
-<p id="mensaje" role="status" aria-live="polite"></p></main></body></html>
+<section class="section-block">
+  <div class="section-heading"><div><span class="eyebrow">NUESTRO EQUIPO</span><h2>Cuerpo técnico</h2>
+    <p>Organiza responsables por categoría y administra sus accesos.</p></div>
+  <a class="outline-link" href="#gestionEntrenadores">Gestionar asignaciones →</a></div>
+  <div id="entrenadoresCards" class="coach-card-grid" aria-live="polite"></div>
+</section>
+<section id="gestionEntrenadores" class="coaches-workbench">
+  <details id="editorEntrenador" class="panel disclosure-workbench">
+    <summary><span class="summary-icon">＋</span><span><strong>Registrar o editar entrenador</strong><small>Información administrativa y correo de invitación</small></span></summary>
+    <div class="workbench-compact">
+      <h2 id="formTitulo">Registrar entrenador</h2>
+      <p>Después de registrar al entrenador podrás invitarlo a activar su cuenta.</p>
+      <form id="entrenadorForm" class="formulario">
+        <label>Nombre completo<input id="nombre" autocomplete="name" maxlength="120" required></label>
+        <label>Correo electrónico<input id="email" type="email" autocomplete="email" maxlength="254" required></label>
+        <div class="field-actions">
+          <button id="guardar" type="submit">Guardar entrenador</button>
+          <button id="cancelar" class="secundario" type="button" hidden>Cancelar edición</button>
+        </div>
+      </form>
+    </div>
+  </details>
+  <section class="panel coach-assignment">
+    <span class="eyebrow">DISTRIBUCIÓN DE EQUIPO</span><h2>Asignación a categorías</h2>
+    <p>Elige a un entrenador activo y una categoría disponible. Se conserva el historial de asignaciones.</p>
+    <form id="asignacionForm" class="formulario">
+      <label>Entrenador activo<select id="entrenadorId" required></select></label>
+      <label>Categoría disponible<select id="categoriaId" required></select></label>
+      <button type="submit">Asignar entrenador →</button>
+    </form>
+  </section>
+</section>
+<section class="panel listado">
+  <div class="section-heading"><div><span class="eyebrow">DETALLE ADMINISTRATIVO</span><h2>Entrenadores registrados</h2></div>
+  <span class="table-help">Desliza la tabla en móvil</span></div>
+  <div class="tabla-scroll"><table><thead><tr>
+    <th>Nombre</th><th>Correo</th><th>Categorías asignadas</th><th>Estado</th><th>Acciones</th>
+  </tr></thead><tbody id="tabla"></tbody></table></div>
+</section>
+<p id="mensaje" role="status" aria-live="polite"></p>
+</main></body></html>

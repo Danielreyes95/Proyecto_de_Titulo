@@ -45,9 +45,9 @@ if(p.includes("/eventos/"))return {evento:{...events[0],categoriaNombre:"Sub 8 �
 return {};
 }
 function probe(){
-return '<script>setTimeout(function(){'+
+return '<script>if(new URLSearchParams(location.search).get("menuTest")==="1"){setTimeout(function(){var b=document.querySelector(".app-menu-toggle");if(b)b.click()},900)}setTimeout(function(){'+
 'function shown(q){var el=document.querySelector(q);if(!el||el.hidden)return false;var s=getComputedStyle(el);return s.display!=="none"&&s.visibility!=="hidden"}'+
-'var d={width:innerWidth,scrollWidth:document.documentElement.scrollWidth,sidebar:shown(".app-sidenav"),topbar:shown(".app-topbar"),director:shown("#seleccion"),categories:document.querySelectorAll(".category-card").length,coaches:document.querySelectorAll(".coach-card").length,players:document.querySelectorAll("#tabla tr").length,bars:document.querySelectorAll(".month-column").length,family:shown(".family-dashboard"),css:[].some.call(document.styleSheets,function(x){return String(x.href).includes("app-v2.css")}),old:[].some.call(document.styleSheets,function(x){return String(x.href).includes("plataforma.css")})};'+
+'var d={width:innerWidth,scrollWidth:document.documentElement.scrollWidth,sidebar:shown(".app-sidenav"),topbar:shown(".app-topbar"),director:shown("#seleccion"),categories:document.querySelectorAll(".category-card").length,coaches:document.querySelectorAll(".coach-card").length,players:document.querySelectorAll("#tabla tr").length,bars:document.querySelectorAll(".month-column").length,family:shown(".family-dashboard"),menuOpen:document.body.classList.contains("app-menu-open"),css:[].some.call(document.styleSheets,function(x){return String(x.href).includes("app-v2.css")}),old:[].some.call(document.styleSheets,function(x){return String(x.href).includes("plataforma.css")})};'+
 'var e=document.createElement("output");e.id="__visual_probe";e.textContent=JSON.stringify(d);document.body.appendChild(e);'+
 '},1800)</script>';
 }
@@ -133,8 +133,23 @@ if(!okay)failures++;
 if(["superadmin","director","categorias","entrenadores","jugadores","cancha","estadisticas","familia"].includes(name)){
 await run(bin,["--window-size=1440,960","--screenshot="+path.join(out,name+"-desktop.png")],url);
 await run(bin,["--window-size=390,844","--screenshot="+path.join(out,name+"-mobile.png")],url);
+const mobileDom=await run(bin,["--window-size=390,844","--dump-dom"],url);
+const mobileResult=mobileDom.match(/<output id="__visual_probe">([^<]+)<\/output>/);
+if(!mobileResult){console.error("FAIL móvil "+name+" sin DOM");failures++;}
+else{
+  const m=JSON.parse(mobileResult[1].replaceAll("&quot;",'"').replaceAll("&amp;","&"));
+  const fits=m.scrollWidth<=m.width+6&&m.css&&!m.old;
+  console.log((fits?"PASS ":"FAIL ")+"móvil "+name+" viewport="+m.width+" contenido="+m.scrollWidth);
+  if(!fits)failures++;
 }
 }
+}
+const navUrl=urlBase+"/__session?kind=school&next="+encodeURIComponent("/director-acceso.html?escuela="+sid+"&menuTest=1");
+const navDom=await run(bin,["--window-size=390,844","--dump-dom"],navUrl);
+const navMatch=navDom.match(/<output id="__visual_probe">([^<]+)<\/output>/);
+const navDiag=navMatch?JSON.parse(navMatch[1].replaceAll("&quot;",'"').replaceAll("&amp;","&")):{};
+if(!navDiag.menuOpen){console.error("FAIL menú móvil no se abre");failures++;}
+else console.log("PASS menú móvil desplegable");
 }finally{await new Promise(resolve=>server.close(resolve));}
 if(failures)throw new Error(failures+" vistas no superaron la prueba");
 console.log("Capturas verificables en "+out);

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex,nofollow">
-  <title>Administración de escuelas</title>
+  <title>Panel general · Plataforma de Fútbol</title>
   <link rel="stylesheet" href="/assets/css/plataforma.css">
   <script src="/js/escuela-imagenes.js" defer></script>
   <script src="/js/plataforma.js" defer></script>
@@ -12,35 +12,70 @@
 <script src="/js/ui-propuesta2.js" defer></script>
 </head>
 <body>
-  <main class="layout">
-    <header class="cabecera">
+  <main class="layout app-page-admin">
+    <header class="cabecera admin-page-header">
       <div>
-        <span class="eyebrow">PLATAFORMA DE GESTIÓN DEPORTIVA</span>
+        <span class="eyebrow">PLATAFORMA MULTIESCUELA · CENTRO DE CONTROL</span>
         <h1>Administración de escuelas</h1>
-        <p>Crea instituciones independientes y configura sus identidades visuales.</p>
+        <p>Gestiona tus academias, configura su identidad e invita a sus responsables desde un mismo lugar.</p>
       </div>
       <button id="salir" class="secundario" type="button" hidden>Cerrar sesión</button>
     </header>
 
-    <section id="inicioSesion" class="panel auth-panel" aria-labelledby="tituloLogin">
-      <h2 id="tituloLogin">Acceso del administrador general</h2>
-      <p>Este acceso es independiente de las cuentas de las escuelas.</p>
+    <section id="inicioSesion" class="admin-login-wrap" aria-labelledby="tituloLogin">
+      <div class="admin-login-story" aria-hidden="true">
+        <span class="admin-login-tag">UNA PLATAFORMA · MÚLTIPLES ESCUELAS</span>
+        <div class="admin-login-ball">⚽</div>
+        <h2>La cancha está lista.<br><span>Tu gestión también.</span></h2>
+        <p>Tu academia, tus colores, tus equipos. Todo en un mismo lugar.</p>
+        <div class="login-marks"><span>✦ Gestión deportiva</span><span>✦ Identidad propia</span><span>✦ Información organizada</span></div>
+      </div>
+      <div class="panel auth-panel admin-login-card">
+      <span class="eyebrow">ACCESO SEGURO</span>
+      <h2 id="tituloLogin">Bienvenido al panel general</h2>
+      <p>Ingresa con tu cuenta de administrador de la plataforma.</p>
       <form id="loginForm" class="formulario">
         <label>Correo electrónico<input id="email" type="email" autocomplete="username" required maxlength="254"></label>
         <label>Contraseña<input id="password" type="password" autocomplete="current-password" required></label>
-        <button type="submit">Ingresar al panel</button>
+        <button type="submit">Entrar al dashboard <span aria-hidden="true">→</span></button>
       </form>
+      <small>Acceso exclusivo de administración general.</small>
+      </div>
     </section>
 
-    <section id="administracion" hidden>
-      <div class="estadisticas">
-        <div class="stat"><span>Escuelas registradas</span><strong id="total">0</strong></div>
-        <div class="stat"><span>Escuelas activas</span><strong id="activas">0</strong></div>
-        <div class="stat"><span>Escuelas suspendidas</span><strong id="suspendidas">0</strong></div>
+    <section id="administracion" class="admin-dashboard" hidden>
+      <section id="inicio" class="admin-hero">
+        <div class="admin-hero-content">
+          <span class="admin-hero-chip">✦ PROPUESTA 2 · MODERNA Y DINÁMICA</span>
+          <h2>Una plataforma.<br><em>Múltiples escuelas.</em></h2>
+          <p>Organiza instituciones, entrenadores, familias y formación deportiva con una identidad diferente para cada academia.</p>
+          <div class="admin-hero-actions">
+            <a class="hero-primary" href="#crear">+ Crear escuela</a>
+            <a class="hero-outline" href="#catalogo">Explorar escuelas</a>
+          </div>
+        </div>
+        <div class="admin-hero-visual" aria-hidden="true">
+          <div class="hero-soccer-circle">⚽</div>
+          <div class="hero-float hero-float-one"><span>▦</span><strong>Escuelas</strong><small>Organizadas</small></div>
+          <div class="hero-float hero-float-two"><span>✓</span><strong>Identidad</strong><small>Personalizable</small></div>
+        </div>
+      </section>
+      <div id="resumen" class="estadisticas admin-kpis">
+        <div class="stat"><div class="kpi-icon kpi-purple" aria-hidden="true">▦</div><span>Escuelas registradas</span><strong id="total">0</strong><small>Academias en la plataforma</small></div>
+        <div class="stat"><div class="kpi-icon kpi-teal" aria-hidden="true">✓</div><span>Escuelas activas</span><strong id="activas">0</strong><small>Operativas actualmente</small></div>
+        <div class="stat"><div class="kpi-icon kpi-coral" aria-hidden="true">⏸</div><span>Escuelas suspendidas</span><strong id="suspendidas">0</strong><small>Con acceso restringido</small></div>
       </div>
 
-      <div class="grid">
-        <section class="panel" aria-labelledby="tituloCrear">
+      <section id="catalogo" class="admin-school-catalogue">
+        <div class="section-title-row">
+          <div><span class="eyebrow">TUS INSTITUCIONES</span><h2>Escuelas de la plataforma</h2><p>Selecciona una academia para gestionar su identidad visual.</p></div>
+          <a class="school-add-link" href="#crear">+ Nueva escuela</a>
+        </div>
+        <div id="escuelasVisuales" class="school-cards" aria-live="polite"></div>
+      </section>
+      <div class="grid admin-settings-grid">
+        <section id="crear" class="panel admin-setup-card" aria-labelledby="tituloCrear">
+          <div class="panel-heading-icon" aria-hidden="true">＋</div>
           <h2 id="tituloCrear">Nueva escuela</h2>
           <p>Registra una institución antes de asignar sus directores.</p>
           <form id="crearForm" class="formulario">
@@ -50,7 +85,8 @@
           </form>
         </section>
 
-        <section class="panel" aria-labelledby="tituloMarca">
+        <section id="identidad" class="panel admin-setup-card" aria-labelledby="tituloMarca">
+          <div class="panel-heading-icon" aria-hidden="true">✎</div>
           <h2 id="tituloMarca">Identidad visual</h2>
           <p>Selecciona una escuela. El administrador general y su director pueden personalizarla.</p>
           <form id="marcaForm" class="formulario">
@@ -97,8 +133,9 @@
         </section>
       </div>
 
-      <section class="panel listado" aria-labelledby="tituloInvitar">
-        <h2 id="tituloInvitar">Asignar director mediante invitación</h2>
+      <section id="invitar" class="panel listado admin-invite" aria-labelledby="tituloInvitar">
+        <span class="eyebrow">EQUIPO DIRECTIVO</span>
+        <h2 id="tituloInvitar">Invitar un director</h2>
         <p>Se enviará un enlace de activación al correo del director. El enlace expira en 24 horas y solo puede utilizarse una vez.</p>
         <form id="invitarForm" class="formulario">
           <label>Escuela<select id="escuelaInvitar" required><option value="">Seleccionar escuela</option></select></label>
@@ -107,9 +144,9 @@
           <button type="submit">Enviar invitación</button>
         </form>
       </section>
-      <section class="panel listado" aria-labelledby="tituloLista">
+      <section id="escuelas" class="panel listado admin-listado" aria-labelledby="tituloLista">
         <div class="listado-header">
-          <h2 id="tituloLista">Escuelas registradas</h2>
+          <h2 id="tituloLista">Listado y estado de escuelas</h2>
           <button id="recargar" class="secundario" type="button">Actualizar</button>
         </div>
         <div class="tabla-scroll">
@@ -122,7 +159,7 @@
     </section>
 
     <p id="mensaje" role="status" aria-live="polite"></p>
-    <footer>Plataforma multiescuela · Administración general</footer>
+    <footer>Plataforma de Fútbol · Gestión multiescuela · Interfaz propuesta 2</footer>
   </main>
 </body>
 </html>

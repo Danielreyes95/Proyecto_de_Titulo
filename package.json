@@ -9,7 +9,8 @@
     "test": "node --test",
     "admin:create": "node scripts/create-platform-admin.js",
     "admin:reset-password": "node scripts/reset-platform-admin-password.js",
-    "seed:demo": "node scripts/seed-demo-data.js"
+    "seed:demo": "node scripts/seed-demo-data.js",
+    "school:reset-password": "node scripts/reset-school-user-password.js"
   },
   "keywords": [],
   "author": "",

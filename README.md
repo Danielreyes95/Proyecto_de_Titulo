@@ -22,7 +22,7 @@ adaptados a cada módulo. Branding independiente por escuela.
 
 **Pruebas:** `npm test` + workflow `UI visual V3`, que valida las 12 páginas
 en Chromium con datos ficticios y captura 8 vistas de escritorio y celular.
-Guía y límites: `docs/PROPUESTA_2_UI.md`.
+Guía de instalación: `docs/PROPUESTA_2_UI.md`. Matriz de evaluación técnica y visual de las doce páginas: `docs/EVALUACION_INTEGRAL_V3.md`.
 
 Las pantallas del sistema legado **no** pertenecen a la nueva plataforma:
 al navegar a sus rutas HTML con `LEGACY_API_ENABLED=false` se redirige

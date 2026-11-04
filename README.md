@@ -12,7 +12,23 @@ La evolución del producto se desarrolla en la rama
 > Antes de producción deben remediarse la exposición histórica de claves/datos,
 > la seguridad del backend anterior y las pruebas de extremo a extremo.
 
-## ENTREGA VISUAL COMPLETA · PROPUESTA 2 (v2.1.0)
+## ENTREGA INTEGRAL V3 — PROPUESTA 2 (rediseño completo)
+
+Se reconstruyeron las **12 páginas activas del producto multiescuela** con una hoja
+de diseño única (`public/assets/css/app-v2.css`): no hay superposición entre
+el CSS antiguo y nuevo. El dashboard del Director muestra estadísticas reales,
+agenda, asistencia y acciones; el resto incluye tarjetas, filtros y formularios
+adaptados a cada módulo. Branding independiente por escuela.
+
+**Pruebas:** `npm test` + workflow `UI visual V3`, que valida las 12 páginas
+en Chromium con datos ficticios y captura 8 vistas de escritorio y celular.
+Guía y límites: `docs/PROPUESTA_2_UI.md`.
+
+Las pantallas del sistema legado **no** pertenecen a la nueva plataforma:
+al navegar a sus rutas HTML con `LEGACY_API_ENABLED=false` se redirige
+a Director o Familia. El código histórico se conserva para referencia.
+
+## ENTREGA VISUAL COMPLETA · PROPUESTA 2 (versión anterior 2.1)
 
 El Superadmin ahora muestra barra lateral morada, dashboard de bienvenida
 **«Una plataforma. Múltiples escuelas.»**, indicadores e instituciones en tarjetas

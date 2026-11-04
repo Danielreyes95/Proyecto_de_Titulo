@@ -1,29 +1,39 @@
 <!doctype html>
-<html lang="es">
-<head>
+<html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow"><title>Activar entrenador de escuela</title>
-<link rel="stylesheet" href="/assets/css/plataforma.css">
-<script src="/js/activar-entrenador.js" defer></script>
-<link rel="stylesheet" href="/assets/css/ui-propuesta2.css?v=2.1.0">
-<script src="/js/ui-propuesta2.js?v=2.1.0" defer></script>
-</head>
-<body><main class="layout">
-<header class="cabecera"><div><span class="eyebrow">GESTIÓN DE ESCUELAS</span><h1>Activación de entrenador</h1>
-<p>Vincula tu cuenta con la escuela que te invitó.</p></div></header>
-<div class="panel auth-panel">
-<h2 id="escuela">Comprobando invitación...</h2><p id="correo"></p>
-<form id="nuevo" class="formulario" hidden>
-<label>Tu nombre<input id="nombre" maxlength="120" required autocomplete="name"></label>
-<label>Contraseña nueva (mínimo 12 caracteres)<input id="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label>
-<button type="submit">Activar mi cuenta</button>
-</form>
-<form id="existente" class="formulario" hidden>
-<p>Ya existe una cuenta con este correo. Inicia sesión para aceptar la invitación.</p>
-<label>Correo<input id="email" type="email" autocomplete="username" readonly></label>
-<label>Contraseña<input id="passwordExistente" type="password" autocomplete="current-password" required></label>
-<button type="submit">Iniciar sesión y vincular escuela</button>
-</form>
-<p id="resultado" role="status" aria-live="polite"></p>
-<a href="/director-acceso.html">Ir al acceso de entrenadores</a>
-</div></main></body></html>
+<meta name="robots" content="noindex,nofollow">
+<title>Activación de entrenador · Plataforma de Fútbol</title>
+<link rel="stylesheet" href="/assets/css/app-v2.css?v=3.0.0">
+<script src="/js/ui-propuesta2.js?v=3.0.0" defer></script>
+<script src="/js/activar-entrenador.js?v=3.0.0" defer></script>
+</head><body><main class="layout">
+<header class="cabecera">
+ <div><span class="eyebrow">CUERPO TÉCNICO · ACTIVACIÓN</span><h1>Activación de entrenador</h1><p>Comienza a organizar asistencias, actividades y estadísticas de tus categorías.</p></div>
+</header>
+<section class="invitation-layout">
+ <div class="invitation-aside">
+   <span class="eyebrow">BIENVENIDO A LA PLATAFORMA</span>
+   <h2>Tu equipo,<br><em>tu cancha.</em></h2>
+   <p>Accede solo a las categorías asignadas por tu escuela.</p>
+   <div class="invitation-symbol" aria-hidden="true">⚽</div>
+ </div>
+ <section class="panel auth-panel">
+   <span class="eyebrow">INVITACIÓN PERSONAL</span>
+   <h2 id="escuela">Comprobando invitación...</h2><p id="correo"></p>
+   <form id="nuevo" class="formulario" hidden>
+      <label>Tu nombre<input id="nombre" maxlength="120" autocomplete="name" required></label>
+      <label>Contraseña nueva (mínimo 12 caracteres)
+      <input id="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label>
+      <button type="submit">Activar mi cuenta</button>
+   </form>
+   <form id="existente" class="formulario" hidden>
+     <p>Ya existe una cuenta con este correo. Inicia sesión para aceptar la invitación.</p>
+     <label>Correo electrónico<input id="email" type="email" autocomplete="username" readonly></label>
+     <label>Contraseña<input id="passwordExistente" type="password" autocomplete="current-password" required></label>
+     <button type="submit">Iniciar sesión y vincular escuela</button>
+   </form>
+   <p id="resultado" role="status" aria-live="polite"></p>
+   <a class="outline-link" href="/director-acceso.html">Ir al acceso de entrenadores →</a>
+ </section>
+</section>
+</main></body></html>

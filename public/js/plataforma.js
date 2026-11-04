@@ -15,6 +15,8 @@
     $("inicioSesion").hidden = isAuthenticated;
     $("administracion").hidden = !isAuthenticated;
     $("salir").hidden = !isAuthenticated;
+    if (isAuthenticated) window.UIPropuesta2?.mountPlatform();
+    else window.UIPropuesta2?.clearShell();
   }
 
   function logout() {
@@ -40,6 +42,73 @@
     const cell = row.insertCell();
     cell.textContent = text;
     return cell;
+  }
+
+
+  // Tarjetas del catálogo: muestran la información guardada en Atlas y conservan
+  // los botones de gestión existentes. No usan HTML inyectado desde la API.
+  function safeMedia(url, schoolId, type) {
+    return typeof url === "string" &&
+      url.startsWith("/uploads/escuelas/" + schoolId + "/" + type + "/") ? url : null;
+  }
+  function element(tag, classes, text) {
+    const node = document.createElement(tag);
+    if (classes) node.className = classes;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+  function renderCards() {
+    const host = $("escuelasVisuales");
+    if (!host) return;
+    host.replaceChildren();
+    if (!escuelas.length) {
+      const empty = element("div", "panel school-card-empty");
+      empty.append(element("h3", "", "Tu primera escuela comienza aquí"),
+        element("p", "", "Crea una institución y podrás configurar su nombre, colores, escudo y portada."));
+      host.append(empty);
+      return;
+    }
+    for (const school of escuelas) {
+      const b = school.branding || {};
+      const primary = /^#[0-9a-f]{6}$/i.test(b.colorPrimario || "") ? b.colorPrimario : "#683ac6";
+      const coverUrl = safeMedia(b.portadaUrl, school._id, "portada");
+      const logoUrl = safeMedia(b.logoUrl, school._id, "logo");
+      const card = element("article", "school-card");
+      const cover = element("div", "school-card-cover");
+      cover.style.setProperty("--school-color", primary);
+      if (coverUrl) {
+        const image = element("img");
+        image.src = coverUrl; image.alt = "";
+        cover.append(image);
+      }
+      const body = element("div", "school-card-body");
+      const identity = element("div", "school-card-identity");
+      const logo = element("div", "school-card-logo");
+      if (logoUrl) {
+        const image = element("img");
+        image.src = logoUrl;
+        image.alt = "Escudo institucional";
+        logo.append(image);
+      } else logo.textContent = "⚽";
+      const state = element("span", "pildora " + school.estado, school.estado);
+      identity.append(logo, state);
+      const name = element("h3", "", b.nombrePublico || school.nombre);
+      const slug = element("p", "school-slug", school.slug);
+      const footer = element("div", "school-card-footer");
+      footer.append(element("small", "", "Identidad visual propia"));
+      const customize = element("button", "secundario", "Personalizar →");
+      customize.type = "button";
+      customize.setAttribute("aria-label", "Personalizar " + school.nombre);
+      customize.addEventListener("click", () => {
+        $("escuelaMarca").value = school._id;
+        pickMarca();
+        document.getElementById("identidad").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      footer.append(customize);
+      body.append(identity, name, slug, footer);
+      card.append(cover, body);
+      host.append(card);
+    }
   }
 
   function pickMarca() {
@@ -133,6 +202,7 @@
     }
     select.value = escuelas.some(x => x._id === selected) ? selected : "";
     pickMarca();
+    renderCards();
   }
 
   async function changeState(escuela, estado) {

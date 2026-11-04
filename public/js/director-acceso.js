@@ -226,7 +226,7 @@ $("marcaDirector").addEventListener("submit", async event => {
     $("seleccion").style.backgroundColor = data.escuela.branding.colorSecundario;
     $("seleccion").style.color = data.escuela.branding.colorTexto;
     $("seleccion").style.borderColor = data.escuela.branding.colorPrimario;
-    window.UIPropuesta2?.applyBrand(data.escuela.branding);
+    window.UIPropuesta2?.refreshBrand(data.escuela, selectedSchool);
     notify("Identidad visual actualizada");
   } catch (error) { notify(error.message); }
   finally { button.disabled = false; }
@@ -246,6 +246,11 @@ function mostrarMarca(branding = {}) {
       "Sin imagen cargada"
     );
     $("quitar" + tipo).hidden = !branding?.[field];
+  }
+  if (selectedSchool) {
+    window.UIPropuesta2?.refreshBrand({
+      nombre: $("titulo").textContent, branding
+    }, selectedSchool);
   }
 }
 for (const [tipo, nombre] of [["logo", "Logo"], ["portada", "Portada"]]) {

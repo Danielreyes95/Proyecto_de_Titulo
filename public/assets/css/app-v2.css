@@ -962,3 +962,86 @@ body.selected-school .director-public-header{display:none}
   .cancha .guardar-flotante{top:0}
 }
 @media(prefers-reduced-motion:reduce){.quick-action:hover{transform:none}}
+
+/* ACABADOS Y VISUALIZACIONES V3.0 */
+:root{--ui-primary-contrast:#fff}
+.app-topbar-logout{background:#f3edfd;color:var(--ui-primary);min-height:38px;padding:7px 13px;font-size:.78rem}
+.app-topbar-logout:hover{background:var(--ui-primary-soft)}
+.app-shell-admin .admin-page-header #salir,
+.app-shell-family .family-public-header,
+.app-shell-school .director-public-header{display:none}
+.app-shell-active .app-topbar{border-bottom:3px solid var(--ui-secondary-brand)}
+.app-user-pill{flex:none}
+.app-shell-active .app-menu-toggle{background:var(--ui-primary);color:var(--ui-primary-contrast)}
+.app-shell-school .app-nav-link[aria-current=page] svg,
+.app-shell-family .app-nav-link[aria-current=page] svg{color:#56e8e0}
+.app-shell-school .app-nav-link[aria-current=page],
+.app-shell-family .app-nav-link[aria-current=page]{box-shadow:inset 3px 0 0 #35d6cf}
+#marcaDirector{margin:0!important}
+.school-picker .section-heading h2{font-size:1.65rem}
+.dashboard-four .stat:nth-child(3n+2){border:1px solid var(--ui-border)}
+.identity-editor .marca-imagenes-grid{margin-top:13px}
+.identity-editor .marca-imagen-card{background:#fbfaff}
+.notice-visual-card{display:grid;gap:10px;align-content:start;min-height:220px}
+.notice-visual-card .pildora{justify-self:start}
+.notice-visual-card h3{font-size:1.12rem;margin:3px 0}
+.notice-visual-card p{margin:0;overflow-wrap:anywhere;white-space:pre-wrap}
+.notice-visual-card button{justify-self:start;align-self:end;margin-top:8px}
+.family-dashboard{display:grid;gap:19px}
+.family-school-selector{padding:23px}
+.family-school-selector h2{margin:6px 0 14px}
+.family-kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.report-feature{display:flex;justify-content:space-between;gap:18px;align-items:center;overflow:hidden;
+ padding:24px 29px;margin:0 0 19px;border-top:3px solid var(--ui-teal)}
+.report-feature .eyebrow{display:block}
+.report-feature h2{font-size:1.7rem;margin:8px 0 4px}
+.report-feature p{margin:4px 0}
+.report-feature-art{width:72px;height:72px;display:grid;place-items:center;flex:none;
+ border-radius:20px;font-size:2.55rem;color:var(--ui-primary);background:white;
+ box-shadow:0 9px 18px #22134a19}
+.report-visual-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:15px 0}
+.report-visual-grid .panel{min-width:0}
+.report-attendance-card .report-donut-wrap{display:flex;align-items:center;justify-content:center;gap:22px;margin:24px auto 7px}
+.report-attendance-card .report-donut-wrap>div:last-child{max-width:210px}
+.report-attendance-card .report-donut-wrap p{font-size:.83rem;margin:8px 0}
+.report-month-chart{display:grid;grid-template-columns:repeat(12,minmax(20px,1fr));gap:12px;
+ min-height:240px;margin:28px 0 9px;align-items:end}
+.month-column{height:225px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px}
+.month-column strong{font-size:.82rem;color:var(--ui-primary)}
+.month-column span{font-size:.74rem;color:#79758d;font-weight:700}
+.month-track{height:175px;width:100%;display:flex;align-items:end;background:#f4f2f9;border-radius:12px;overflow:hidden}
+.month-bar{width:100%;background:linear-gradient(to top,var(--ui-primary),var(--ui-teal));border-radius:12px 12px 2px 2px;min-height:3px}
+.report-evolution{margin-bottom:20px}
+.report-detail-table{margin-top:19px}
+.report-detail-table summary{cursor:pointer;font-weight:800;color:var(--ui-primary);padding:10px 0}
+.report-detail-table[open] summary{margin-bottom:13px}
+.report-detail-table .tabla-scroll{margin-top:5px}
+.notice-card-list .empty-feature{grid-column:1/-1}
+.school-hero,.school-hero *{min-width:0}
+.role-auth{color:var(--ui-ink)}
+.school-home-header{background:linear-gradient(100deg,var(--ui-primary-soft),white)}
+.app-shell-school .module-kpis .stat:before{display:none}
+button:not(:disabled),a[role=button]{touch-action:manipulation}
+@media(max-width:1080px){
+ .report-visual-grid{grid-template-columns:1fr}
+ .report-month-chart{gap:6px}
+ .report-attendance-card .report-donut-wrap{justify-content:flex-start}
+}
+@media(max-width:720px){
+ .report-month-chart{gap:4px;min-height:185px}
+ .month-column{height:180px}
+ .month-track{height:130px}
+ .month-column strong,.month-column span{font-size:.64rem}
+ .report-feature-art{display:none}
+ .report-feature{padding:20px}
+ .report-feature h2{font-size:1.32rem}
+ .report-attendance-card .report-donut-wrap{flex-wrap:wrap}
+ .family-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .app-user-pill{display:none}
+ .app-topbar-logout{margin-left:auto}
+ .app-topbar-title strong{white-space:normal}
+}
+@media print{
+ .app-topbar-logout,.button-accent,.header-actions,.field-actions{display:none!important}
+ .report-month-chart{page-break-inside:avoid}
+}

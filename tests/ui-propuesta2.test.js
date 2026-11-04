@@ -22,7 +22,7 @@ test("Las 12 páginas multiescuela usan SOLO la nueva hoja visual", () => {
    assert.ok(html.includes("/js/ui-propuesta2.js?v=3.0.0"), page);
    assert.ok(!html.includes("/assets/css/plataforma.css"), page);
    assert.ok(!html.includes("/assets/css/ui-propuesta2.css"), page);
- });
+ }
 });
 
 test("Las páginas tienen IDs únicos y sus formularios originales no se pierden", () => {

@@ -1,7 +1,7 @@
 "use strict";
 // Test de interfaz en Chromium con datos completamente ficticios y servidor aislado.
 const http=require("node:http"),fs=require("node:fs"),path=require("node:path"),os=require("node:os");
-const {spawnSync}=require("node:child_process");
+const {spawnSync,spawn}=require("node:child_process");
 const root=path.resolve(__dirname,"..","public"),out=path.resolve(__dirname,"..","visual-smoke-output");
 const sid="6ab9d94c7205a988b1853bc4",cid="6ad174cf2e246eb52b17b0f1",pid="6b0000000000000000000001";
 const school={_id:sid,id:sid,nombre:"Academia Los Leones Demo",slug:"los-leones-demo",estado:"activa",branding:{
@@ -81,14 +81,23 @@ if(fs.existsSync(x))return x;
 throw new Error("Chromium/Chrome no encontrado");
 }
 function run(bin,args,url){
+return new Promise((resolve,reject)=>{
 const userDir=fs.mkdtempSync(path.join(os.tmpdir(),"football-visual-"));
-const r=spawnSync(bin,["--headless","--no-sandbox","--disable-gpu","--disable-dev-shm-usage","--hide-scrollbars",
-"--no-first-run","--virtual-time-budget=5000","--user-data-dir="+userDir,...args,url],
-{encoding:"utf8",maxBuffer:12*1024*1024,timeout:45000});
-fs.rmSync(userDir,{recursive:true,force:true});
-if(r.error)throw r.error;
-if(r.status!==0)throw new Error("Chrome: "+(r.stderr||r.stdout).slice(-900));
-return r.stdout;
+const p=spawn(bin,["--headless","--no-sandbox","--disable-gpu","--disable-dev-shm-usage","--hide-scrollbars",
+"--no-first-run","--virtual-time-budget=5000","--user-data-dir="+userDir,...args,url]);
+let stdout="",stderr="",timedOut=false;
+const timer=setTimeout(()=>{timedOut=true;p.kill("SIGKILL");},35000);
+p.stdout.on("data",data=>{stdout+=data.toString();if(stdout.length>12000000)p.kill("SIGKILL");});
+p.stderr.on("data",data=>{stderr+=data.toString().slice(-50000);});
+p.on("error",err=>{clearTimeout(timer);reject(err);});
+p.on("close",code=>{
+  clearTimeout(timer);
+  try{fs.rmSync(userDir,{recursive:true,force:true,maxRetries:6,retryDelay:150});}catch{}
+  if(timedOut)return reject(new Error("Chromium excedió el tiempo de carga: "+url));
+  if(code!==0)return reject(new Error("Chromium: "+stderr.slice(-850)));
+  resolve(stdout);
+});
+});
 }
 const tests=[
 ["superadmin","plataforma.html","platform","sidebar"],
@@ -113,7 +122,7 @@ let failures=0;
 try{
 for(const [name,page,kind,expected] of tests){
 const url=kind==="none"?urlBase+"/"+page:urlBase+"/__session?kind="+kind+"&next="+encodeURIComponent("/"+page);
-const html=run(bin,["--window-size=1440,960","--dump-dom"],url);
+const html=await run(bin,["--window-size=1440,960","--dump-dom"],url);
 const match=html.match(/<output id="__visual_probe">([^<]+)<\/output>/);
 if(!match){console.error("FAIL "+name+" sin prueba de DOM");failures++;continue;}
 const d=JSON.parse(match[1].replaceAll("&quot;",'"').replaceAll("&amp;","&"));
@@ -122,8 +131,8 @@ const okay=d.css&&!d.old&&(kind==="none"||(d.sidebar&&d.topbar))&&
 console.log((okay?"PASS ":"FAIL ")+name+" "+JSON.stringify(d));
 if(!okay)failures++;
 if(["superadmin","director","categorias","entrenadores","jugadores","cancha","estadisticas","familia"].includes(name)){
-run(bin,["--window-size=1440,960","--screenshot="+path.join(out,name+"-desktop.png")],url);
-run(bin,["--window-size=390,844","--screenshot="+path.join(out,name+"-mobile.png")],url);
+await run(bin,["--window-size=1440,960","--screenshot="+path.join(out,name+"-desktop.png")],url);
+await run(bin,["--window-size=390,844","--screenshot="+path.join(out,name+"-mobile.png")],url);
 }
 }
 }finally{await new Promise(resolve=>server.close(resolve));}

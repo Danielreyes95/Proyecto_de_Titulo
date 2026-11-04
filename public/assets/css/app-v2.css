@@ -1045,3 +1045,18 @@ button:not(:disabled),a[role=button]{touch-action:manipulation}
  .app-topbar-logout,.button-accent,.header-actions,.field-actions{display:none!important}
  .report-month-chart{page-break-inside:avoid}
 }
+
+/* Bienvenida de familias: portada de marca con contenido real */
+.family-hero{display:flex;justify-content:space-between;align-items:center;gap:22px;
+ min-height:155px;padding:30px 36px;border-radius:20px;overflow:hidden;
+ background:radial-gradient(circle at 80% 25%,color-mix(in srgb,var(--ui-primary) 65%,white),transparent 43%),
+ linear-gradient(115deg,var(--ui-primary-dark),var(--ui-primary));
+ box-shadow:0 14px 29px #25114a15}
+.family-hero .eyebrow{color:#7affea}
+.family-hero h2{font-size:clamp(1.6rem,2.6vw,2.4rem);color:white;margin:8px 0 7px}
+.family-hero p{color:#ece8f5;margin:0;max-width:520px}
+.family-hero-symbol{font-size:5.6rem;opacity:.34;transform:rotate(-16deg);flex:none}
+@media(max-width:580px){
+ .family-hero{padding:22px 19px;min-height:145px}
+ .family-hero-symbol{display:none}
+}

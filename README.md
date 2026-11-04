@@ -28,25 +28,22 @@ Las pantallas del sistema legado **no** pertenecen a la nueva plataforma:
 al navegar a sus rutas HTML con `LEGACY_API_ENABLED=false` se redirige
 a Director o Familia. El código histórico se conserva para referencia.
 
-## ENTREGA VISUAL COMPLETA · PROPUESTA 2 (versión anterior 2.1)
+## Qué comprobar después de instalar
 
-El Superadmin ahora muestra barra lateral morada, dashboard de bienvenida
-**«Una plataforma. Múltiples escuelas.»**, indicadores e instituciones en tarjetas
-interactivas. El mismo sistema visual se aplica a Director, Entrenador, Familia
-y los módulos deportivos.
+La versión activa es **V3 de la propuesta 2**. Al iniciar como Director, debe
+aparecer una portada institucional, cuatro indicadores, agenda, asistencia,
+accesos rápidos y navegación lateral. Categorías y Entrenadores muestran tarjetas
+de datos, no únicamente los formularios antiguos. Para evitar caché, todos los
+módulos activos usan `app-v2.css?v=3.0.0`.
 
-**Si sigues viendo la antigua pantalla verde**, actualiza la rama en VS Code
-con `git pull origin feature/base-multiescuela-seguridad`, reinicia Node y
-recarga el navegador. Los CSS/JS usan `?v=2.1.0` para evitar caché desactualizada.
+Los scripts y CSS históricos siguen en el repositorio pero **no se cargan**
+desde las doce páginas activas. Si el navegador sigue mostrando el diseño
+anterior, comprueba que el proyecto se haya actualizado desde la rama correcta
+y reinicia el servidor; usa `Ctrl+Shift+R` para recargar.
 
-Guía completa y comprobación: `docs/PROPUESTA_2_UI.md`.
-
-## Interfaz propuesta 2 · Moderna y dinámica
-
-La presentación seleccionada tiene tarjetas deportivas, navegación lateral por roles,
-versión adaptable a móviles y colores/logo/portada por escuela. El panel del Director
-muestra indicadores reales de la institución. Consulta `docs/PROPUESTA_2_UI.md`
-para actualización en VS Code y lista de comprobación.
+Las capturas de `UI visual V3` utilizan datos ficticios de un servidor simulado:
+sirven para verificar la presentación y la navegación, no sustituyen pruebas
+con MongoDB Atlas real ni en un teléfono físico.
 
 ## Funciones nuevas en esta rama
 

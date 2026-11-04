@@ -30,6 +30,7 @@ function reset() {
   $("formTitulo").textContent = "Nueva categoría";
   $("guardar").textContent = "Guardar categoría";
   $("cancelar").hidden = true;
+  $("editorCategoria").open = false;
 }
 function edit(cat) {
   editId = cat._id;
@@ -41,12 +42,15 @@ function edit(cat) {
   $("formTitulo").textContent = "Editar categoría";
   $("guardar").textContent = "Guardar cambios";
   $("cancelar").hidden = false;
+  $("editorCategoria").open = true;
   $("categoriaForm").scrollIntoView({ behavior: "smooth", block: "center" });
 }
 async function load() {
   const result = await api("/categorias");
   categorias = result.categorias || [];
   $("tabla").replaceChildren();
+  const cards = $("categoriasCards");
+  cards.replaceChildren();
   $("total").textContent = categorias.length;
   $("activas").textContent = categorias.filter(c => c.estado === "activa").length;
   $("inactivas").textContent = categorias.filter(c => c.estado === "inactiva").length;
@@ -80,6 +84,48 @@ async function load() {
       } catch (error) { notify(error.message); state.disabled = false; }
     });
     actions.append(state);
+    const card = document.createElement("article");
+    card.className = "category-card";
+    const symbol = document.createElement("div");
+    symbol.className = "category-symbol";
+    symbol.textContent = "⚽";
+    symbol.setAttribute("aria-hidden", "true");
+    const meta = document.createElement("span");
+    meta.className = "category-chip";
+    meta.textContent = cat.modalidad === "formativo" ? "Formativo" : "Competitivo";
+    const name = document.createElement("h3");
+    name.textContent = cat.nombre;
+    const info = document.createElement("p");
+    info.textContent = cat.edadMin + "–" + cat.edadMax + " años · " +
+      (cat.cupos ? cat.cupos + " cupos" : "Sin límite de cupos");
+    const status = document.createElement("span");
+    status.className = "pildora " + (cat.estado === "inactiva" ? "inactiva" : "");
+    status.textContent = cat.estado;
+    const top = document.createElement("div");
+    top.className = "category-card-top";
+    top.append(symbol, meta);
+    const buttons = document.createElement("div");
+    buttons.className = "card-actions";
+    const editButton = document.createElement("button");
+    editButton.type = "button"; editButton.className = "secundario";
+    editButton.textContent = "Editar";
+    editButton.addEventListener("click", () => edit(cat));
+    const toggle = document.createElement("button");
+    toggle.type = "button"; toggle.className = "secundario";
+    toggle.textContent = cat.estado === "activa" ? "Desactivar" : "Activar";
+    toggle.addEventListener("click", () => state.click());
+    buttons.append(editButton, toggle);
+    const bottom = document.createElement("div");
+    bottom.className = "category-card-bottom";
+    bottom.append(status, buttons);
+    card.append(top, name, info, bottom);
+    cards.append(card);
+  }
+  if (!categorias.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty-feature";
+    empty.textContent = "Todavía no hay categorías. Crea la primera para comenzar.";
+    cards.append(empty);
   }
 }
 $("categoriaForm").addEventListener("submit", async event => {
@@ -101,6 +147,11 @@ $("categoriaForm").addEventListener("submit", async event => {
   finally { button.disabled = false; }
 });
 $("cancelar").addEventListener("click", reset);
+$("nuevaCategoria").addEventListener("click", () => {
+  reset();
+  $("editorCategoria").open = true;
+  $("nombre").focus();
+});
 (async () => {
   if (!schoolId || !/^[0-9a-f]{24}$/i.test(schoolId) || !sessionToken) {
     notify("Acceso no disponible. Inicia sesión y selecciona tu escuela.");

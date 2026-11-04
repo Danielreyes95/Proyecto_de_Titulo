@@ -164,6 +164,42 @@ async function showDetail(player) {
     if (current === requestNumber) status(error.message, true);
   }
 }
+function renderYearChart(months) {
+  const chart = $("chartEvolution");
+  chart.replaceChildren();
+  const maximum = Math.max(1, ...months.map(m => m.actividades || 0));
+  for (const [i, month] of months.entries()) {
+    const col = document.createElement("div");
+    col.className = "month-column";
+    const value = document.createElement("strong");
+    value.textContent = String(month.actividades);
+    const track = document.createElement("div");
+    track.className = "month-track";
+    const bar = document.createElement("div");
+    bar.className = "month-bar";
+    bar.style.height = Math.max(3, month.actividades / maximum * 100) + "%";
+    bar.style.opacity = month.actividades ? "1" : ".15";
+    track.append(bar);
+    const label = document.createElement("span");
+    label.textContent = mesesNombres[i];
+    col.append(value, track, label);
+    col.title = mesesNombres[i] + ": " + month.actividades + " actividades cerradas";
+    chart.append(col);
+  }
+}
+function renderDonut(percent, presentes, ausentes) {
+  const ring = $("asistenciaDonut");
+  const value = typeof percent === "number" && Number.isFinite(percent) ?
+    Math.max(0, Math.min(100, percent)) : null;
+  ring.classList.toggle("has-attendance", value !== null);
+  ring.style.setProperty("--attendance", (value ?? 0) + "%");
+  $("asistenciaDonutNumero").textContent = perc(value);
+  ring.setAttribute("aria-label", value === null ?
+    "Sin registros de asistencia" : "Asistencia " + perc(value));
+  $("asistenciaCaption").textContent = value === null ?
+    "Sin datos cerrados" : presentes + " presentes / " + (presentes + ausentes) + " registros";
+}
+
 function renderPlayers(players) {
   const tbody = $("tabla"); tbody.replaceChildren();
   const needle = $("buscar").value.trim().toLocaleLowerCase("es-CL");
@@ -207,6 +243,8 @@ function render(data) {
     encodeURIComponent(escuelaId);
   renderTypes(data.porTipo);
   renderMonths(data.porMes);
+  renderYearChart(data.porMes);
+  renderDonut(data.resumen.porcentajeAsistencia, data.resumen.presentes, data.resumen.ausentes);
   renderPlayers(data.jugadores);
   status(data.resumen.actividades ? "" :
     "Este año aún no tiene actividades cerradas. Los eventos abiertos no se suman al informe.");

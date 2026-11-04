@@ -347,3 +347,52 @@ footer{text-align:center;margin:36px 0;color:#83859b;font-size:.78rem}
  .panel,.stat{box-shadow:none;break-inside:avoid}
  body{background:white}
 }
+/* Inicio de Director y Entrenador: portada de producto, no formulario aislado */
+.role-login-grid{display:grid;grid-template-columns:minmax(0,1.07fr) minmax(340px,.93fr);gap:24px;max-width:1130px;margin:34px auto;align-items:stretch}
+.role-login-story{background:radial-gradient(circle at 78% 18%,#945dd0,transparent 37%),linear-gradient(135deg,#371857,#231237);
+  color:#fff;position:relative;overflow:hidden;padding:44px 40px;border-radius:25px;min-height:440px;box-shadow:0 18px 42px #27144920}
+.role-login-story h2{color:#fff;font-size:clamp(2.6rem,4vw,4.2rem);line-height:1.02;letter-spacing:-.06em;margin:63px 0 16px}
+.role-login-story h2 em{font-style:normal;color:#49e5da}
+.role-login-story p{color:#e2d9ee;max-width:440px;font-size:1.02rem}
+.role-story-ball{position:absolute;top:40px;right:45px;font-size:5rem;opacity:.38;transform:rotate(-22deg)}
+.role-benefits{margin-top:32px;display:flex;flex-wrap:wrap;gap:8px}
+.role-benefits span{border:1px solid #ffffff33;background:#ffffff12;color:#fff;padding:9px 11px;border-radius:100px;font-weight:650;font-size:.78rem}
+.role-auth{max-width:none;margin:0!important;display:flex;flex-direction:column;justify-content:center;padding:40px!important}
+.role-auth>h2{font-size:1.8rem;margin:10px 0 8px}
+.role-auth .formulario{margin-top:16px}
+.role-auth .formulario button{width:100%}
+.school-home-wrap{display:grid;gap:20px}
+.school-home-header{padding:23px 29px;border-radius:19px;border:1px solid var(--ui-border);background:linear-gradient(95deg,var(--ui-primary-soft),#fff 70%);box-shadow:var(--ui-shadow)}
+.school-home-header h2{font-size:1.75rem;margin:9px 0 8px}
+.school-home-header p{margin:0}
+.school-home-wrap #escuelas{margin:2px 0 0}
+.school-home-wrap .preview{box-shadow:var(--ui-shadow)}
+.school-home-wrap #marcaDirector{margin:0;padding:26px;background:#fff}
+.school-home-wrap #imagenesDirector{padding:24px;background:#fff;border:1px solid var(--ui-border);border-radius:19px;margin:0;box-shadow:var(--ui-shadow)}
+#seleccion .marca-encabezado strong{color:var(--ui-ink)!important}
+#seleccion .marca-encabezado{background:var(--ui-secondary-soft);padding:12px;border-radius:13px}
+.app-shell-school .cabecera a{color:var(--ui-primary)}
+/* Familia: login amable y tarjetas legibles */
+.app-shell-family .escuela-selector{max-width:520px}
+.app-shell-family #dashboard>.panel{margin:0 0 23px}
+.app-shell-family .familia-seccion{margin:27px 0}
+.app-shell-family .familia-seccion h2{font-size:1.4rem;margin-bottom:6px}
+.familia-card{padding:23px;box-shadow:var(--ui-shadow)}
+.familia-card .confirmacion-botones button{border-radius:10px}
+#familiaPortada{height:clamp(135px,17vw,220px);width:100%;object-fit:cover}
+@media(max-width:959px){
+  .role-login-grid{grid-template-columns:1fr;max-width:630px}
+  .role-login-story{min-height:290px;padding:33px}
+  .role-login-story h2{margin-top:35px}
+}
+@media(max-width:600px){
+  .role-login-story{min-height:235px;padding:26px 21px}
+  .role-login-story h2{font-size:2.45rem;margin:30px 0 12px}
+  .role-login-story p{font-size:.9rem}
+  .role-auth{padding:25px!important}
+  .role-login-grid{gap:14px;margin-top:12px}
+  .role-benefits{margin-top:20px}
+  .role-story-ball{font-size:3rem;right:20px;top:20px}
+  .school-home-header{padding:20px}
+  .school-home-wrap #marcaDirector,.school-home-wrap #imagenesDirector{padding:18px}
+}

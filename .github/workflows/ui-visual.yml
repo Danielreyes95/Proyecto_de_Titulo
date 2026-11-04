@@ -1,0 +1,36 @@
+name: UI visual V3
+
+on:
+  push:
+    branches:
+      - feature/base-multiescuela-seguridad
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  visual-smoke:
+    name: 12 pantallas · Chromium
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verificar navegador
+        run: |
+          which google-chrome || which chromium || which chromium-browser
+      - name: Ejecutar validación visual (datos ficticios)
+        run: node scripts/ui-visual-smoke.js
+      - name: Adjuntar capturas de escritorio y celular
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pantallas-propuesta2-v3
+          path: visual-smoke-output/*.png
+          if-no-files-found: warn
+          retention-days: 14

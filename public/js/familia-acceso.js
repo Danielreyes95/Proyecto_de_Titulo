@@ -179,6 +179,9 @@ async function loadFamily() {
   const cover = data.escuela.branding?.portadaUrl;
   $("familiaLogo").hidden = !logo;
   $("familiaPortada").hidden = !cover;
+  $("familiaPlayersCount").textContent = data.jugadores.length;
+  $("familiaEventsCount").textContent = agenda.proximasActividades.length;
+  $("familiaNoticesCount").textContent = agenda.avisos.length;
   if (logo) $("familiaLogo").src = logo;
   else $("familiaLogo").removeAttribute("src");
   if (cover) $("familiaPortada").src = cover;

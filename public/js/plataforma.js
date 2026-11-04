@@ -312,6 +312,7 @@
         school.branding = result.escuela.branding;
         $("adminArchivo" + nombre).value = "";
         mostrarImagenesAdmin(school.branding);
+        renderCards();
         notify("Imagen institucional guardada");
       } catch (error) { notify(error.message, true); }
       finally { button.disabled = false; }
@@ -327,6 +328,7 @@
         });
         school.branding = result.escuela.branding;
         mostrarImagenesAdmin(school.branding);
+        renderCards();
         notify("Imagen retirada");
       } catch (error) { notify(error.message, true); }
       finally { button.disabled = false; }

@@ -26,13 +26,16 @@ function action(text, callback) {
 async function refresh() {
   const data = await api("/avisos");
   $("listado").replaceChildren();
+  $("totalAvisos").textContent = data.avisos.length;
+  $("publicadosAvisos").textContent = data.avisos.filter(a => a.estado === "publicado").length;
+  $("borradoresAvisos").textContent = data.avisos.filter(a => a.estado === "borrador").length;
   if (!data.avisos.length) {
     const p = document.createElement("p"); p.textContent = "No hay avisos todavía.";
     $("listado").append(p);
   }
   for (const aviso of data.avisos) {
     const article = document.createElement("article");
-    article.className = "panel";
+    article.className = "panel notice-visual-card";
     const heading = document.createElement("h3");
     heading.textContent = aviso.titulo;
     const category = categorias.find(c => String(c._id) === String(aviso.categoria));
@@ -42,7 +45,10 @@ async function refresh() {
       "Toda la escuela") + " · " + aviso.estado;
     const text = document.createElement("p");
     text.textContent = aviso.mensaje;
-    article.append(heading, info, text);
+    const tag = document.createElement("span");
+    tag.className = "pildora " + (aviso.estado === "archivado" ? "inactiva" : "");
+    tag.textContent = aviso.estado;
+    article.append(tag, heading, info, text);
     if (aviso.estado !== "archivado") {
       const next = aviso.estado === "borrador" ? "publicado" : "archivado";
       const button = action(next === "publicado" ? "Publicar" : "Archivar", async () => {
@@ -59,6 +65,10 @@ async function refresh() {
     $("listado").append(article);
   }
 }
+$("nuevoAviso").addEventListener("click", () => {
+  $("nuevoAvisoPanel").open = true;
+  $("asunto").focus();
+});
 $("formulario").addEventListener("submit", async e => {
   e.preventDefault();
   const button = e.submitter; button.disabled = true;
@@ -71,6 +81,7 @@ $("formulario").addEventListener("submit", async e => {
     });
     $("formulario").reset();
     await refresh();
+    $("nuevoAvisoPanel").open = false;
     note("Aviso guardado correctamente");
   } catch (error) { note(error.message); }
   finally { button.disabled = false; }

@@ -30,6 +30,7 @@ function cancelEdit() {
   $("formTitulo").textContent = "Registrar entrenador";
   $("guardar").textContent = "Guardar entrenador";
   $("cancelar").hidden = true;
+  $("editorEntrenador").open = false;
 }
 function edit(entrenador) {
   editId = entrenador._id;
@@ -38,6 +39,7 @@ function edit(entrenador) {
   $("formTitulo").textContent = "Editar entrenador";
   $("guardar").textContent = "Guardar cambios";
   $("cancelar").hidden = false;
+  $("editorEntrenador").open = true;
   $("entrenadorForm").scrollIntoView({ behavior: "smooth", block: "center" });
 }
 async function refresh() {
@@ -63,6 +65,8 @@ async function refresh() {
     $("categoriaId").add(new Option(cat.nombre + " · " + cat.modalidad, cat._id));
   }
   $("tabla").replaceChildren();
+  const cards = $("entrenadoresCards");
+  cards.replaceChildren();
   for (const person of entrenadores) {
     const row = $("tabla").insertRow();
     textCell(row, person.nombre);
@@ -127,6 +131,62 @@ async function refresh() {
       });
       actions.append(invite);
     }
+    const card = document.createElement("article");
+    card.className = "coach-card";
+    const head = document.createElement("div");
+    head.className = "coach-card-head";
+    const avatar = document.createElement("span");
+    avatar.className = "coach-avatar";
+    avatar.textContent = person.nombre.slice(0, 1).toUpperCase();
+    avatar.setAttribute("aria-hidden", "true");
+    const details = document.createElement("div");
+    const title = document.createElement("h3");
+    title.textContent = person.nombre;
+    const email = document.createElement("small");
+    email.textContent = person.email;
+    details.append(title, email);
+    head.append(avatar, details);
+    const assigned = document.createElement("div");
+    assigned.className = "coach-tags";
+    if (!person.categorias.length) {
+      const none = document.createElement("span");
+      none.textContent = "Sin categoría asignada";
+      assigned.append(none);
+    }
+    for (const cat of person.categorias) {
+      const tag = document.createElement("span");
+      tag.className = "coach-category-tag";
+      tag.textContent = cat.nombre;
+      assigned.append(tag);
+    }
+    const footer = document.createElement("div");
+    footer.className = "coach-card-footer";
+    const status = document.createElement("span");
+    status.className = "pildora " + (person.estado === "inactivo" ? "inactiva" : "");
+    status.textContent = person.estado;
+    const editCard = document.createElement("button");
+    editCard.type = "button";
+    editCard.className = "secundario";
+    editCard.textContent = "Editar";
+    editCard.addEventListener("click", () => edit(person));
+    const inviteCard = document.createElement("button");
+    inviteCard.type = "button";
+    inviteCard.textContent = "Invitar acceso";
+    inviteCard.disabled = person.estado !== "activo";
+    inviteCard.addEventListener("click", () => {
+      const original = Array.from(actions.querySelectorAll("button"))
+        .find(b => b.textContent === "Invitar acceso");
+      original?.click();
+    });
+    footer.append(status, editCard, inviteCard);
+    card.append(head, assigned, footer);
+    cards.append(card);
+  }
+  if (!entrenadores.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty-feature";
+    empty.textContent = "Aún no hay entrenadores. Agrega a tu primer integrante del cuerpo técnico.";
+    cards.append(empty);
   }
 }
 $("entrenadorForm").addEventListener("submit", async event => {
@@ -154,6 +214,11 @@ $("asignacionForm").addEventListener("submit", async event => {
   finally { button.disabled = false; }
 });
 $("cancelar").addEventListener("click", cancelEdit);
+$("nuevoEntrenador").addEventListener("click", () => {
+  cancelEdit();
+  $("editorEntrenador").open = true;
+  $("nombre").focus();
+});
 (async () => {
   if (!schoolId || !/^[0-9a-f]{24}$/i.test(schoolId) || !token) {
     notify("Inicia sesión y selecciona una escuela.");

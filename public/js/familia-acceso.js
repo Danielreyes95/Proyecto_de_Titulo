@@ -10,6 +10,7 @@ function logout() {
   $("jugadores").replaceChildren();
   $("agenda").replaceChildren();
   $("avisos").replaceChildren();
+  window.UIPropuesta2?.clearShell();
 }
 async function api(path, method = "GET", data) {
   const response = await fetch("/api/escuela-sesion" + path, {
@@ -157,13 +158,13 @@ async function loadFamily() {
   $("contenido").hidden = !id;
   $("agenda").replaceChildren();
   $("avisos").replaceChildren();
-  if (!id) return;
+  if (!id) { window.UIPropuesta2?.clearShell(); return; }
   const [data, agenda] = await Promise.all([
     api("/" + encodeURIComponent(id) + "/familia/mis-jugadores"),
     api("/" + encodeURIComponent(id) + "/familia/agenda")
   ]);
   if ($("escuela").value !== id) return;
-  window.UIPropuesta2?.applyBrand(data.escuela.branding);
+  window.UIPropuesta2?.mountFamily(id, data.escuela);
   const primary = data.escuela.branding?.colorPrimario;
   document.documentElement.style.setProperty("--familia-color",
     /^#[a-f0-9]{6}$/i.test(primary || "") ? primary : "#176a50");

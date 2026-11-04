@@ -29,6 +29,17 @@ async function api(path, method = "GET", body) {
   }
   return data;
 }
+
+function stepper(current) {
+  for (const step of document.querySelectorAll(".cancha-step")) {
+    const n = Number(step.dataset.step);
+    step.classList.toggle("is-active", n === current);
+    step.classList.toggle("is-done", n < current);
+    if (n === current) step.setAttribute("aria-current", "step");
+    else step.removeAttribute("aria-current");
+  }
+}
+
 function clone(obj) { return JSON.parse(JSON.stringify(obj)); }
 function defaults() {
   return { goles: 0, asistenciasGol: 0, pasesClave: 0,
@@ -74,6 +85,7 @@ function recheck() {
   $("marcarPendientes").disabled = saving || conflict;
   $("marcarPendientes").textContent = "✓ Confirmar " + pendingCount + " presente(s) pendientes";
   $("cerrar").disabled = evento?.cerrado || saving || conflict;
+  if (evento && !evento.cerrado) stepper(pendingCount === 0 ? 3 : 2);
   $("sincronizar").hidden = !conflict;
   if (!navigator.onLine && dirty.size) status("Sin conexión · No cierres esta pestaña; tus cambios aún NO están guardados");
   else if (conflict) status("Guardado detenido · Revisa el mensaje. Tus cambios siguen aquí");
@@ -361,6 +373,7 @@ async function openEvent(id) {
   dirty.clear(); undoHistory = []; conflict = false;
   $("seleccionPanel").hidden = true;
   $("actividadPanel").hidden = false;
+  stepper(2);
   $("eventoTitulo").textContent = evento.categoriaNombre + " · " +
     evento.fechaEvento.slice(0, 10);
   $("verInforme").href = "/estadisticas-escuela.html?escuela=" +
@@ -488,6 +501,7 @@ $("cerrar").addEventListener("click", async () => {
   try {
     await api("/eventos/" + evento._id + "/cerrar", "POST", {});
     evento.cerrado = true;
+    stepper(3);
     $("cerrar").hidden = true;
     renderRoster();
     note("Actividad cerrada.");
@@ -497,6 +511,7 @@ $("volver").addEventListener("click", async () => {
   if (dirty.size && !(await saveNow())) return;
   $("actividadPanel").hidden = true;
   $("seleccionPanel").hidden = false;
+  stepper(1);
   evento = null; window.history.replaceState(null, "",
     "?escuela=" + encodeURIComponent(escuelaId));
   await loadEvents().catch(e => note(e.message));
@@ -517,6 +532,7 @@ window.addEventListener("beforeunload", event => {
     String(hoy.getMonth() + 1).padStart(2, "0"),
     String(hoy.getDate()).padStart(2, "0")].join("-");
   $("seleccionPanel").hidden = false;
+  stepper(1);
   try {
     await loadEvents();
     if (queryEvent && /^[a-f0-9]{24}$/i.test(queryEvent)) {

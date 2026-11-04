@@ -10,6 +10,11 @@ function logout() {
   $("jugadores").replaceChildren();
   $("agenda").replaceChildren();
   $("avisos").replaceChildren();
+  $("familiaLogo").hidden = true;
+  $("familiaPortada").hidden = true;
+  $("familiaLogo").removeAttribute("src");
+  $("familiaPortada").removeAttribute("src");
+  $("titulo").textContent = "Bienvenido a tu escuela";
   window.UIPropuesta2?.clearShell();
 }
 async function api(path, method = "GET", data) {

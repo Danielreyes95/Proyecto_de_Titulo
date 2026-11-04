@@ -103,6 +103,26 @@ app.get("/", (req, res, next) => {
 app.get("/uploads/escuelas/:escuelaId/:tipo/:archivo",
   require("./controllers/escuela-media.controller").obtenerPublica);
 
+// En modo multiescuela, las páginas del frontend legado no forman parte del producto
+// activo. Evitamos mostrar pantallas antiguas que no respetan la marca ni los roles nuevos.
+// Solo se redirige navegación HTML; los archivos históricos siguen en el repositorio.
+if (!legacyEnabled) {
+  app.use((req, res, next) => {
+    if (req.method !== "GET" && req.method !== "HEAD") return next();
+    const p = req.path;
+    if (p === "/index.html" || p === "/cambiar-password.html" ||
+        (p.startsWith("/director/") && p.endsWith(".html")) ||
+        (p.startsWith("/entrenador/") && p.endsWith(".html"))) {
+      return res.redirect(302, "/director-acceso.html");
+    }
+    if (p === "/registro-apoderado.html" ||
+        (p.startsWith("/jugador/") && p.endsWith(".html"))) {
+      return res.redirect(302, "/familia-acceso.html");
+    }
+    return next();
+  });
+}
+
 // Servir frontend
 app.use(express.static("public"));
 

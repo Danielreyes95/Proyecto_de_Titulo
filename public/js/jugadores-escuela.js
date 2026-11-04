@@ -4,7 +4,7 @@ const $ = name => document.getElementById(name);
 const escuela = new URLSearchParams(location.search).get("escuela");
 const token = sessionStorage.getItem("schoolToken");
 const base = "/api/escuela-sesion/" + encodeURIComponent(escuela || "");
-let jugadores = [], apoderados = [], categorias = [], editing = null;
+let jugadores = [], apoderados = [], categorias = [], editing = null, vinculandoJugador = null;
 function note(message) { $("mensaje").textContent = message; }
 async function api(path, method = "GET", data) {
   const response = await fetch(base + path, {
@@ -36,6 +36,7 @@ function reset() {
   $("labelApoderado").hidden = false;
   $("apoderado").required = true;
   $("cancelar").hidden = true;
+  $("editorJugador").open = false;
 }
 function edit(jugador) {
   editing = jugador._id;
@@ -48,6 +49,7 @@ function edit(jugador) {
   $("formTitulo").textContent = "Editar jugador";
   $("guardar").textContent = "Guardar cambios";
   $("cancelar").hidden = false;
+  $("editorJugador").open = true;
   $("jugadorForm").scrollIntoView({ behavior: "smooth", block: "center" });
 }
 async function refresh() {
@@ -61,6 +63,10 @@ async function refresh() {
     "Selecciona categoría", c => c.nombre + " · " + c.modalidad);
   options($("apoderado"), apoderados.filter(a => a.estado === "activo"),
     "Selecciona apoderado", a => a.nombre + " (" + a.rut + ")");
+  $("totalApoderados").textContent = apoderados.length;
+  const selectedFilter = $("filtroCategoria").value;
+  options($("filtroCategoria"), categorias, "Todas las categorías", c => c.nombre + " · " + c.modalidad);
+  $("filtroCategoria").value = categorias.some(c => c._id === selectedFilter) ? selectedFilter : "";
   $("tablaApoderados").replaceChildren();
   for (const guardian of apoderados) {
     const row = $("tablaApoderados").insertRow();
@@ -91,7 +97,20 @@ async function refresh() {
   $("tabla").replaceChildren();
   for (const jugador of jugadores) {
     const row = $("tabla").insertRow();
-    addCell(row, jugador.nombre);
+    row.dataset.nombre = jugador.nombre.toLocaleLowerCase("es-CL");
+    row.dataset.categoria = jugador.categoria?._id || "";
+    row.dataset.estado = jugador.estado;
+    const playerCell = row.insertCell();
+    const person = document.createElement("div");
+    person.className = "roster-person";
+    const avatar = document.createElement("span");
+    avatar.className = "roster-avatar";
+    avatar.textContent = jugador.nombre.charAt(0).toUpperCase();
+    avatar.setAttribute("aria-hidden", "true");
+    const playerName = document.createElement("strong");
+    playerName.textContent = jugador.nombre;
+    person.append(avatar, playerName);
+    playerCell.append(person);
     addCell(row, jugador.rut);
     addCell(row, jugador.categoria ?
       jugador.categoria.nombre + " · " + jugador.categoria.modalidad : "Sin categoría activa");
@@ -123,19 +142,16 @@ async function refresh() {
     const link = document.createElement("button");
     link.type = "button"; link.className = "secundario";
     link.textContent = "Vincular apoderado";
-    link.addEventListener("click", async () => {
-      const current = $("apoderado").value;
-      if (!current) return note("Selecciona primero un apoderado en el formulario.");
-      if (!confirm("¿Vincular el apoderado seleccionado con " + jugador.nombre + "?")) return;
-      link.disabled = true;
-      try {
-        await api("/jugadores/" + jugador._id + "/apoderados", "POST",
-          { apoderadoId: current });
-        await refresh(); note("Apoderado vinculado");
-      } catch (error) { note(error.message); link.disabled = false; }
+    link.addEventListener("click", () => {
+      vinculandoJugador = jugador._id;
+      $("vincularJugadorNombre").textContent = "Jugador: " + jugador.nombre;
+      options($("vincularSeleccion"), apoderados.filter(a => a.estado === "activo"),
+        "Seleccionar apoderado", a => a.nombre);
+      $("vincularDialog").showModal();
     });
     actions.append(link);
   }
+  filtrarJugadores();
 }
 $("apoderadoForm").addEventListener("submit", async event => {
   event.preventDefault();
@@ -150,6 +166,8 @@ $("apoderadoForm").addEventListener("submit", async event => {
     $("apoderadoForm").reset();
     await refresh();
     $("apoderado").value = result.apoderado._id;
+    $("editorApoderado").open = false;
+    $("editorJugador").open = true;
     note("Apoderado registrado; ya puedes registrar el jugador.");
   } catch (error) { note(error.message); }
   finally { button.disabled = false; }
@@ -171,6 +189,54 @@ $("jugadorForm").addEventListener("submit", async event => {
   } catch (error) { note(error.message); }
   finally { button.disabled = false; }
 });
+
+function filtrarJugadores() {
+  const search = $("buscarJugadores").value.trim().toLocaleLowerCase("es-CL");
+  const category = $("filtroCategoria").value;
+  const state = $("filtroEstado").value;
+  let visible = 0;
+  for (const row of $("tabla").rows) {
+    const show = (!search || row.dataset.nombre.includes(search)) &&
+      (!category || row.dataset.categoria === category) &&
+      (!state || row.dataset.estado === state);
+    row.hidden = !show;
+    if (show) visible++;
+  }
+  $("jugadoresContador").textContent = visible + " de " + jugadores.length + " jugadores";
+}
+for (const id of ["buscarJugadores", "filtroCategoria", "filtroEstado"]) {
+  $(id).addEventListener(id === "buscarJugadores" ? "input" : "change", filtrarJugadores);
+}
+$("nuevoJugador").addEventListener("click", () => {
+  reset();
+  $("editorJugador").open = true;
+  $("nombreJugador").focus();
+});
+function openGuardian() {
+  $("editorApoderado").open = true;
+  $("nombreApoderado").focus();
+}
+$("nuevoApoderado").addEventListener("click", openGuardian);
+$("verFormularioApoderado").addEventListener("click", openGuardian);
+$("cerrarVinculo").addEventListener("click", () => $("vincularDialog").close());
+$("vincularDialog").addEventListener("close", () => { vinculandoJugador = null; });
+$("confirmarVinculo").addEventListener("click", async event => {
+  if (!vinculandoJugador || !$("vincularSeleccion").value) {
+    note("Selecciona un apoderado activo antes de vincular.", true); return;
+  }
+  const button = event.currentTarget;
+  button.disabled = true;
+  try {
+    await api("/jugadores/" + vinculandoJugador + "/apoderados", "POST", {
+      apoderadoId: $("vincularSeleccion").value
+    });
+    $("vincularDialog").close();
+    await refresh();
+    note("Apoderado vinculado correctamente.");
+  } catch (error) { note(error.message); }
+  finally { button.disabled = false; }
+});
+
 $("cancelar").addEventListener("click", reset);
 (async () => {
   if (!escuela || !/^[0-9a-f]{24}$/i.test(escuela) || !token) {

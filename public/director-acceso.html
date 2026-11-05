@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Mi escuela · Plataforma de Fútbol</title>
+<link rel="stylesheet" href="/assets/css/app-v2.css?v=3.0.1">
+<script src="/js/escuela-imagenes.js" defer></script>
+<script src="/js/ui-propuesta2.js?v=3.0.0" defer></script>
+<script src="/js/director-acceso.js?v=3.0.0" defer></script>
+</head>
+<body>
+<main class="layout director-app">
+<header class="cabecera director-public-header">
+  <div>
+    <span class="eyebrow">PLATAFORMA MULTIESCUELA</span>
+    <h1>La gestión de tu escuela empieza aquí</h1>
+    <p>Un lugar para entrenadores, jugadores y familias.</p>
+  </div>
+  <button id="salir" class="secundario" type="button" hidden>Cerrar sesión</button>
+</header>
+
+<section id="loginPanel" class="role-login-grid" aria-labelledby="tituloAcceso">
+  <div class="role-login-story">
+    <span class="admin-login-tag">DIRECCIÓN · CUERPO TÉCNICO</span>
+    <span class="role-story-ball" aria-hidden="true">⚽</span>
+    <h2>Tu escuela,<br><em>tu equipo.</em></h2>
+    <p>Organiza entrenamientos, acompaña a tus jugadores y mantén a las familias conectadas.</p>
+    <div class="role-benefits" aria-hidden="true">
+      <span>✓ Entrenamientos</span><span>✓ Estadísticas</span><span>✓ Comunicaciones</span>
+    </div>
+  </div>
+  <section class="panel auth-panel role-auth">
+    <span class="eyebrow">BIENVENIDO</span>
+    <h2 id="tituloAcceso">Inicia sesión en tu escuela</h2>
+    <p>Utiliza la cuenta que activaste desde la invitación.</p>
+    <form id="login" class="formulario">
+      <label>Correo electrónico
+        <input id="email" type="email" autocomplete="username" maxlength="254" required>
+      </label>
+      <label>Contraseña
+        <input id="password" type="password" autocomplete="current-password" required>
+      </label>
+      <button type="submit">Entrar a mi escuela <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="auth-alternative">¿Eres apoderado? <a href="/familia-acceso.html">Ir al portal familiar</a></p>
+  </section>
+</section>
+
+<section id="dashboard" class="director-dashboard" hidden>
+  <section id="selectorEscuelas" class="school-picker panel" aria-labelledby="schoolPickerTitulo">
+    <div class="section-heading">
+      <div><span class="eyebrow">MI CUENTA</span><h2 id="schoolPickerTitulo">Selecciona tu escuela</h2>
+        <p>Elige la academia que deseas administrar.</p></div>
+    </div>
+    <div id="escuelas" class="school-picker-grid"></div>
+  </section>
+
+  <section id="seleccion" class="director-home" hidden aria-label="Panel principal de la escuela">
+    <div class="welcome-strip">
+      <div><span class="eyebrow">PANEL DE GESTIÓN</span>
+      <h2 id="saludoDirector">Hola, Director 👋</h2>
+      <p>Revisa lo más importante de tu academia.</p></div>
+      <button id="cambiarEscuela" class="secundario" type="button">Cambiar escuela</button>
+    </div>
+
+    <section class="school-hero" aria-label="Identidad de la escuela">
+      <img id="portadaSeleccionada" class="school-hero-photo" alt="" hidden>
+      <div class="school-hero-overlay">
+        <div class="school-hero-heading">
+          <img id="escudoSeleccionado" class="school-hero-logo" alt="Escudo de la escuela" hidden>
+          <div>
+            <span class="hero-overline">ACADEMIA DE FÚTBOL</span>
+            <h2 id="titulo">Mi escuela</h2>
+            <p id="slug">Formación · Valores · Competencia</p>
+          </div>
+        </div>
+        <span class="school-hero-mark" aria-hidden="true">⚽</span>
+      </div>
+    </section>
+
+    <section id="resumenDirector" class="estadisticas dashboard-four" aria-label="Indicadores del centro deportivo"></section>
+
+    <div class="director-insights-grid">
+      <section class="panel director-insights">
+        <div class="section-heading">
+          <div><span class="eyebrow">AGENDA DEPORTIVA</span>
+          <h2>Próximas actividades</h2></div>
+          <a id="agendaVerTodas" class="link-more" href="#">Ver registro →</a>
+        </div>
+        <div id="proximasDirector" class="director-agenda" aria-live="polite">
+          <p>Selecciona una escuela para consultar actividades.</p>
+        </div>
+      </section>
+      <section class="panel director-insights">
+        <div class="section-heading"><div><span class="eyebrow">SEGUIMIENTO</span>
+          <h2>Asistencia general</h2></div>
+          <a id="asistenciaVerReporte" class="link-more" href="#">Ver estadísticas →</a>
+        </div>
+        <div id="asistenciaGeneral" class="director-attendance">
+          <div class="attendance-ring" aria-label="Asistencia sin calcular"><span>—</span><small>Asistencia</small></div>
+          <div class="attendance-copy"><strong>Resumen anual</strong><p>Se contabilizan únicamente las actividades cerradas.</p></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="director-quick" aria-labelledby="accesosTitulo">
+      <div class="section-heading"><div><span class="eyebrow">ACCESOS DIRECTOS</span><h2 id="accesosTitulo">Gestiona tu escuela</h2></div></div>
+      <div class="quick-grid" id="accesosDirector">
+        <a id="enlaceCategorias" class="quick-action" href="#"><span class="quick-symbol">▦</span><strong>Categorías</strong><small>Equipos y divisiones</small></a>
+        <a id="enlaceEntrenadores" class="quick-action" href="#"><span class="quick-symbol">♟</span><strong>Entrenadores</strong><small>Cuerpo técnico</small></a>
+        <a id="enlaceJugadores" class="quick-action" href="#"><span class="quick-symbol">♧</span><strong>Jugadores</strong><small>Plantel y familias</small></a>
+        <a id="enlaceRegistroRapido" class="quick-action" href="#"><span class="quick-symbol">ϟ</span><strong>Registro rápido</strong><small>Asistencia y cancha</small></a>
+        <a id="enlaceEstadisticas" class="quick-action" href="#"><span class="quick-symbol">▥</span><strong>Estadísticas</strong><small>Evolución deportiva</small></a>
+        <a id="enlaceAvisos" class="quick-action" href="#"><span class="quick-symbol">✉</span><strong>Comunicados</strong><small>Noticias a familias</small></a>
+      </div>
+    </section>
+  </section>
+
+  <details id="panelPersonalizacion" class="panel identity-editor" hidden>
+    <summary>
+      <span class="identity-summary-icon" aria-hidden="true">✎</span>
+      <span><strong>Personalización de mi escuela</strong><small>Nombre, colores, escudo e imagen de portada</small></span>
+    </summary>
+    <div class="identity-editor-content">
+      <form id="marcaDirector" class="formulario" hidden>
+        <h3>Identidad visual</h3>
+        <p>Los cambios solo se aplican a esta escuela.</p>
+        <label>Nombre público
+          <input id="directorNombrePublico" maxlength="100" required>
+        </label>
+        <div class="colores">
+          <label>Principal<input type="color" id="directorColorPrimario"></label>
+          <label>Secundario<input type="color" id="directorColorSecundario"></label>
+          <label>Acento<input type="color" id="directorColorAcento"></label>
+          <label>Texto<input type="color" id="directorColorTexto"></label>
+        </div>
+        <button type="submit">Guardar identidad visual</button>
+      </form>
+      <section id="imagenesDirector" class="marca-imagenes" hidden aria-label="Imágenes de la escuela">
+        <h3>Escudo y portada</h3>
+        <p>Sube imágenes propias o con autorización de uso. Se optimizan antes de guardar.</p>
+        <div class="marca-imagenes-grid">
+          <div class="marca-imagen-card">
+            <h3>Escudo institucional</h3>
+            <img id="previewLogo" alt="Vista previa del escudo" hidden>
+            <p id="sinLogo">Sin logo cargado</p>
+            <label>Archivo del escudo<input id="archivoLogo" type="file" accept="image/png,image/jpeg,image/webp"></label>
+            <div class="field-actions">
+              <button id="subirLogo" type="button">Subir escudo</button>
+              <button id="quitarLogo" class="secundario" type="button" hidden>Retirar</button>
+            </div>
+          </div>
+          <div class="marca-imagen-card">
+            <h3>Imagen de portada</h3>
+            <img id="previewPortada" alt="Vista previa de la portada" hidden>
+            <p id="sinPortada">Sin portada cargada</p>
+            <label>Archivo de portada<input id="archivoPortada" type="file" accept="image/png,image/jpeg,image/webp"></label>
+            <div class="field-actions">
+              <button id="subirPortada" type="button">Subir portada</button>
+              <button id="quitarPortada" class="secundario" type="button" hidden>Retirar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </details>
+</section>
+
+<p id="mensaje" role="status" aria-live="polite"></p>
+</main>
+</body></html>

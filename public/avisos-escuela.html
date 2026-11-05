@@ -1,0 +1,50 @@
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Comunicados · Plataforma de Fútbol</title>
+<link rel="stylesheet" href="/assets/css/app-v2.css?v=3.0.1">
+<script src="/js/ui-propuesta2.js?v=3.0.0" defer></script>
+<script src="/js/avisos-escuela.js?v=3.0.0" defer></script>
+</head><body><main class="layout app-module">
+<header class="cabecera module-header">
+  <div><span class="eyebrow">COMUNICACIÓN · FAMILIAS</span>
+    <h1 id="titulo">Comunicados de mi escuela</h1>
+    <p>Informa novedades a toda la institución o a una categoría específica.</p></div>
+  <button id="nuevoAviso" class="button-accent" type="button">+ Nuevo comunicado</button>
+</header>
+<section class="estadisticas module-kpis" aria-label="Resumen de comunicados">
+  <div class="stat"><span>Comunicados</span><strong id="totalAvisos">0</strong><small>Historial de anuncios</small></div>
+  <div class="stat"><span>Publicados</span><strong id="publicadosAvisos">0</strong><small>Visibles para familias</small></div>
+  <div class="stat"><span>Borradores</span><strong id="borradoresAvisos">0</strong><small>Pendientes de publicación</small></div>
+</section>
+<section class="section-block">
+  <div class="section-heading"><div><span class="eyebrow">TABLÓN DE NOVEDADES</span>
+    <h2>Últimos comunicados</h2>
+    <p>Los anuncios publicados aparecen en el portal familiar de los destinatarios.</p></div>
+  </div>
+  <div id="listado" class="notice-card-list" aria-live="polite"></div>
+</section>
+<section class="notice-layout">
+  <details id="nuevoAvisoPanel" class="panel disclosure-workbench">
+    <summary><span class="summary-icon">✉</span>
+      <span><strong>Redactar comunicado</strong><small>Elige destinatarios y fecha de publicación</small></span></summary>
+    <div class="workbench-compact">
+      <form id="formulario" class="formulario">
+        <label>Título<input id="asunto" maxlength="120" required placeholder="Ej. Cambio de horario"></label>
+        <label>Destinatarios<select id="categoria"><option value="">Toda la escuela</option></select></label>
+        <label>Mensaje<textarea id="texto" required maxlength="1000" rows="6" placeholder="Escribe aquí tu comunicado..."></textarea></label>
+        <label class="check-line"><input id="publicar" type="checkbox" checked>
+          Publicar inmediatamente</label>
+        <button type="submit" id="guardar">Guardar comunicado</button>
+      </form>
+    </div>
+  </details>
+  <section class="panel notice-guide">
+    <span class="eyebrow">INFORMACIÓN CONECTADA</span><h2>Acerca tus noticias a las familias</h2>
+    <p>Los comunicados generales se muestran a las familias vinculadas a jugadores activos; los de categoría solo a sus destinatarios.</p>
+    <div class="notice-illustration" aria-hidden="true">✉</div>
+    <p>Actualmente aparecen dentro del portal familiar. El envío de notificaciones push y correos de avisos no está habilitado.</p>
+  </section>
+</section>
+<p id="mensaje" role="status" aria-live="polite"></p>
+</main></body></html>

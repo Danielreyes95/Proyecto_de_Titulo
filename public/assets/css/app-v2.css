@@ -1,0 +1,1221 @@
+/* PLATAFORMA DE FÚTBOL — UI V3.0 · Hoja única para páginas activas.
+   Contiene la base funcional normalizada; los CSS legados NO se cargan. */
+:root{--ui-teal:#19c9bb;--ui-coral:#fa6a78}
+html{scroll-behavior:smooth}
+body{margin:0}
+*,*::before,*::after{box-sizing:border-box}
+.grid,.estadisticas,.formulario,.colores,.marca-imagenes-grid{display:grid}
+.grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.estadisticas{grid-template-columns:repeat(3,minmax(0,1fr))}
+.formulario{grid-template-columns:1fr}
+.formulario label{display:grid;gap:7px}
+.colores,.marca-imagenes-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.marca-encabezado,.listado-header,.cabecera,.fila-jugador,.fila-metricas{display:flex;align-items:center;gap:15px}
+.marca-encabezado img{object-fit:contain}
+.marca-portada{width:100%;max-height:230px;object-fit:cover;border-radius:15px}
+.marca-escudo{width:74px;height:74px;object-fit:contain}
+[hidden],tr[hidden]{display:none!important}
+button{cursor:pointer}
+:focus-visible{outline-offset:3px}
+
+
+/* ESTRUCTURA FUNCIONAL ADAPTADA · public/assets/css/estadisticas-escuela.css */
+.dashboard-deportivo{max-width:1230px}
+.filtros-informe{display:grid;grid-template-columns:2fr 1fr auto;gap:14px;align-items:end}
+.filtros-informe label,.cabecera-tabla label{display:grid;gap:7px;font-size:.88rem;font-weight:700}
+.filtros-informe button{min-height:46px}
+.titulo-reporte,.cabecera-tabla{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.titulo-reporte{margin:25px 0 6px}
+.titulo-reporte h2{font-size:1.5rem;margin:6px 0}
+.titulo-reporte p{margin-bottom:8px}
+.enlace-accion{background:var(--informe-marca,#146c4f);color:var(--informe-contraste,#fff);
+ text-decoration:none;border-radius:9px;padding:12px 17px;font-weight:750}
+.enlace-accion:focus-visible{outline:3px solid #92bde5;outline-offset:3px}
+.kpis-informe{grid-template-columns:repeat(4,minmax(0,1fr))}
+.kpis-informe .stat{border-top:4px solid var(--informe-marca,#146c4f)}
+.kpis-informe small{color:#5d6e86;font-size:.76rem}
+.dos-columnas{display:grid;grid-template-columns:.8fr 1.2fr;gap:18px}
+.tipos-informe{display:grid;gap:10px}
+.tipo-item{display:flex;justify-content:space-between;align-items:center;padding:15px;
+ background:#f3f7fb;border-radius:11px;font-weight:700}
+.tipo-item strong{font-size:1.45rem;color:var(--informe-marca,#146c4f)}
+.meses-informe{display:grid;gap:6px}
+.mes-item{display:grid;grid-template-columns:50px minmax(50px,1fr) 90px;
+ align-items:center;gap:9px;font-size:.82rem}
+.mes-item .mes-nombre{font-weight:700;color:#46566c}
+.barra-base{height:14px;background:#edf1f5;border-radius:18px;overflow:hidden}
+.barra-valor{height:100%;background:var(--informe-marca,#146c4f);border-radius:18px;
+ min-width:0;transition:width .2s ease}
+.mes-valor{color:#53647a;font-variant-numeric:tabular-nums}
+.tabla-informe,.historial-panel{margin-top:18px}
+.tabla-informe table,.historial-panel table{min-width:690px}
+.tabla-informe td,.historial-panel td{font-variant-numeric:tabular-nums}
+.tabla-informe td:first-child{font-weight:650}
+.tabla-informe small{display:block;margin-top:12px}
+#detalleMas{margin-top:15px}
+footer{margin-top:30px}
+@media(max-width:930px){
+.kpis-informe{grid-template-columns:repeat(2,minmax(0,1fr))}
+.dos-columnas{grid-template-columns:1fr}
+}
+@media(max-width:680px){
+.filtros-informe{grid-template-columns:1fr}
+.kpis-informe{grid-template-columns:repeat(2,minmax(0,1fr))}
+.kpis-informe .stat{padding:14px}
+.kpis-informe .stat strong{font-size:1.55rem}
+.cabecera-tabla label{width:100%}
+.enlace-accion{width:100%;text-align:center}
+.mes-item{grid-template-columns:36px minmax(30px,1fr) 64px}
+}
+@media(prefers-reduced-motion:reduce){.barra-valor{transition:none}}
+
+/* Resumen transversal: información agregada, sin identificación de jugadores. */
+.bloque-escuela { margin: 18px 0 24px; }
+.bloque-escuela .kpis-informe { margin: 15px 0; }
+.bloque-escuela .tabla-escuela { min-width: 680px; }
+.bloque-escuela .tabla-escuela th,
+.bloque-escuela .tabla-escuela td { white-space: nowrap; }
+#mensajeInstitucional { min-height: 18px; margin: 9px 0 0; }
+
+
+/* ESTRUCTURA FUNCIONAL ADAPTADA · public/assets/css/registro-rapido.css */
+.cancha{max-width:1120px}
+.sin-margen{margin:0}
+.crear-actividad{display:grid;grid-template-columns:2fr 1fr 1fr auto;align-items:end;gap:12px;margin:14px 0 25px}
+.eventos-lista{display:grid;gap:10px;margin-top:18px}
+.evento-item{display:flex;justify-content:space-between;align-items:center;gap:14px;border:1px solid #e1e7ed;padding:14px;border-radius:12px}
+.evento-item p{margin:3px 0;font-size:.86rem}.evento-item button{min-width:125px}
+.barra-actividad{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.toolbar{display:grid;grid-template-columns:1.25fr 1.2fr .8fr;gap:12px;margin-bottom:12px}
+.herramienta{display:grid;gap:5px;font-size:.85rem;font-weight:650}
+.ayuda-rapida{font-size:.84rem;color:#516377;margin:12px 4px}
+.guardar-flotante{position:sticky;top:4px;z-index:8;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin:8px 0 16px;border-color:#d4e4d9}
+.acciones-guardar{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.acciones-guardar button{padding:9px 12px}
+#guardarEstado{font-size:.88rem;font-weight:700;color:#145c48}
+.jugadores-rapidos{display:grid;gap:12px}
+.jugador-rapido{background:#fff;border:1px solid #dde6ef;box-shadow:0 5px 18px #1d2b4a0a;border-radius:15px;padding:14px;display:grid;gap:12px}
+.jugador-rapido.editado{border-color:#4a9b79}
+.fila-jugador{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.datos-jugador{min-width:175px;flex:1 1 210px}
+.datos-jugador strong{font-size:1.02rem}
+.datos-jugador small{display:block;margin-top:4px}
+.asistencias{display:flex;gap:5px;flex-wrap:wrap}
+.asistencias button{font-size:.87rem;min-height:46px;padding:9px 12px;background:#edf2f7;color:#304153}
+.asistencias .activo-presente{background:#146c4f;color:white}
+.asistencias .activo-ausente{background:#9d2a2a;color:white}
+.asistencias .activo-pendiente{background:#6746a5;color:white}
+.fila-metricas{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid #e8edf2;padding-top:12px}
+.marcador{display:flex;align-items:center;gap:10px}
+.marcador button{min-width:50px;min-height:51px;font-size:1.4rem;padding:0;background:#e5f3eb;color:#155d42}
+.marcador output{font-size:1.6rem;min-width:35px;text-align:center;font-weight:800}
+.marcador button:disabled{opacity:.4;cursor:not-allowed}
+.tarjetas{display:flex;gap:7px;align-items:center}
+.tarjetas button{min-height:45px;background:#f0f3f8;color:#253348}
+.tarjetas .amarilla-marcada{background:#f4d344;color:#253348}
+.tarjetas .roja-marcada{background:#ad2727;color:white}
+.nota-jugador{border-top:1px solid #e8edf2;padding-top:10px;font-size:.88rem}
+.nota-jugador summary{cursor:pointer;color:#225e7d;font-weight:650}
+.nota-jugador textarea{width:100%;font:inherit;resize:vertical;min-height:52px;border:1px solid #b8c9d8;border-radius:9px;margin-top:8px;padding:9px}
+.registro-cerrado{opacity:.86}
+#mensaje{font-weight:650}
+@media(max-width:790px){
+.crear-actividad,.toolbar{grid-template-columns:1fr}
+.barra-actividad{align-items:flex-start}
+.guardar-flotante{top:0;align-items:flex-start;flex-direction:column}
+.guardar-flotante button{font-size:.8rem}
+.fila-jugador{align-items:stretch}
+.asistencias{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}
+.asistencias button{padding:7px 4px;min-width:0}
+.tarjetas button{padding:9px 11px}
+}
+@media(max-width:390px){.fila-metricas{gap:8px}.marcador{gap:4px}.marcador button{min-width:43px}}
+
+/* Marca deportiva de la institución seleccionada; texto adaptado a contraste. */
+.cancha .guardar-flotante #guardar:not(:disabled),
+.cancha .crear-actividad button,
+.cancha .evento-item button,
+.cancha .asistencias .activo-presente {
+  background: var(--cancha-marca,#146c4f);
+  color: var(--cancha-contraste,#ffffff);
+}
+
+/* Acciones de la actividad para consulta rápida en teléfono. */
+.acciones-actividad {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+#marcarPendientes:not(:disabled) {
+  background: var(--cancha-marca, #146c4f);
+  color: var(--cancha-contraste, #fff);
+}
+@media (max-width: 790px) {
+  .barra-actividad { flex-direction: column; }
+  .acciones-actividad { width: 100%; }
+  .acciones-actividad button { flex: 1 1 180px; min-height: 46px; }
+}
+
+
+/* ESTRUCTURA FUNCIONAL ADAPTADA · public/assets/css/familia.css */
+.escuela-selector{display:grid;gap:8px;margin-top:12px;max-width:460px;font-weight:700}
+.familia-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.familia-card{padding:23px;border:1px solid #e3eaf2;border-top:5px solid var(--familia-color,#176a50);border-radius:16px;background:#fff;box-shadow:0 7px 23px #1623380b}
+.familia-card h3{margin:0 0 5px}.familia-card p{margin:2px 0 14px}
+.resumen-familia{background:#f3f8f6;padding:12px;border-radius:11px;color:#1e4d3f;margin:15px 0;font-weight:700}
+.familia-card table{width:100%;border-collapse:collapse;font-size:.88rem}
+.familia-card th,.familia-card td{padding:9px 6px;text-align:left;border-bottom:1px solid #e6edf3}
+.familia-card caption{text-align:left;font-weight:750;margin-bottom:9px}
+.familia-card small{display:block;margin-top:12px}
+.familia-seccion { margin-top: 23px; }
+.familia-seccion h2 { margin-bottom: 7px; }
+.aviso-mensaje { white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 13px!important; }
+.familia-card { min-width: 0; }
+
+.confirmaciones{display:grid;gap:9px;margin-top:16px;border-top:1px solid #e1e8f0;padding-top:13px}
+.confirmacion-jugador{display:grid;gap:6px}
+.confirmacion-estado{color:#476177;font-size:.87rem}
+.confirmacion-botones{display:flex;gap:7px;flex-wrap:wrap}
+.confirmacion-botones button{min-height:42px;padding:8px 11px}
+@media(max-width:450px){.confirmacion-botones button{flex:1 1 112px}}
+
+.marca-familia-titulo{display:flex;gap:12px;align-items:center}
+.marca-familia-titulo img{width:65px;height:65px;border-radius:13px;object-fit:contain}
+.familia-portada{display:block;width:100%;height:clamp(125px,22vw,220px);object-fit:cover;border-radius:15px;margin:0 0 20px}
+
+/* SISTEMA V2 COMO BASE */
+/*
+ * Plataforma de Fútbol · PROPUESTA 2
+ * Moderna, dinámica, accesible, responsiva y parametrizada por escuela.
+ * Este archivo se carga después de los estilos legados.
+ */
+:root{
+  --ui-primary:#683ac6;
+  --ui-primary-dark:#23113e;
+  --ui-primary-soft:#f0e9ff;
+  --ui-primary-contrast:#fff;
+  --ui-accent:#f27686;
+  --ui-cyan:#1ac4c8;
+  --ui-ink:#25243e;
+  --ui-muted:#6b7289;
+  --ui-border:#e8e6f2;
+  --ui-canvas:#f5f5fb;
+  --ui-card:#fff;
+  --ui-secondary-brand:#fff;
+  --ui-secondary-soft:#f9f7ff;
+  --ui-shadow:0 14px 45px rgba(39,22,82,.055);
+  --ui-radius:20px;
+  color-scheme:light;
+  font-family:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;
+  font-synthesis:none;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{background:radial-gradient(circle at 100% 5%,#ede7ff 0,transparent 30%),var(--ui-canvas);color:var(--ui-ink);min-height:100vh;margin:0}
+.layout{max-width:1430px;margin:0 auto;padding:34px 28px 60px}
+body p{line-height:1.58;color:var(--ui-muted)}
+h1,h2,h3{color:var(--ui-ink);letter-spacing:-.028em}
+h1{font-size:clamp(1.9rem,3vw,2.9rem);line-height:1.14;margin:8px 0 11px}
+h2{font-size:1.25rem;line-height:1.25}
+h3{font-size:1.04rem}
+.eyebrow{font-size:.7rem;letter-spacing:.17em;font-weight:850;color:var(--ui-primary)}
+a{color:var(--ui-primary);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #27c4cc;outline-offset:2px}
+.cabecera{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 24px}
+.cabecera>div>p{max-width:700px;font-size:.98rem}
+.cabecera>a{font-weight:700;text-decoration:none;background:#fff;border:1px solid var(--ui-border);border-radius:12px;padding:10px 14px;white-space:nowrap}
+.cabecera>a:hover{background:var(--ui-primary-soft)}
+.panel,.stat,.jugador-rapido,.familia-card{
+  background:var(--ui-card);
+  border:1px solid var(--ui-border);
+  border-radius:var(--ui-radius);
+  box-shadow:var(--ui-shadow);
+}
+.panel{padding:26px}
+.panel>h2:first-child{margin-top:0}
+.grid{gap:20px}
+.estadisticas{gap:17px;margin:18px 0 25px}
+.stat{padding:22px;display:grid;gap:7px;position:relative;overflow:hidden}
+.stat::before{content:"";height:4px;left:0;right:0;top:0;position:absolute;background:var(--ui-primary)}
+.stat:nth-child(3n+2)::before{background:var(--ui-cyan)}
+.stat:nth-child(3n+3)::before{background:var(--ui-accent)}
+.stat>span{font-weight:700;color:var(--ui-muted);font-size:.83rem}
+.stat>strong{font-size:2.35rem;font-weight:850;color:var(--ui-ink);line-height:1.12;letter-spacing:-.055em}
+.stat small{font-size:.75rem}
+.formulario{gap:16px}
+.formulario label{color:#32324a;font-size:.89rem;font-weight:750}
+input,select,textarea{
+  font:inherit;color:#292944;background:#fff;
+  border:1px solid #d7d7e7;border-radius:12px;
+  transition:box-shadow .14s,border-color .14s;
+}
+input,select{padding:12px 14px;min-height:47px;min-width:0}
+textarea{padding:13px;width:100%;resize:vertical;min-width:0}
+input:hover,select:hover,textarea:hover{border-color:#aaa9c5}
+input[type=color]{padding:5px;width:100%;height:47px;cursor:pointer}
+input[type=file]{height:auto;min-height:0;padding:10px;font-size:.82rem;max-width:100%}
+input[type=checkbox]{min-height:0;width:17px;height:17px;accent-color:var(--ui-primary);padding:0}
+label:has(>input[type=checkbox]){display:flex;align-items:center;gap:10px}
+button{
+  background:var(--ui-primary);color:var(--ui-primary-contrast);
+  font:inherit;font-weight:760;min-height:45px;border:0;border-radius:12px;
+  padding:11px 17px;cursor:pointer;
+  transition:filter .16s,transform .16s,box-shadow .16s;
+}
+button:hover:not(:disabled){filter:brightness(1.04);box-shadow:0 7px 20px rgba(72,43,150,.12)}
+button:active:not(:disabled){transform:translateY(1px)}
+button:disabled{opacity:.55;cursor:not-allowed}
+button.secundario,.secundario{background:var(--ui-primary-soft);color:var(--ui-primary);border-radius:12px}
+a.secundario{text-decoration:none;font-weight:750}
+.pildora{background:#e4f9ef;color:#137b56;display:inline-flex;align-items:center;padding:6px 11px;border-radius:100px;font-size:.75rem}
+.pildora::before{content:"";display:inline-block;border-radius:100%;width:7px;height:7px;margin-right:7px;background:currentColor}
+.pildora.inactiva{background:#eef0f6;color:#68728b}
+.pildora.suspendida{background:#fff0da;color:#975c04}
+table{min-width:570px;width:100%;border-collapse:collapse}
+.tabla-scroll{overflow:auto;border-radius:14px}
+th,td{border-bottom:1px solid #edeef5;padding:14px 12px;text-align:left}
+th{font-size:.77rem;letter-spacing:.02em;color:#65708b;background:#f8f8fd;font-weight:800}
+td{font-size:.9rem}
+tbody tr:hover{background:#fbfaff}
+td button{min-height:35px;padding:7px 10px;margin:2px}
+.listado{margin-top:22px}
+.listado-header,.cabecera-tabla{gap:16px}
+#mensaje:not(:empty),#mensajeInstitucional:not(:empty){
+  padding:12px 15px;border-radius:12px;background:#ede9fb;color:var(--ui-primary);
+  font-weight:700;margin:18px 0;min-height:0
+}
+#mensaje.error{background:#fff0f0;color:#b32435}
+footer{text-align:center;margin:36px 0;color:#83859b;font-size:.78rem}
+[hidden]{display:none!important}
+.preview{background:#fff;border-radius:16px}
+.marca-imagenes{margin-top:25px;border-top:1px solid var(--ui-border)}
+.marca-imagenes-grid{gap:15px}
+.marca-imagen-card{border:1px solid var(--ui-border);border-radius:16px;padding:18px;background:#fbfaff;min-width:0}
+.marca-imagen-card img{background:#f3f3f9}
+.marca-imagen-card button{margin:3px 3px 3px 0}
+.auth-panel{max-width:500px;margin:35px auto;padding:33px}
+.auth-panel>h2{font-size:1.65rem}
+
+/* ESTRUCTURA PRINCIPAL AUTENTICADA */
+.app-sidenav{
+  position:fixed;inset:0 auto 0 0;width:260px;
+  padding:24px 14px 22px;z-index:80;overflow:auto;
+  background:linear-gradient(165deg,#36155d 0%,var(--ui-primary-dark) 58%,#1b1231 100%);
+  display:flex;flex-direction:column;
+  box-shadow:8px 0 28px rgba(32,17,63,.1)
+}
+.app-brand{display:flex;align-items:center;gap:12px;padding:9px 8px 23px;border-bottom:1px solid #ffffff22}
+.app-logo{width:49px;height:49px;flex:none;object-fit:contain;border-radius:15px;background:#ffffff16;border:1px solid #ffffff3b;padding:7px;color:white}
+.app-logo-fallback{display:grid;place-items:center}
+.app-logo svg{width:30px;height:30px}
+.app-brand-copy{min-width:0}
+.app-brand-copy strong{display:block;color:white;font-size:.93rem;line-height:1.28;overflow-wrap:anywhere}
+.app-brand-copy small{display:block;margin-top:5px;font-size:.73rem;color:#c7b7de}
+.app-nav-section{display:block;padding:23px 11px 11px;font-size:.66rem;letter-spacing:.16em;font-weight:850;color:#ab95c8}
+.app-nav{display:grid;gap:4px}
+.app-nav-link{color:#eee9f6!important;text-decoration:none;display:flex;align-items:center;gap:13px;padding:12px 13px;font-size:.88rem;font-weight:650;border-radius:13px;min-height:46px}
+.app-nav-link .app-icon{width:20px;height:20px;flex:none;color:#d8ccec}
+.app-nav-link:hover{background:#ffffff17}
+.app-nav-link:focus-visible{outline:2px solid #3cd7d7;outline-offset:1px}
+.app-nav-link[aria-current=page]{background:#ffffff22;color:#fff!important;box-shadow:inset 3px 0 0 #2ed7d1,0 5px 13px #18072514}
+.app-nav-link[aria-current=page] .app-icon{color:#36d4d0}
+.app-sidebar-foot{display:flex;align-items:center;gap:9px;margin-top:auto;padding:23px 11px 3px;color:#cab8dd;font-size:.7rem;line-height:1.4}
+.app-sidebar-foot svg{width:21px;height:21px;flex:none;color:#6ee2d5}
+.app-topbar{
+  min-height:76px;display:flex;align-items:center;gap:12px;
+  background:white;border:1px solid var(--ui-border);border-radius:18px;
+  padding:11px 20px;margin:0 0 24px;box-shadow:var(--ui-shadow)
+}
+.app-topbar-title{display:grid;gap:2px;flex:1;min-width:0}
+.app-topbar-title .app-overline{font-size:.64rem;font-weight:850;letter-spacing:.15em;color:var(--ui-primary)}
+.app-topbar-title strong{font-size:.98rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ui-ink)}
+.app-user-pill{display:flex;align-items:center;gap:9px;background:#f7f5fd;border:1px solid var(--ui-border);border-radius:100px;padding:5px 12px 5px 5px}
+.app-user-avatar{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--ui-primary);color:var(--ui-primary-contrast);font-weight:850}
+.app-user-role{font-weight:700;font-size:.79rem;color:#4d4765}
+.app-menu-toggle{display:none;place-items:center;width:44px;height:44px;min-height:44px;padding:8px}
+.app-menu-toggle svg{width:23px;height:23px}
+.app-backdrop{display:none}
+.app-shell-active main.layout{margin:0 0 0 260px;width:calc(100% - 260px);max-width:none;padding:23px clamp(19px,2.7vw,46px) 60px}
+.app-shell-active .cabecera{margin-bottom:25px}
+.app-shell-active .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.app-shell-active .estadisticas:not(.kpis-informe){grid-template-columns:repeat(3,minmax(0,1fr))}
+.app-shell-active .panel{min-width:0}
+.app-shell-active .layout.cancha{max-width:none}
+
+/* SUPERADMIN: CABECERA, HERO Y PANEL VISUAL */
+.admin-page-header h1{font-size:clamp(1.9rem,2.6vw,2.7rem)}
+.admin-login-wrap{max-width:1120px;display:grid;grid-template-columns:1.12fr .88fr;gap:23px;margin:36px auto 25px;align-items:stretch}
+.admin-login-story{
+  padding:44px 35px;border-radius:26px;overflow:hidden;
+  background:radial-gradient(circle at 82% 19%,#5b3d9d,transparent 35%),linear-gradient(145deg,#351452,#1e1237);
+  color:white;position:relative;min-height:480px
+}
+.admin-login-tag{font-size:.7rem;font-weight:900;letter-spacing:.11em;color:#abfff0}
+.admin-login-story h2{font-size:clamp(2.4rem,4vw,4.3rem);line-height:1.05;color:white;margin-top:54px;max-width:550px}
+.admin-login-story h2 span{color:#36d7d2}
+.admin-login-story p{font-size:1.05rem;color:#ded3e9;max-width:390px}
+.admin-login-ball{position:absolute;right:25px;top:40px;font-size:5.4rem;opacity:.36;transform:rotate(-24deg);filter:drop-shadow(0 10px 25px #100b2b)}
+.login-marks{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px}
+.login-marks span{display:inline-flex;border:1px solid #ffffff3d;background:#ffffff13;padding:9px 12px;border-radius:100px;font-size:.76rem;color:#fff}
+.admin-login-card{max-width:none!important;margin:0!important;padding:45px 36px!important;display:flex;flex-direction:column;justify-content:center}
+.admin-login-card #loginForm{margin-top:16px}
+.admin-login-card #loginForm button{display:flex;align-items:center;justify-content:space-between}
+.admin-login-card small{margin-top:16px}
+.admin-hero{
+  display:grid;grid-template-columns:minmax(0,1.2fr) minmax(240px,.8fr);position:relative;
+  overflow:hidden;min-height:330px;padding:37px clamp(27px,3.2vw,50px);
+  border-radius:25px;
+  background:radial-gradient(circle at 83% 31%,#7549bb 0%,transparent 38%),linear-gradient(115deg,#311149,#57247b);
+  color:#fff;box-shadow:0 20px 36px #38135b20
+}
+.admin-hero:before{content:"";position:absolute;right:12%;bottom:-170px;border:1px solid #ffffff40;width:430px;height:430px;border-radius:50%;pointer-events:none}
+.admin-hero:after{content:"";position:absolute;right:3%;bottom:-208px;border:1px dashed #ffffff35;width:520px;height:520px;border-radius:50%;pointer-events:none}
+.admin-hero-content{z-index:1;position:relative}
+.admin-hero-chip{display:inline-flex;align-items:center;gap:9px;font-size:.71rem;font-weight:850;letter-spacing:.11em;background:#ffffff1e;border:1px solid #ffffff3d;padding:9px 12px;border-radius:100px;color:#e7dcff}
+.admin-hero h2{color:white;font-size:clamp(2.2rem,3.2vw,3.45rem);line-height:1.07;margin:22px 0 15px;letter-spacing:-.052em}
+.admin-hero h2 em{font-style:normal;color:#4febe2}
+.admin-hero p{font-size:.97rem;color:#ddd1eb;max-width:550px;margin-bottom:22px}
+.admin-hero-actions{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.admin-hero-actions a{display:inline-flex;justify-content:center;align-items:center;text-decoration:none;min-height:44px;border-radius:11px;padding:11px 16px;font-size:.89rem;font-weight:800}
+.hero-primary{background:linear-gradient(100deg,#25d1c8,#18b4ce);color:#16244e!important}
+.hero-outline{border:1px solid #ffffff6b;color:white!important}
+.admin-hero-visual{position:relative;z-index:1;min-height:220px}
+.hero-soccer-circle{width:190px;height:190px;border-radius:50%;font-size:6.2rem;display:grid;place-items:center;position:absolute;left:18%;top:0;
+ background:radial-gradient(circle at 34% 29%,#bda2ef,#533388);border:3px solid #ffffff55;box-shadow:0 0 0 16px #ffffff0d,0 30px 55px #15052344;transform:rotate(-11deg)}
+.hero-float{position:absolute;min-width:132px;padding:12px 14px;border-radius:15px;box-shadow:0 12px 28px #160b2b48;
+ background:#ffffffed;color:#272341;display:grid;gap:3px;backdrop-filter:blur(10px)}
+.hero-float span{font-size:1.5rem;color:#24aebb}
+.hero-float strong{font-size:.93rem;color:#2a2544}
+.hero-float small{font-size:.71rem}
+.hero-float-one{right:0;top:22px;transform:rotate(5deg)}
+.hero-float-two{left:0;bottom:3px;transform:rotate(-5deg)}
+.admin-kpis{grid-template-columns:repeat(3,minmax(0,1fr));margin:20px 0 38px!important}
+.admin-kpis .stat{min-height:155px;display:grid;align-content:start;grid-template-areas:"icon label" "icon total" "icon help";grid-template-columns:64px minmax(0,1fr);column-gap:14px;row-gap:4px}
+.admin-kpis .stat::before{display:none}
+.admin-kpis .stat .kpi-icon{grid-area:icon;width:55px;height:55px;border-radius:16px;font-size:1.65rem;display:grid;place-items:center}
+.kpi-purple{background:#efe7ff;color:#713ac8}
+.kpi-teal{background:#e2fafa;color:#14989d}
+.kpi-coral{background:#fff0f2;color:#ea677e}
+.admin-kpis .stat span{grid-area:label;align-self:end;font-size:.83rem}
+.admin-kpis .stat strong{grid-area:total;font-size:2.42rem}
+.admin-kpis .stat small{grid-area:help}
+.section-title-row{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:0 0 19px}
+.section-title-row h2{font-size:1.75rem;margin:5px 0 4px}
+.section-title-row p{margin:0}
+.school-add-link{background:var(--ui-primary);color:#fff!important;padding:11px 15px;text-decoration:none;font-weight:800;border-radius:12px;white-space:nowrap;font-size:.88rem}
+.admin-school-catalogue{margin:2px 0 33px}
+.school-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.school-card{background:#fff;border-radius:19px;border:1px solid var(--ui-border);box-shadow:var(--ui-shadow);overflow:hidden;min-width:0}
+.school-card-cover{height:105px;background:linear-gradient(125deg,var(--school-color,#683ac6),#2a1747);position:relative}
+.school-card-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.school-card-cover::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,transparent,#160f2655);pointer-events:none}
+.school-card-body{padding:15px 18px 19px}
+.school-card-identity{display:flex;align-items:center;gap:11px;margin-top:-39px;position:relative;z-index:1}
+.school-card-logo{width:65px;height:65px;background:#fff;border:3px solid white;box-shadow:0 6px 15px #160d252b;border-radius:17px;display:grid;place-items:center;font-size:1.85rem;overflow:hidden}
+.school-card-logo img{width:100%;height:100%;object-fit:contain}
+.school-card-identity .pildora{margin-left:auto;align-self:flex-end}
+.school-card h3{margin:12px 0 4px;font-size:1.08rem;overflow-wrap:anywhere}
+.school-card .school-slug{font-size:.76rem;color:var(--ui-muted);margin:0 0 17px;overflow-wrap:anywhere}
+.school-card-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--ui-border);padding-top:14px}
+.school-card-footer small{font-size:.73rem}
+.school-card button{background:var(--ui-primary-soft);color:var(--ui-primary);font-size:.81rem;min-height:38px;padding:8px 10px}
+.admin-settings-grid{align-items:start}
+.admin-setup-card{scroll-margin-top:110px}
+.panel-heading-icon{width:48px;height:48px;border-radius:14px;background:var(--ui-primary-soft);display:grid;place-items:center;color:var(--ui-primary);font-weight:850;font-size:1.75rem;margin:0 0 18px}
+#crear button[type=submit],#identidad button[type=submit]{width:100%;margin-top:6px}
+#marcaForm .colores{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+#marcaForm .colores label{font-size:.8rem}
+#vistaPrevia{background:#fff;position:relative;overflow:hidden;min-height:145px}
+#vistaPrevia:before{content:"";display:block;height:5px;background:var(--ui-accent);position:absolute;left:0;right:0;top:0}
+#vistaPrevia strong{overflow-wrap:anywhere}
+.admin-invite{background:linear-gradient(130deg,#fff,#faf8ff)}
+.admin-listado,.admin-invite{scroll-margin-top:110px}
+#resumen,#catalogo,#inicio{scroll-margin-top:100px}
+
+/* DASHBOARD DIRECTOR */
+#escuelas.estadisticas{display:flex;flex-wrap:wrap;gap:10px}
+#escuelas button{background:var(--ui-primary-soft);color:var(--ui-primary);font-weight:750;max-width:100%;border:1px solid var(--ui-primary);font-size:.89rem}
+#seleccion.preview{display:block!important;padding:22px;border-width:1px;border-top:5px solid var(--ui-primary)!important;margin-top:22px}
+#seleccion.preview[hidden]{display:none!important}
+#seleccion.preview .marca-portada{height:210px;max-height:210px;object-fit:cover;border-radius:13px;margin:0 0 10px}
+#seleccion.preview .marca-encabezado{margin:14px 0 8px;gap:14px}
+#seleccion.preview .marca-escudo{border-radius:13px;width:74px;height:74px}
+#seleccion.preview .marca-encabezado strong{font-size:1.5rem;letter-spacing:-.03em}
+#seleccion.preview>a.secundario{display:inline-flex!important;align-items:center;min-height:44px;
+  border-radius:12px!important;background:var(--ui-primary-soft);color:var(--ui-primary);
+  font-weight:750;text-decoration:none;padding:11px 13px!important;margin:6px 6px 5px 0!important}
+#seleccion.preview>a[hidden]{display:none!important}
+#resumenDirector.estadisticas{grid-template-columns:repeat(4,minmax(0,1fr));margin:20px 0!important}
+#resumenDirector .stat{padding:15px;border-radius:14px}
+#resumenDirector .stat strong{font-size:1.9rem}
+#resumenDirector .stat span{font-size:.75rem}
+#marcaDirector{border:1px solid var(--ui-border);padding:25px;border-radius:18px;background:#faf9ff;margin-top:23px}
+#marcaDirector h2{font-size:1.3rem}
+#imagenesDirector{margin-top:25px}
+
+/* MÓDULOS DEPORTIVOS */
+.jugador-rapido{border-radius:17px}
+.familia-card{border-top:4px solid var(--ui-primary);min-width:0}
+.resumen-familia{background:var(--ui-primary-soft);color:var(--ui-primary-dark)}
+.familia-portada{box-shadow:var(--ui-shadow);border-radius:18px}
+.titulo-reporte h2{font-size:1.7rem}
+.kpis-informe{grid-template-columns:repeat(4,minmax(0,1fr))}
+.kpis-informe .stat{border-top-color:var(--ui-primary)}
+.mes-item .barra-valor{background:var(--ui-primary)}
+.tipo-item strong{color:var(--ui-primary)}
+.enlace-accion{border-radius:12px}
+.evento-item{border-color:var(--ui-border);background:#fff;border-radius:15px}
+.guardar-flotante{border:1px solid var(--ui-border);box-shadow:0 10px 35px #240f6321}
+
+/* TELÉFONO / TABLET */
+@media(min-width:960px) and (max-width:1330px){
+ .app-shell-active .grid{grid-template-columns:1fr}
+ .school-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .admin-hero{grid-template-columns:1fr .7fr}
+ #resumenDirector.estadisticas{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:959px){
+ .app-sidenav{transform:translateX(-105%);width:min(290px,84vw);transition:transform .19s}
+ body.app-menu-open .app-sidenav{transform:translateX(0)}
+ body.app-menu-open .app-backdrop{display:block;position:fixed;inset:0;z-index:79;background:#170f2b99;border:0;border-radius:0}
+ .app-menu-toggle{display:grid}
+ .app-shell-active main.layout{width:100%;margin:0;padding:17px 18px 50px}
+ .app-topbar{margin-bottom:20px}
+ .app-shell-active .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .admin-login-wrap{grid-template-columns:1fr;max-width:610px}
+ .admin-login-story{min-height:300px}
+ .admin-login-story h2{margin-top:27px}
+ .school-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .admin-hero{grid-template-columns:1fr;min-height:0}
+ .admin-hero-visual{display:none}
+}
+@media(max-width:780px){
+ .layout{padding:18px 13px 50px}
+ .app-shell-active .grid,.grid{grid-template-columns:1fr}
+ .app-shell-active .estadisticas:not(.kpis-informe),.estadisticas{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .panel{padding:20px}
+ .stat{padding:18px}
+ .stat strong{font-size:1.85rem}
+ .cabecera{flex-direction:column;align-items:flex-start}
+ .school-cards{grid-template-columns:1fr}
+ .admin-kpis{grid-template-columns:1fr!important}
+ .admin-kpis .stat{min-height:105px}
+ .admin-hero{padding:29px 23px}
+ .section-title-row{align-items:flex-start;flex-direction:column}
+ .marca-imagenes-grid,.dos-columnas{grid-template-columns:1fr}
+ #resumenDirector.estadisticas{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .app-topbar{border-radius:14px;padding:10px 13px}
+ .auth-panel{margin:15px auto;padding:23px}
+}
+@media(max-width:440px){
+ .admin-hero h2{font-size:2.15rem}
+ .admin-hero-chip{font-size:.61rem}
+ .admin-login-story{padding:28px 22px}
+ .admin-login-card{padding:28px 22px!important}
+ .app-user-role{display:none}
+ .app-user-pill{padding:4px}
+ .app-topbar-title strong{font-size:.87rem}
+ .panel{padding:17px}
+ .stat strong{font-size:1.6rem}
+ .stat span{font-size:.75rem}
+ .app-shell-active .estadisticas:not(.kpis-informe){gap:10px}
+ .marca-imagen-card{padding:12px}
+ #resumenDirector .stat{padding:12px}
+ #resumenDirector .stat strong{font-size:1.6rem}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ *,*::before,*::after{transition-duration:0s!important;animation-duration:0s!important}
+}
+@media print{
+ .app-sidenav,.app-topbar,.app-backdrop,.admin-hero-actions{display:none!important}
+ .app-shell-active main.layout{margin:0;padding:0;width:100%;max-width:100%}
+ .panel,.stat{box-shadow:none;break-inside:avoid}
+ body{background:white}
+}
+/* Inicio de Director y Entrenador: portada de producto, no formulario aislado */
+.role-login-grid{display:grid;grid-template-columns:minmax(0,1.07fr) minmax(340px,.93fr);gap:24px;max-width:1130px;margin:34px auto;align-items:stretch}
+.role-login-story{background:radial-gradient(circle at 78% 18%,#945dd0,transparent 37%),linear-gradient(135deg,#371857,#231237);
+  color:#fff;position:relative;overflow:hidden;padding:44px 40px;border-radius:25px;min-height:440px;box-shadow:0 18px 42px #27144920}
+.role-login-story h2{color:#fff;font-size:clamp(2.6rem,4vw,4.2rem);line-height:1.02;letter-spacing:-.06em;margin:63px 0 16px}
+.role-login-story h2 em{font-style:normal;color:#49e5da}
+.role-login-story p{color:#e2d9ee;max-width:440px;font-size:1.02rem}
+.role-story-ball{position:absolute;top:40px;right:45px;font-size:5rem;opacity:.38;transform:rotate(-22deg)}
+.role-benefits{margin-top:32px;display:flex;flex-wrap:wrap;gap:8px}
+.role-benefits span{border:1px solid #ffffff33;background:#ffffff12;color:#fff;padding:9px 11px;border-radius:100px;font-weight:650;font-size:.78rem}
+.role-auth{max-width:none;margin:0!important;display:flex;flex-direction:column;justify-content:center;padding:40px!important}
+.role-auth>h2{font-size:1.8rem;margin:10px 0 8px}
+.role-auth .formulario{margin-top:16px}
+.role-auth .formulario button{width:100%}
+.school-home-wrap{display:grid;gap:20px}
+.school-home-header{padding:23px 29px;border-radius:19px;border:1px solid var(--ui-border);background:linear-gradient(95deg,var(--ui-primary-soft),#fff 70%);box-shadow:var(--ui-shadow)}
+.school-home-header h2{font-size:1.75rem;margin:9px 0 8px}
+.school-home-header p{margin:0}
+.school-home-wrap #escuelas{margin:2px 0 0}
+.school-home-wrap .preview{box-shadow:var(--ui-shadow)}
+.school-home-wrap #marcaDirector{margin:0;padding:26px;background:#fff}
+.school-home-wrap #imagenesDirector{padding:24px;background:#fff;border:1px solid var(--ui-border);border-radius:19px;margin:0;box-shadow:var(--ui-shadow)}
+#seleccion .marca-encabezado strong{color:var(--ui-ink)!important}
+#seleccion .marca-encabezado{background:var(--ui-secondary-soft);padding:12px;border-radius:13px}
+.app-shell-school .cabecera a{color:var(--ui-primary)}
+/* Familia: login amable y tarjetas legibles */
+.app-shell-family .escuela-selector{max-width:520px}
+.app-shell-family #dashboard>.panel{margin:0 0 23px}
+.app-shell-family .familia-seccion{margin:27px 0}
+.app-shell-family .familia-seccion h2{font-size:1.4rem;margin-bottom:6px}
+.familia-card{padding:23px;box-shadow:var(--ui-shadow)}
+.familia-card .confirmacion-botones button{border-radius:10px}
+#familiaPortada{height:clamp(135px,17vw,220px);width:100%;object-fit:cover}
+@media(max-width:959px){
+  .role-login-grid{grid-template-columns:1fr;max-width:630px}
+  .role-login-story{min-height:290px;padding:33px}
+  .role-login-story h2{margin-top:35px}
+}
+@media(max-width:600px){
+  .role-login-story{min-height:235px;padding:26px 21px}
+  .role-login-story h2{font-size:2.45rem;margin:30px 0 12px}
+  .role-login-story p{font-size:.9rem}
+  .role-auth{padding:25px!important}
+  .role-login-grid{gap:14px;margin-top:12px}
+  .role-benefits{margin-top:20px}
+  .role-story-ball{font-size:3rem;right:20px;top:20px}
+  .school-home-header{padding:20px}
+  .school-home-wrap #marcaDirector,.school-home-wrap #imagenesDirector{padding:18px}
+}
+
+
+/* ====== SISTEMA VISUAL V3 ====== */
+:root{
+ --ui-teal:#22c8c3;--ui-coral:#fa6479;
+ --ui-warm:#fff1ee;--ui-ink:#221b38;--ui-muted:#69718a;
+ --ui-canvas:#f8f7fd;--ui-border:#e9e8f2;
+ --ui-shadow:0 10px 35px rgba(43,24,77,.055);
+}
+body{background:radial-gradient(circle at 100% 0,#eee9ff 0,transparent 40%),var(--ui-canvas);font-size:15px}
+.app-shell-active main.layout{min-width:0}
+.app-shell-active .app-topbar{margin-bottom:27px}
+.app-shell-school .app-sidenav,.app-shell-family .app-sidenav{
+ background:linear-gradient(150deg,var(--ui-primary-dark),
+ color-mix(in srgb,var(--ui-primary-dark) 83%,#090b16))
+}
+.app-sidenav{width:252px}
+.app-shell-active main.layout{width:calc(100% - 252px);margin-left:252px}
+.app-shell-active .cabecera h1{font-size:clamp(1.65rem,2.6vw,2.6rem)}
+.app-shell-active .cabecera p{margin:8px 0 0}
+.app-shell-active .cabecera>a,.outline-link{font-weight:700;color:var(--ui-primary);
+ border:1px solid var(--ui-border);padding:11px 15px;border-radius:12px;
+ background:white;display:inline-flex;text-decoration:none;align-items:center;justify-content:center}
+.app-shell-active .cabecera>a:hover,.outline-link:hover{background:var(--ui-primary-soft)}
+.panel h2{margin:5px 0 10px}
+.stat{border-top:3px solid var(--ui-teal)}
+.stat::before{display:none}
+.stat:nth-child(3n+2){border-top-color:var(--ui-primary)}
+.stat:nth-child(3n+3){border-top-color:var(--ui-coral)}
+.stat span{color:var(--ui-muted)}
+.formulario>button[type=submit],.field-actions>button:first-child,.button-accent{
+ background:var(--ui-primary);color:var(--ui-primary-contrast,#fff)
+}
+.button-accent{background:var(--ui-coral);color:#21112b}
+.field-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.field-actions>*{flex:0 1 auto}
+#mensaje:not(:empty){background:var(--ui-primary-soft);color:var(--ui-primary);border:1px solid var(--ui-border)}
+#mensaje.error:not(:empty){color:#9f1c36;background:#fff0f0}
+.module-header{align-items:center}
+.module-header .button-accent{white-space:nowrap}
+.module-kpis{margin-top:13px;margin-bottom:29px}
+.module-kpis .stat{min-height:128px}
+.module-kpis .stat strong{font-size:2.5rem}
+.section-block{margin:23px 0 30px}
+.section-heading{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:17px}
+.section-heading h2{font-size:1.45rem;margin:5px 0}
+.section-heading p{margin:0}
+.section-heading .eyebrow{display:block}
+.table-help{font-size:.75rem;color:var(--ui-muted)}
+.panel.listado .section-heading{margin-bottom:17px}
+.empty-feature{padding:32px 24px;border:1px dashed #cbc5df;border-radius:17px;
+ background:#fbfaff;color:#615875;text-align:center;display:grid;justify-items:center;gap:6px}
+.empty-feature strong{font-size:1rem}
+.empty-feature p{margin:3px 0}
+.empty-feature-icon{width:52px;height:52px;border-radius:14px;background:var(--ui-primary-soft);
+ display:grid;place-items:center;color:var(--ui-primary);font-size:1.5rem}
+
+/* Inicio Director / Entrenador */
+.director-public-header{transition:opacity .15s}
+body.selected-school .director-public-header{display:none}
+.director-dashboard{display:grid;gap:22px}
+.director-home{display:grid;gap:21px}
+.welcome-strip{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.welcome-strip h2{font-size:2rem;margin:6px 0 0}
+.welcome-strip p{margin:5px 0}
+.school-picker{margin-top:15px}
+.school-picker-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.school-picker-option{background:white;border:1px solid var(--ui-border);color:var(--ui-ink);
+ display:grid;text-align:left;gap:5px;padding:18px;box-shadow:var(--ui-shadow)}
+.school-picker-option:hover{border-color:var(--ui-primary)}
+.school-picker-option .picker-logo{background:var(--ui-primary-soft);color:var(--ui-primary);font-size:1.7rem;
+ width:51px;height:51px;border-radius:15px;display:grid;place-items:center;margin-bottom:4px}
+.school-picker-option strong{color:var(--ui-ink);font-size:1.05rem}
+.school-picker-option small{font-size:.79rem}
+.school-picker-option .picker-chevron{justify-self:end;font-size:1.15rem}
+.school-hero{position:relative;min-height:205px;border-radius:20px;overflow:hidden;
+ background:linear-gradient(115deg,var(--ui-primary-dark),var(--ui-primary));
+ box-shadow:0 13px 33px color-mix(in srgb,var(--ui-primary) 18%,transparent)}
+.school-hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 18%,#ffffff3e,transparent 38%)}
+.school-hero-photo{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:cover;opacity:.55}
+.school-hero-overlay{position:absolute;inset:0;padding:29px 35px;display:flex;align-items:center;justify-content:space-between;
+ background:linear-gradient(90deg,color-mix(in srgb,var(--ui-primary-dark) 88%,transparent),#00000006)}
+.school-hero-heading{position:relative;z-index:1;display:flex;align-items:center;gap:23px}
+.school-hero-logo{width:100px;height:100px;object-fit:contain;border-radius:18px;padding:8px;
+ background:#ffffffdf;border:3px solid #ffffffaa}
+.school-hero .hero-overline{color:#77fff0;font-size:.69rem;font-weight:850;letter-spacing:.17em}
+.school-hero h2{color:white;font-size:clamp(1.6rem,3vw,2.65rem);line-height:1.13;margin:9px 0}
+.school-hero p{color:#eee7fb;font-weight:650;margin:0;font-size:.94rem}
+.school-hero-mark{font-size:6.6rem;opacity:.33;transform:rotate(-24deg);filter:drop-shadow(0 20px 15px #0005)}
+.dashboard-four{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:14px!important;margin:0!important}
+.dashboard-four .stat{padding:18px;border-radius:15px;border:1px solid var(--ui-border);min-width:0;
+ display:grid;grid-template-columns:44px 1fr;grid-template-areas:"icon value" "label label" "hint hint";
+ align-items:center;column-gap:10px;row-gap:4px}
+.dashboard-four .stat:nth-child(4n+1){background:#ecfdfa}
+.dashboard-four .stat:nth-child(4n+2){background:#f1ecff}
+.dashboard-four .stat:nth-child(4n+3){background:#fff0f2}
+.dashboard-four .stat:nth-child(4n+4){background:#eafbff}
+.dashboard-four .dashboard-metric-icon{grid-area:icon;font-size:1.5rem;width:43px;height:43px;background:#ffffff95;
+ border-radius:12px;display:grid;place-items:center;color:var(--ui-primary)}
+.dashboard-four .dashboard-metric-value{grid-area:value;font-size:2.05rem;letter-spacing:-.04em}
+.dashboard-four .dashboard-metric-label{grid-area:label;color:#312d45;font-size:.79rem;font-weight:800}
+.dashboard-four .dashboard-metric-hint{grid-area:hint;font-size:.7rem;color:#79748b}
+.director-insights-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:stretch}
+.director-insights{padding:25px;min-width:0}
+.director-insights .section-heading h2{font-size:1.23rem}
+.link-more{font-size:.78rem;font-weight:800;text-decoration:none;white-space:nowrap}
+.director-agenda{display:grid;gap:10px}
+.director-agenda-item{display:flex;gap:12px;align-items:center;padding:13px 12px;border-radius:13px;
+ border:1px solid #ece9f5;background:#fbfbff;text-decoration:none;color:inherit}
+.director-agenda-item:hover{background:var(--ui-primary-soft)}
+.director-agenda-symbol{width:42px;height:42px;border-radius:11px;background:#f1ebfe;color:var(--ui-primary);
+ display:grid;place-items:center;font-size:1.3rem;flex:none}
+.director-agenda-info{flex:1;min-width:0;display:grid;gap:4px}
+.director-agenda-info strong{color:#2b2843;font-size:.88rem;overflow-wrap:anywhere}
+.director-agenda-info small{color:var(--ui-muted);font-size:.73rem}
+.tag-state{background:#e4f9f6;color:#0e9387;font-size:.69rem;font-weight:750;border-radius:100px;padding:7px 8px;white-space:nowrap}
+.director-attendance{display:flex;align-items:center;justify-content:center;gap:25px;padding:22px 10px}
+.attendance-ring{width:155px;height:155px;border-radius:50%;background:#eae7f3;flex:none;
+ display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;isolation:isolate}
+.attendance-ring.has-attendance{background:conic-gradient(var(--ui-teal) 0 var(--attendance,0%),#ece9f4 var(--attendance,0%) 100%)}
+.attendance-ring:before{content:"";position:absolute;inset:16px;background:white;border-radius:50%;z-index:-1}
+.attendance-ring strong{font-size:2.1rem;color:var(--ui-ink);letter-spacing:-.05em}
+.attendance-ring small{font-size:.73rem;color:var(--ui-muted)}
+.attendance-copy{max-width:185px}
+.attendance-copy strong{color:#322a49}
+.attendance-copy p{margin:8px 0 0;font-size:.86rem}
+.director-quick{margin:9px 0 0}
+.quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.quick-action{background:#fff;border:1px solid var(--ui-border);border-radius:16px;box-shadow:var(--ui-shadow);
+ display:grid;grid-template-columns:45px 1fr;grid-template-areas:"icon title" "icon subtitle";gap:3px 12px;
+ align-items:center;padding:18px;text-decoration:none}
+.quick-action:hover{border-color:var(--ui-primary);transform:translateY(-1px)}
+.quick-symbol{grid-area:icon;background:var(--ui-primary-soft);color:var(--ui-primary);
+ font-size:1.45rem;width:45px;height:45px;display:grid;place-items:center;border-radius:12px}
+.quick-action strong{grid-area:title;color:#2b263d;font-size:.88rem}
+.quick-action small{grid-area:subtitle;font-size:.72rem;color:var(--ui-muted)}
+.identity-editor{margin-top:2px}
+.disclosure-workbench{padding:0;overflow:hidden;margin-top:20px}
+.disclosure-workbench summary{list-style:none;cursor:pointer;display:flex;gap:15px;align-items:center;padding:21px 25px}
+.disclosure-workbench summary::-webkit-details-marker{display:none}
+.disclosure-workbench summary:after{content:"⌄";font-size:1.5rem;margin-left:auto;color:var(--ui-primary)}
+.disclosure-workbench[open] summary{border-bottom:1px solid var(--ui-border)}
+.disclosure-workbench[open] summary:after{transform:rotate(180deg)}
+.summary-icon,.identity-summary-icon{display:grid;place-items:center;width:47px;height:47px;border-radius:14px;
+ background:var(--ui-primary-soft);color:var(--ui-primary);font-size:1.5rem;flex:none}
+.disclosure-workbench summary strong{display:block;font-size:.98rem;color:var(--ui-ink)}
+.disclosure-workbench summary small{display:block;color:var(--ui-muted);font-size:.78rem;margin-top:3px}
+.workbench-body{display:grid;grid-template-columns:.78fr 1.22fr;gap:22px;padding:24px}
+.workbench-explainer{position:relative;background:linear-gradient(160deg,var(--ui-primary-dark),var(--ui-primary));
+ border-radius:17px;color:white;padding:30px;overflow:hidden;min-height:365px}
+.workbench-explainer .eyebrow{color:#73ffef}
+.workbench-explainer h2{color:white;font-size:2rem;margin:19px 0}
+.workbench-explainer p{color:#f3edff}
+.workbench-art{position:absolute;right:14px;bottom:4px;font-size:7rem;opacity:.45;transform:rotate(-18deg)}
+.workbench-form,.workbench-compact{padding:21px;min-width:0}
+.workbench-form{background:#fff}
+.workbench-form h2{margin:0 0 19px}
+.workbench-compact h2{margin:0 0 10px}
+.form-inline{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.identity-editor-content{padding:25px;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:24px}
+.identity-editor .marca-imagenes{margin:0;padding:0;border:0}
+.identity-editor .marca-imagenes-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.identity-editor #marcaDirector{padding:0;border:0;background:transparent;margin:0}
+.field-stack{display:grid;gap:8px;font-weight:700}
+
+
+/* PERSONALIZACIÓN DE ESCUELA · corrección de detalle nativo y medios grandes.
+   El panel usa <details> (no .disclosure-workbench) y necesita su propio summary. */
+#panelPersonalizacion{
+  padding:0;
+  margin-top:20px;
+  overflow:visible;
+  min-width:0;
+  max-width:100%;
+}
+#panelPersonalizacion > summary{
+  list-style:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:15px;
+  padding:20px 24px;
+  min-height:86px;
+  border-radius:var(--ui-radius);
+}
+#panelPersonalizacion > summary::-webkit-details-marker{display:none}
+#panelPersonalizacion > summary::marker{content:""}
+#panelPersonalizacion > summary > span:nth-child(2){
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  min-width:0;
+  flex:1 1 auto;
+}
+#panelPersonalizacion > summary strong{
+  font-size:1.06rem;
+  font-weight:800;
+  line-height:1.35;
+  color:var(--ui-ink);
+}
+#panelPersonalizacion > summary small{
+  display:block;
+  color:var(--ui-muted);
+  font-size:.84rem;
+  line-height:1.4;
+}
+#panelPersonalizacion > summary::after{
+  content:"⌄";
+  margin-left:auto;
+  color:var(--ui-primary);
+  font-size:1.45rem;
+  line-height:1;
+  transition:transform .18s ease;
+}
+#panelPersonalizacion[open] > summary{
+  border-radius:var(--ui-radius) var(--ui-radius) 0 0;
+  border-bottom:1px solid var(--ui-border);
+}
+#panelPersonalizacion[open] > summary::after{transform:rotate(180deg)}
+#panelPersonalizacion .identity-editor-content{
+  display:grid;
+  grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
+  align-items:start;
+  gap:26px;
+  padding:24px;
+  min-width:0;
+  max-width:100%;
+}
+#panelPersonalizacion .identity-editor-content > *{min-width:0;max-width:100%}
+#panelPersonalizacion #marcaDirector{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  grid-auto-rows:max-content;
+  align-content:start;
+  gap:14px;
+  min-width:0;
+  width:100%;
+  padding:0;
+  margin:0;
+  border:0;
+  background:transparent;
+}
+#panelPersonalizacion #marcaDirector h3,
+#panelPersonalizacion #imagenesDirector h3{margin:0 0 4px}
+#panelPersonalizacion #marcaDirector p{margin:0 0 5px}
+#panelPersonalizacion #marcaDirector input{max-width:100%}
+#panelPersonalizacion #marcaDirector .colores{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:13px;
+}
+#panelPersonalizacion #marcaDirector .colores label{min-width:0}
+#panelPersonalizacion #imagenesDirector{
+  min-width:0;
+  width:100%;
+  max-width:100%;
+  padding:0;
+  margin:0;
+  border:0;
+  box-shadow:none;
+  background:transparent;
+}
+#panelPersonalizacion #imagenesDirector > p{margin:9px 0 15px}
+#panelPersonalizacion .marca-imagenes-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+  min-width:0;
+  max-width:100%;
+  margin-top:0;
+  align-items:start;
+}
+#panelPersonalizacion .marca-imagen-card{
+  min-width:0;
+  width:100%;
+  max-width:100%;
+  padding:14px;
+  overflow:hidden;
+}
+#panelPersonalizacion .marca-imagen-card img{
+  display:block;
+  width:100%;
+  max-width:100%;
+  height:142px;
+  max-height:142px;
+  object-fit:contain;
+  object-position:center;
+  border-radius:12px;
+  border:1px solid var(--ui-border);
+  background:#f4f3fa;
+  margin:12px 0;
+}
+#panelPersonalizacion .marca-imagen-card img[hidden]{display:none!important}
+#panelPersonalizacion .marca-imagen-card label{display:grid;gap:8px;min-width:0}
+#panelPersonalizacion .marca-imagen-card input[type="file"]{
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  overflow:hidden;
+}
+#panelPersonalizacion .marca-imagen-card .field-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:12px;
+}
+#panelPersonalizacion .marca-imagen-card .field-actions button{
+  min-height:40px;
+  margin:0;
+}
+@media(max-width:1450px){
+  #panelPersonalizacion .identity-editor-content{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:900px){
+  #panelPersonalizacion .marca-imagenes-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:680px){
+  #panelPersonalizacion > summary{padding:16px;gap:10px}
+  #panelPersonalizacion .identity-editor-content{padding:16px;gap:20px}
+  #panelPersonalizacion .marca-imagenes-grid{grid-template-columns:minmax(0,1fr)}
+  #panelPersonalizacion .marca-imagen-card img{height:170px;max-height:170px}
+  #panelPersonalizacion #marcaDirector .colores{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* Categorías */
+.category-card-grid,.coach-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.category-card,.coach-card{padding:22px;background:#fff;border:1px solid var(--ui-border);
+ box-shadow:var(--ui-shadow);border-radius:17px;min-width:0}
+.category-card{display:flex;flex-direction:column;gap:11px}
+.category-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.category-symbol{width:49px;height:49px;border-radius:15px;background:#f1e8ff;display:grid;
+ place-items:center;font-size:1.4rem;color:var(--ui-primary)}
+.category-chip{font-size:.71rem;font-weight:800;color:var(--ui-primary);background:var(--ui-primary-soft);
+ border-radius:100px;padding:6px 9px}
+.category-card h3{font-size:1.27rem;margin:4px 0 0}
+.category-card p{font-size:.84rem;margin:0}
+.category-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;
+ border-top:1px solid var(--ui-border);padding-top:15px;margin-top:auto;flex-wrap:wrap}
+.card-actions{display:flex;gap:6px;flex-wrap:wrap}
+.card-actions button{font-size:.76rem;min-height:36px;padding:7px 11px}
+#listadoCategorias{scroll-margin-top:100px}
+
+/* Entrenadores */
+.coaches-workbench{display:grid;grid-template-columns:1fr 1fr;gap:19px;align-items:start;margin-top:25px}
+.coaches-workbench>.disclosure-workbench{margin:0}
+.coach-card-head{display:flex;align-items:center;gap:13px}
+.coach-avatar{width:55px;height:55px;border-radius:50%;display:grid;place-items:center;
+ background:var(--ui-primary-soft);color:var(--ui-primary);font-size:1.5rem;font-weight:850;flex:none}
+.coach-card h3{margin:0 0 4px;font-size:1.08rem}
+.coach-card-head small{font-size:.77rem;overflow-wrap:anywhere}
+.coach-tags{margin:22px 0;display:flex;gap:7px;flex-wrap:wrap;min-height:35px;align-items:start}
+.coach-tags>span{font-size:.77rem;padding:7px 9px;background:#f4f3f8;border-radius:100px;color:#606076}
+.coach-tags .coach-category-tag{color:#157f75;background:#e5f9f6;font-weight:750}
+.coach-card-footer{display:flex;align-items:center;gap:7px;flex-wrap:wrap;border-top:1px solid var(--ui-border);padding-top:14px}
+.coach-card-footer .pildora{margin-right:auto}
+.coach-card-footer button{font-size:.77rem;min-height:36px;padding:8px 10px}
+
+/* Jugadores y familias */
+.player-kpis{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.roster-panel{margin-bottom:20px}
+.roster-filters{display:grid;grid-template-columns:1.4fr 1fr .7fr;gap:12px;margin:21px 0}
+.roster-filters label{display:grid;gap:6px;font-size:.79rem;font-weight:750}
+.roster-table{min-width:910px}
+.roster-person{display:flex;align-items:center;gap:10px}
+.roster-avatar{width:35px;height:35px;border-radius:11px;display:grid;place-items:center;flex:none;
+ color:var(--ui-primary);background:var(--ui-primary-soft);font-weight:850}
+.roster-person strong{font-weight:750;white-space:normal}
+.player-editor,.guardian-editor{max-width:950px}
+.families-panel{margin-top:24px}
+.families-panel table{min-width:650px}
+.header-actions{justify-content:flex-end}
+.app-dialog{width:min(520px,calc(100vw - 30px));max-width:100%;border:1px solid var(--ui-border);
+ border-radius:19px;background:white;color:var(--ui-ink);box-shadow:0 25px 70px #130d3259;padding:24px}
+.app-dialog::backdrop{background:#16102b9c}
+.dialog-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;gap:12px}
+.dialog-heading h2{margin:0}
+.app-dialog label{margin:18px 0}
+.app-dialog select{width:100%}
+
+/* Registro guiado */
+.cancha{max-width:unset}
+.cancha-steps{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:16px 0 25px}
+.cancha-step{display:flex;align-items:center;gap:8px;padding:11px 14px;border:1px solid var(--ui-border);
+ background:#fff;border-radius:13px;color:#7b738c;font-size:.82rem;font-weight:750}
+.cancha-step span{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;
+ background:#eeeaf5;color:var(--ui-muted);font-weight:850}
+.cancha-step.is-active{border-color:var(--ui-primary);background:var(--ui-primary-soft);color:var(--ui-primary)}
+.cancha-step.is-active span,.cancha-step.is-done span{background:var(--ui-primary);color:var(--ui-primary-contrast)}
+.cancha-step.is-done{color:#147a6b;background:#eafaF6}
+.cancha-step.is-done span{background:#14b8a6}
+.cancha .crear-actividad{grid-template-columns:1.3fr 1fr .85fr 1fr auto}
+.cancha .crear-actividad button{align-self:end;min-height:47px}
+.cancha .panel{margin-bottom:14px}
+.cancha .eventos-lista{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:18px}
+.cancha .evento-item{background:#fff;border:1px solid var(--ui-border);box-shadow:var(--ui-shadow);
+ border-radius:16px;padding:18px;display:grid;gap:13px;align-items:start}
+.cancha .evento-item strong{display:block;color:var(--ui-ink);font-size:1rem}
+.cancha .evento-item p{font-size:.82rem;line-height:1.5;margin:7px 0}
+.cancha .evento-item button{justify-self:end;background:var(--ui-primary);color:var(--ui-primary-contrast)}
+.cancha .guardar-flotante{position:sticky;top:12px;z-index:20;border:1px solid #dfd8ee;
+ box-shadow:0 7px 26px #2e204c1c;background:#fff;margin:0 0 17px}
+.cancha .toolbar{display:grid;grid-template-columns:1.2fr 1.1fr .7fr;gap:13px}
+.cancha .jugadores-rapidos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.cancha .jugador-rapido{padding:18px;border:1px solid var(--ui-border);box-shadow:var(--ui-shadow)}
+.cancha .asistencias .activo-presente{background:#0ca995;color:white}
+.cancha .asistencias .activo-ausente{background:#bd3658;color:white}
+.cancha .asistencias .activo-pendiente{background:var(--ui-primary);color:white}
+.cancha .fila-metricas{border-top:1px solid var(--ui-border)}
+.cancha .marcador button{background:var(--ui-primary-soft);color:var(--ui-primary);border-radius:11px}
+.cancha .marcador output{color:var(--ui-ink)}
+.cancha .tarjetas button{min-height:43px}
+.cancha .ayuda-rapida{padding:11px 14px;border-radius:11px;background:#f0ecfa;color:#544966}
+
+/* Estadísticas */
+.filtros-informe{display:grid;grid-template-columns:2fr 1fr auto;gap:13px;align-items:end}
+.filtros-informe label{display:grid;gap:6px}
+.filtros-informe>button{align-self:end}
+.dashboard-deportivo .kpis-informe{grid-template-columns:repeat(4,minmax(0,1fr))}
+.dashboard-deportivo .stat{border-top:3px solid var(--ui-primary)}
+.dashboard-deportivo .stat:nth-child(2){border-top-color:var(--ui-teal)}
+.dashboard-deportivo .stat:nth-child(3){border-top-color:var(--ui-coral)}
+.dashboard-deportivo .stat:nth-child(4){border-top-color:#eab05b}
+.dos-columnas{display:grid;grid-template-columns:.85fr 1.15fr;gap:18px}
+.tipo-item{background:#f9f7fe;border:1px solid var(--ui-border)}
+.tipo-item strong{color:var(--ui-primary)}
+.barra-base{background:#eeecf6}
+.barra-valor{background:var(--ui-teal)}
+.tabla-informe,.historial-panel,.bloque-escuela{margin-top:20px}
+.titulo-reporte{margin:25px 0 8px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.enlace-accion{background:var(--ui-primary);color:var(--ui-primary-contrast);padding:12px 17px;text-decoration:none;white-space:nowrap;font-weight:800}
+.report-feature{background:linear-gradient(100deg,var(--ui-primary-soft),#fff);border:1px solid var(--ui-border);
+ border-radius:16px;padding:20px;margin:15px 0}
+.report-feature h2{margin:0 0 5px}
+
+/* Comunicaciones */
+.notice-layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(270px,.8fr);gap:18px}
+.notice-guide{background:linear-gradient(145deg,var(--ui-primary-dark),var(--ui-primary));color:white!important}
+.notice-guide h2,.notice-guide h3{color:white}
+.notice-guide p{color:#eee6fa}
+.notice-guide .notice-illustration{font-size:5rem;text-align:center;opacity:.8;margin:27px 0}
+.notice-card-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.notice-card-list>*{margin:0!important}
+.notice-card-list h3{overflow-wrap:anywhere}
+
+/* Portal familiar */
+.familia-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:15px}
+.familia-card{background:#fff}
+.familia-card table{min-width:0}
+.familia-card .confirmacion-botones{display:flex;flex-wrap:wrap;gap:8px}
+.familia-card .confirmacion-botones button{min-height:42px}
+.familia-portada{width:100%;height:clamp(145px,20vw,225px);object-fit:cover;border-radius:18px}
+.familia-seccion{margin:24px 0}
+.marca-familia-titulo{display:flex;align-items:center;gap:12px}
+.marca-familia-titulo img{width:57px;height:57px;object-fit:contain}
+.escuela-selector{display:grid;max-width:450px;gap:8px;font-weight:750}
+.confirmaciones{border-top:1px solid var(--ui-border);padding-top:13px;margin-top:15px;display:grid;gap:13px}
+.confirmacion-jugador{display:grid;gap:6px}
+.confirmacion-estado{color:var(--ui-muted);font-size:.83rem}
+.familia-card .aviso-mensaje{white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* Activación de invitaciones */
+.invitation-layout{display:grid;grid-template-columns:.78fr 1.22fr;gap:20px;align-items:stretch;margin:35px auto;max-width:1100px}
+.invitation-aside{background:linear-gradient(160deg,var(--ui-primary-dark),var(--ui-primary));
+ color:#fff;border-radius:21px;padding:32px;position:relative;min-height:350px;overflow:hidden}
+.invitation-aside .eyebrow{color:#5bf0dc}
+.invitation-aside h2{font-size:2rem;color:white;line-height:1.1;margin:19px 0}
+.invitation-aside p{color:#eee8fd}
+.invitation-aside .invitation-symbol{font-size:6rem;opacity:.5;position:absolute;right:12px;bottom:0}
+.invitation-layout .auth-panel{max-width:none;margin:0}
+.invitation-layout .formulario{margin-top:19px}
+.invitation-layout #resultado{margin:16px 0;color:var(--ui-primary);font-weight:750}
+.invitation-layout #correo{overflow-wrap:anywhere}
+@media(max-width:1380px){
+  .cancha .jugadores-rapidos{grid-template-columns:1fr}
+  .identity-editor-content{grid-template-columns:1fr}
+  .category-card-grid,.coach-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:1120px){
+  .director-insights-grid{grid-template-columns:1fr}
+  .dashboard-four{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .player-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .roster-filters{grid-template-columns:1.3fr 1fr}
+  .coaches-workbench,.notice-layout{grid-template-columns:1fr}
+}
+@media(max-width:959px){
+  .app-sidenav{width:min(290px,84vw)}
+  .app-shell-active main.layout{margin:0;width:100%}
+  .workbench-body{grid-template-columns:1fr}
+  .workbench-explainer{display:none}
+  .cancha .crear-actividad{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cancha .toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:720px){
+  .module-header{flex-direction:column;align-items:stretch}
+  .header-actions{justify-content:flex-start}
+  .module-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .category-card-grid,.coach-card-grid{grid-template-columns:1fr}
+  .director-insights-grid{grid-template-columns:1fr}
+  .director-attendance{flex-direction:column}
+  .school-hero-overlay{padding:21px}
+  .school-hero-logo{width:64px;height:64px}
+  .school-hero-heading{gap:11px}
+  .school-hero-mark{display:none}
+  .school-hero{min-height:170px}
+  .quick-grid{grid-template-columns:1fr}
+  .roster-filters{grid-template-columns:1fr}
+  .notice-card-list{grid-template-columns:1fr}
+  .invitation-layout{grid-template-columns:1fr}
+  .invitation-aside{min-height:230px}
+  .identity-editor .marca-imagenes-grid{grid-template-columns:1fr}
+  .section-heading{flex-wrap:wrap}
+  .cancha .eventos-lista{grid-template-columns:1fr}
+  .cancha .toolbar{grid-template-columns:1fr}
+  .cancha .jugadores-rapidos{grid-template-columns:1fr}
+  .cancha .crear-actividad{grid-template-columns:1fr}
+  .filtros-informe{grid-template-columns:1fr}
+  .dos-columnas{grid-template-columns:1fr}
+  .dashboard-deportivo .kpis-informe{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .titulo-reporte{flex-direction:column;align-items:stretch}
+}
+@media(max-width:470px){
+  .dashboard-four .stat{grid-template-columns:38px 1fr;padding:12px}
+  .dashboard-four .dashboard-metric-value{font-size:1.55rem}
+  .dashboard-four .dashboard-metric-icon{width:37px;height:37px}
+  .welcome-strip{flex-direction:column;align-items:flex-start}
+  .welcome-strip h2{font-size:1.6rem}
+  .director-agenda-item .tag-state{display:none}
+  .form-inline{grid-template-columns:1fr}
+  .identity-editor-content,.workbench-compact{padding:16px}
+  .disclosure-workbench summary{padding:16px}
+  .module-kpis .stat{padding:13px;min-height:112px}
+  .module-kpis .stat strong{font-size:1.9rem}
+  .attendance-ring{width:130px;height:130px}
+  .app-shell-active main.layout{padding:13px 12px 40px}
+  .cancha .guardar-flotante{top:0}
+}
+@media(prefers-reduced-motion:reduce){.quick-action:hover{transform:none}}
+
+/* ACABADOS Y VISUALIZACIONES V3.0 */
+:root{--ui-primary-contrast:#fff}
+.app-topbar-logout{background:#f3edfd;color:var(--ui-primary);min-height:38px;padding:7px 13px;font-size:.78rem}
+.app-topbar-logout:hover{background:var(--ui-primary-soft)}
+.app-shell-admin .admin-page-header #salir,
+.app-shell-family .family-public-header,
+.app-shell-school .director-public-header{display:none}
+.app-shell-active .app-topbar{border-bottom:3px solid var(--ui-secondary-brand)}
+.app-user-pill{flex:none}
+.app-shell-active .app-menu-toggle{background:var(--ui-primary);color:var(--ui-primary-contrast)}
+.app-shell-school .app-nav-link[aria-current=page] svg,
+.app-shell-family .app-nav-link[aria-current=page] svg{color:#56e8e0}
+.app-shell-school .app-nav-link[aria-current=page],
+.app-shell-family .app-nav-link[aria-current=page]{box-shadow:inset 3px 0 0 #35d6cf}
+#marcaDirector{margin:0!important}
+.school-picker .section-heading h2{font-size:1.65rem}
+.dashboard-four .stat:nth-child(3n+2){border:1px solid var(--ui-border)}
+.identity-editor .marca-imagenes-grid{margin-top:13px}
+.identity-editor .marca-imagen-card{background:#fbfaff}
+.notice-visual-card{display:grid;gap:10px;align-content:start;min-height:220px}
+.notice-visual-card .pildora{justify-self:start}
+.notice-visual-card h3{font-size:1.12rem;margin:3px 0}
+.notice-visual-card p{margin:0;overflow-wrap:anywhere;white-space:pre-wrap}
+.notice-visual-card button{justify-self:start;align-self:end;margin-top:8px}
+.family-dashboard{display:grid;gap:19px}
+.family-school-selector{padding:23px}
+.family-school-selector h2{margin:6px 0 14px}
+.family-kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.report-feature{display:flex;justify-content:space-between;gap:18px;align-items:center;overflow:hidden;
+ padding:24px 29px;margin:0 0 19px;border-top:3px solid var(--ui-teal)}
+.report-feature .eyebrow{display:block}
+.report-feature h2{font-size:1.7rem;margin:8px 0 4px}
+.report-feature p{margin:4px 0}
+.report-feature-art{width:72px;height:72px;display:grid;place-items:center;flex:none;
+ border-radius:20px;font-size:2.55rem;color:var(--ui-primary);background:white;
+ box-shadow:0 9px 18px #22134a19}
+.report-visual-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:15px 0}
+.report-visual-grid .panel{min-width:0}
+.report-attendance-card .report-donut-wrap{display:flex;align-items:center;justify-content:center;gap:22px;margin:24px auto 7px}
+.report-attendance-card .report-donut-wrap>div:last-child{max-width:210px}
+.report-attendance-card .report-donut-wrap p{font-size:.83rem;margin:8px 0}
+.report-month-chart{display:grid;grid-template-columns:repeat(12,minmax(20px,1fr));gap:12px;
+ min-height:240px;margin:28px 0 9px;align-items:end}
+.month-column{height:225px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px}
+.month-column strong{font-size:.82rem;color:var(--ui-primary)}
+.month-column span{font-size:.74rem;color:#79758d;font-weight:700}
+.month-track{height:175px;width:100%;display:flex;align-items:end;background:#f4f2f9;border-radius:12px;overflow:hidden}
+.month-bar{width:100%;background:linear-gradient(to top,var(--ui-primary),var(--ui-teal));border-radius:12px 12px 2px 2px;min-height:3px}
+.report-evolution{margin-bottom:20px}
+.report-detail-table{margin-top:19px}
+.report-detail-table summary{cursor:pointer;font-weight:800;color:var(--ui-primary);padding:10px 0}
+.report-detail-table[open] summary{margin-bottom:13px}
+.report-detail-table .tabla-scroll{margin-top:5px}
+.notice-card-list .empty-feature{grid-column:1/-1}
+.school-hero,.school-hero *{min-width:0}
+.role-auth{color:var(--ui-ink)}
+.school-home-header{background:linear-gradient(100deg,var(--ui-primary-soft),white)}
+.app-shell-school .module-kpis .stat:before{display:none}
+button:not(:disabled),a[role=button]{touch-action:manipulation}
+@media(max-width:1080px){
+ .report-visual-grid{grid-template-columns:1fr}
+ .report-month-chart{gap:6px}
+ .report-attendance-card .report-donut-wrap{justify-content:flex-start}
+}
+@media(max-width:720px){
+ .report-month-chart{gap:4px;min-height:185px}
+ .month-column{height:180px}
+ .month-track{height:130px}
+ .month-column strong,.month-column span{font-size:.64rem}
+ .report-feature-art{display:none}
+ .report-feature{padding:20px}
+ .report-feature h2{font-size:1.32rem}
+ .report-attendance-card .report-donut-wrap{flex-wrap:wrap}
+ .family-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .app-user-pill{display:none}
+ .app-topbar-logout{margin-left:auto}
+ .app-topbar-title strong{white-space:normal}
+}
+@media print{
+ .app-topbar-logout,.button-accent,.header-actions,.field-actions{display:none!important}
+ .report-month-chart{page-break-inside:avoid}
+}
+
+/* Bienvenida de familias: portada de marca con contenido real */
+.family-hero{display:flex;justify-content:space-between;align-items:center;gap:22px;
+ min-height:155px;padding:30px 36px;border-radius:20px;overflow:hidden;
+ background:radial-gradient(circle at 80% 25%,color-mix(in srgb,var(--ui-primary) 65%,white),transparent 43%),
+ linear-gradient(115deg,var(--ui-primary-dark),var(--ui-primary));
+ box-shadow:0 14px 29px #25114a15}
+.family-hero .eyebrow{color:#7affea}
+.family-hero h2{font-size:clamp(1.6rem,2.6vw,2.4rem);color:white;margin:8px 0 7px}
+.family-hero p{color:#ece8f5;margin:0;max-width:520px}
+.family-hero-symbol{font-size:5.6rem;opacity:.34;transform:rotate(-16deg);flex:none}
+@media(max-width:580px){
+ .family-hero{padding:22px 19px;min-height:145px}
+ .family-hero-symbol{display:none}
+}

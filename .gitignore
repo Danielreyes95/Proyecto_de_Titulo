@@ -1,0 +1,25 @@
+# Credenciales y configuración local
+.env
+.env.*
+!.env.example
+
+# Dependencias y compilación
+node_modules/
+dist/
+build/
+coverage/
+.nyc_output/
+
+# Exportaciones / respaldos de base de datos (pueden contener datos personales)
+db/
+backups/
+*.dump
+*.archive
+
+# Logs y archivos de entorno
+*.log
+logs/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

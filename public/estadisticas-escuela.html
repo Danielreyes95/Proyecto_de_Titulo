@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Estadísticas · Plataforma de Fútbol</title>
+<link rel="stylesheet" href="/assets/css/app-v2.css?v=3.0.1">
+<script src="/js/ui-propuesta2.js?v=3.0.0" defer></script>
+<script src="/js/estadisticas-escuela.js?v=3.0.0" defer></script>
+</head><body>
+<main class="layout dashboard-deportivo app-module">
+<header class="cabecera module-header">
+  <div><span class="eyebrow">REPORTES · SEGUIMIENTO DEPORTIVO</span>
+    <h1 id="nombreEscuela">Estadísticas de la escuela</h1>
+    <p>Analiza la asistencia y el rendimiento con datos reales de actividades cerradas.</p></div>
+  <a class="outline-link" href="/director-acceso.html">← Volver al inicio</a>
+</header>
+<section class="report-feature">
+  <div><span class="eyebrow">INFORMES DE TEMPORADA</span><h2>Todo el progreso, en un lugar.</h2>
+    <p>Selecciona una categoría y un año para conocer su evolución deportiva.</p></div>
+  <div class="report-feature-art" aria-hidden="true">▥</div>
+</section>
+<section class="panel filtros-informe" aria-label="Seleccionar el informe">
+  <label>Categoría<select id="categoria" aria-label="Categoría"><option value="">Seleccionar categoría</option></select></label>
+  <label>Año deportivo<select id="anio" aria-label="Año del informe"></select></label>
+  <button type="button" id="recargar" class="secundario">Actualizar reporte</button>
+</section>
+<p id="mensaje" role="status" aria-live="polite"></p>
+<section id="resumenInstitucional" class="panel bloque-escuela" hidden aria-labelledby="tituloInstitucional">
+  <div class="section-heading">
+    <div><span class="eyebrow">VISIÓN INSTITUCIONAL · DIRECCIÓN</span>
+      <h2 id="tituloInstitucional">Resumen de toda la escuela</h2>
+      <p>Consolidado anual de categorías con actividad cerrada.</p></div>
+    <button id="recargarInstitucional" type="button" class="secundario">Actualizar escuela</button>
+  </div>
+  <section class="estadisticas kpis-informe" aria-label="Indicadores institucionales">
+    <div class="stat"><span>Actividades cerradas</span><strong id="instActividades">0</strong></div>
+    <div class="stat"><span>Asistencia registrada</span><strong id="instAsistencia">—</strong></div>
+    <div class="stat"><span>Goles registrados</span><strong id="instGoles">0</strong></div>
+    <div class="stat"><span>Categorías registradas</span><strong id="instCategorias">0</strong></div>
+  </section>
+  <details class="report-detail-table">
+    <summary>Ver desglose por categoría</summary>
+    <div class="tabla-scroll"><table class="tabla-escuela">
+      <thead><tr><th>Categoría</th><th>Modalidad</th><th>Estado</th>
+        <th>Actividades</th><th>Asistencia</th><th>Goles</th><th>Detalle</th></tr></thead>
+      <tbody id="tablaInstitucional"></tbody>
+    </table></div>
+  </details>
+  <p id="mensajeInstitucional" role="status" aria-live="polite"></p>
+</section>
+<section id="contenido" hidden>
+  <div class="titulo-reporte section-heading">
+    <div><span class="eyebrow">RESUMEN DE TEMPORADA</span>
+      <h2 id="tituloCategoria">Categoría</h2>
+      <p>Los eventos abiertos no alteran los resultados.</p></div>
+    <a id="irCancha" class="enlace-accion" href="#">ϟ Registro rápido</a>
+  </div>
+  <section class="estadisticas kpis-informe" aria-label="Indicadores deportivos">
+    <div class="stat"><span>Actividades cerradas</span><strong id="totalActividades">0</strong><small>Entrenamientos, partidos y torneos</small></div>
+    <div class="stat"><span>Asistencia registrada</span><strong id="porcentajeAsistencia">—</strong><small id="detalleAsistencia"></small></div>
+    <div class="stat"><span>Goles registrados</span><strong id="totalGoles">0</strong><small>En eventos cerrados</small></div>
+    <div class="stat"><span>Asistencias de gol</span><strong id="totalAsistencias">0</strong><small>En eventos cerrados</small></div>
+  </section>
+  <div class="report-visual-grid">
+    <section class="panel report-attendance-card">
+      <span class="eyebrow">ASISTENCIA DEPORTIVA</span><h2>Participación general</h2>
+      <div class="report-donut-wrap">
+        <div id="asistenciaDonut" class="attendance-ring" aria-label="Asistencia"><strong id="asistenciaDonutNumero">—</strong><small>Asistencia</small></div>
+        <div><strong id="asistenciaCaption">Sin datos cerrados</strong>
+          <p>Porcentaje calculado sobre registros de presencia y ausencia.</p></div>
+      </div>
+    </section>
+    <section class="panel">
+      <span class="eyebrow">TIPOS DE ACTIVIDAD</span><h2>Actividades por tipo</h2>
+      <p>Distribución de entrenamientos, partidos y torneos finalizados.</p>
+      <div id="tipos" class="tipos-informe"></div>
+    </section>
+  </div>
+  <section class="panel report-evolution">
+    <div class="section-heading"><div><span class="eyebrow">SEGUIMIENTO MENSUAL</span>
+      <h2>Evolución por mes</h2><p>La altura de cada barra representa actividades cerradas.</p></div></div>
+    <div id="chartEvolution" class="report-month-chart" aria-label="Actividades por mes"></div>
+    <details class="report-detail-table">
+      <summary>Ver detalle por mes</summary>
+      <div id="meses" class="meses-informe"></div>
+    </details>
+  </section>
+  <section class="panel tabla-informe" aria-labelledby="tituloJugadores">
+    <div class="section-heading">
+      <div><span class="eyebrow">RENDIMIENTO INDIVIDUAL</span><h2 id="tituloJugadores">Estadísticas por jugador</h2>
+        <p>Acumulados del año de la categoría, incluidos cambios de categoría.</p></div>
+      <label class="field-stack">Buscar jugador<input type="search" id="buscar" placeholder="Filtrar por nombre"></label>
+    </div>
+    <div class="tabla-scroll"><table>
+      <thead><tr><th>Jugador</th><th>Asistencia</th><th>Goles</th><th>Asist. gol</th>
+        <th>Recuperaciones</th><th>Nota media*</th><th>Detalle</th></tr></thead>
+      <tbody id="tabla"></tbody></table></div>
+    <small>*Nota promedio solo de evaluaciones registradas (1–10). «—» no significa cero.</small>
+  </section>
+  <section id="detallePanel" class="panel historial-panel" hidden aria-labelledby="detalleTitulo">
+    <div class="section-heading"><div><span class="eyebrow">HISTORIAL INDIVIDUAL</span>
+      <h2 id="detalleTitulo">Jugador</h2><p>Hasta 20 actividades cerradas recientes.</p></div>
+      <button id="cerrarDetalle" type="button" class="secundario">Cerrar detalle</button>
+    </div>
+    <div class="tabla-scroll"><table><thead><tr>
+      <th>Fecha</th><th>Tipo</th><th>Asistencia</th><th>Goles</th><th>Asist. gol</th><th>Nota*</th>
+    </tr></thead><tbody id="tablaDetalle"></tbody></table></div>
+    <p id="detalleMas"></p>
+  </section>
+</section>
+</main></body></html>

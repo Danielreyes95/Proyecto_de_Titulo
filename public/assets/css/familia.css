@@ -1,0 +1,24 @@
+.escuela-selector{display:grid;gap:8px;margin-top:12px;max-width:460px;font-weight:700}
+.familia-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.familia-card{padding:23px;border:1px solid #e3eaf2;border-top:5px solid var(--familia-color,#176a50);border-radius:16px;background:#fff;box-shadow:0 7px 23px #1623380b}
+.familia-card h3{margin:0 0 5px}.familia-card p{margin:2px 0 14px}
+.resumen-familia{background:#f3f8f6;padding:12px;border-radius:11px;color:#1e4d3f;margin:15px 0;font-weight:700}
+.familia-card table{width:100%;border-collapse:collapse;font-size:.88rem}
+.familia-card th,.familia-card td{padding:9px 6px;text-align:left;border-bottom:1px solid #e6edf3}
+.familia-card caption{text-align:left;font-weight:750;margin-bottom:9px}
+.familia-card small{display:block;margin-top:12px}
+.familia-seccion { margin-top: 23px; }
+.familia-seccion h2 { margin-bottom: 7px; }
+.aviso-mensaje { white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 13px!important; }
+.familia-card { min-width: 0; }
+
+.confirmaciones{display:grid;gap:9px;margin-top:16px;border-top:1px solid #e1e8f0;padding-top:13px}
+.confirmacion-jugador{display:grid;gap:6px}
+.confirmacion-estado{color:#476177;font-size:.87rem}
+.confirmacion-botones{display:flex;gap:7px;flex-wrap:wrap}
+.confirmacion-botones button{min-height:42px;padding:8px 11px}
+@media(max-width:450px){.confirmacion-botones button{flex:1 1 112px}}
+
+.marca-familia-titulo{display:flex;gap:12px;align-items:center}
+.marca-familia-titulo img{width:65px;height:65px;border-radius:13px;object-fit:contain}
+.familia-portada{display:block;width:100%;height:clamp(125px,22vw,220px);object-fit:cover;border-radius:15px;margin:0 0 20px}

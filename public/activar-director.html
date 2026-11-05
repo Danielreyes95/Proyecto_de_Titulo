@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Activación de director · Plataforma de Fútbol</title>
+<link rel="stylesheet" href="/assets/css/app-v2.css?v=3.0.1">
+<script src="/js/ui-propuesta2.js?v=3.0.0" defer></script>
+<script src="/js/activar-director.js?v=3.0.0" defer></script>
+</head><body><main class="layout">
+<header class="cabecera">
+ <div><span class="eyebrow">DIRECCIÓN · ACTIVACIÓN</span><h1>Activación de director</h1><p>Gestiona tu academia con un solo lugar para equipos, estadísticas y comunicaciones.</p></div>
+</header>
+<section class="invitation-layout">
+ <div class="invitation-aside">
+   <span class="eyebrow">BIENVENIDO A LA PLATAFORMA</span>
+   <h2>Tu escuela,<br><em>tu gestión.</em></h2>
+   <p>Invitación exclusiva para responsables de dirección.</p>
+   <div class="invitation-symbol" aria-hidden="true">⚽</div>
+ </div>
+ <section class="panel auth-panel">
+   <span class="eyebrow">INVITACIÓN PERSONAL</span>
+   <h2 id="escuela">Comprobando invitación...</h2><p id="correo"></p>
+   <form id="nuevo" class="formulario" hidden>
+      <label>Tu nombre<input id="nombre" maxlength="120" autocomplete="name" required></label>
+      <label>Contraseña nueva (mínimo 12 caracteres)
+      <input id="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label>
+      <button type="submit">Activar mi cuenta</button>
+   </form>
+   <form id="existente" class="formulario" hidden>
+     <p>Ya existe una cuenta con este correo. Inicia sesión para aceptar la invitación.</p>
+     <label>Correo electrónico<input id="email" type="email" autocomplete="username" readonly></label>
+     <label>Contraseña<input id="passwordExistente" type="password" autocomplete="current-password" required></label>
+     <button type="submit">Iniciar sesión y vincular escuela</button>
+   </form>
+   <p id="resultado" role="status" aria-live="polite"></p>
+   <a class="outline-link" href="/director-acceso.html">Ir al acceso de directores →</a>
+ </section>
+</section>
+</main></body></html>

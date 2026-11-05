@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Categorías · Plataforma de Fútbol</title>
+<link rel="stylesheet" href="/assets/css/app-v2.css?v=3.0.1">
+<script src="/js/ui-propuesta2.js?v=3.0.0" defer></script>
+<script src="/js/categorias-escuela.js?v=3.0.0" defer></script>
+</head><body>
+<main class="layout app-module">
+<header class="cabecera module-header">
+  <div><span class="eyebrow">GESTIÓN DEPORTIVA · EQUIPOS</span>
+  <h1 id="titulo">Categorías de mi escuela</h1>
+  <p>Organiza divisiones formativas y competitivas, sus edades y cupos.</p></div>
+  <button id="nuevaCategoria" class="button-accent" type="button">+ Nueva categoría</button>
+</header>
+<section class="estadisticas module-kpis" aria-label="Resumen">
+  <div class="stat"><span>Categorías</span><strong id="total">0</strong><small>Divisiones registradas</small></div>
+  <div class="stat"><span>Activas</span><strong id="activas">0</strong><small>En funcionamiento</small></div>
+  <div class="stat"><span>Inactivas</span><strong id="inactivas">0</strong><small>Conservan historial</small></div>
+</section>
+<section class="section-block" aria-labelledby="categoriasTitulo">
+  <div class="section-heading"><div>
+    <span class="eyebrow">PLANTEL DE CATEGORÍAS</span>
+    <h2 id="categoriasTitulo">Tus divisiones</h2>
+    <p>Selecciona una categoría para editarla o actualizar su estado.</p>
+  </div><a class="outline-link" href="#listadoCategorias">Ver listado completo →</a></div>
+  <div id="categoriasCards" class="category-card-grid" aria-live="polite"></div>
+</section>
+
+<details id="editorCategoria" class="panel disclosure-workbench">
+  <summary><span class="summary-icon">＋</span><span><strong>Crear o editar categoría</strong><small>Configura modalidad, edad y cupos</small></span></summary>
+  <div class="workbench-body">
+    <div class="workbench-explainer">
+      <span class="eyebrow">CONFIGURACIÓN DEPORTIVA</span><h2>Tu siguiente categoría</h2>
+      <p>Organiza tus jugadores por etapa formativa. El historial se conserva si una categoría cambia de estado.</p>
+      <div class="workbench-art" aria-hidden="true">⚽</div>
+    </div>
+    <section class="workbench-form">
+      <h2 id="formTitulo">Nueva categoría</h2>
+      <form id="categoriaForm" class="formulario">
+        <label>Nombre<input id="nombre" required maxlength="80" placeholder="Ej. Sub 12"></label>
+        <label>Modalidad<select id="modalidad" required>
+          <option value="formativo">Formativo</option><option value="competitivo">Competitivo</option>
+        </select></label>
+        <div class="form-inline">
+          <label>Edad mínima<input id="edadMin" type="number" min="0" max="99" required></label>
+          <label>Edad máxima<input id="edadMax" type="number" min="0" max="99" required></label>
+        </div>
+        <label>Cupos (opcional)<input id="cupos" type="number" min="1" max="500" placeholder="Sin límite definido"></label>
+        <div class="field-actions">
+          <button id="guardar" type="submit">Guardar categoría</button>
+          <button id="cancelar" class="secundario" type="button" hidden>Cancelar edición</button>
+        </div>
+      </form>
+    </section>
+  </div>
+</details>
+
+<section id="listadoCategorias" class="panel listado">
+  <div class="section-heading"><div><span class="eyebrow">DETALLE ADMINISTRATIVO</span>
+    <h2>Categorías registradas</h2></div>
+    <span class="table-help">Desliza horizontalmente si utilizas un celular</span>
+  </div>
+  <div class="tabla-scroll"><table>
+    <thead><tr><th>Nombre</th><th>Modalidad</th><th>Edades</th><th>Cupos</th><th>Estado</th><th>Acciones</th></tr></thead>
+    <tbody id="tabla"></tbody>
+  </table></div>
+</section>
+<p id="mensaje" role="status" aria-live="polite"></p>
+</main></body></html>

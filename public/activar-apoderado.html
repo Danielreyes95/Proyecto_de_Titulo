@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Activación de acceso familiar · Plataforma de Fútbol</title>
+<link rel="stylesheet" href="/assets/css/app-v2.css?v=3.0.1">
+<script src="/js/ui-propuesta2.js?v=3.0.0" defer></script>
+<script src="/js/activar-apoderado.js?v=3.0.0" defer></script>
+</head><body><main class="layout">
+<header class="cabecera">
+ <div><span class="eyebrow">FAMILIAS · ACTIVACIÓN</span><h1>Activación de acceso familiar</h1><p>Consulta actividades, comunicados y el desarrollo deportivo de tus jugadores vinculados.</p></div>
+</header>
+<section class="invitation-layout">
+ <div class="invitation-aside">
+   <span class="eyebrow">BIENVENIDO A LA PLATAFORMA</span>
+   <h2>Siempre cerca<br><em>de su pasión.</em></h2>
+   <p>Acceso privado a los jugadores de tu familia.</p>
+   <div class="invitation-symbol" aria-hidden="true">⚽</div>
+ </div>
+ <section class="panel auth-panel">
+   <span class="eyebrow">INVITACIÓN PERSONAL</span>
+   <h2 id="escuela">Comprobando invitación...</h2><p id="correo"></p>
+   <form id="nuevo" class="formulario" hidden>
+      <label>Tu nombre<input id="nombre" maxlength="120" autocomplete="name" required></label>
+      <label>Contraseña nueva (mínimo 12 caracteres)
+      <input id="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label>
+      <button type="submit">Crear mi acceso familiar</button>
+   </form>
+   <form id="existente" class="formulario" hidden>
+     <p>Este correo ya tiene una cuenta. Ingresa con ella para vincular a tu familia.</p>
+     <label>Correo electrónico<input id="email" type="email" autocomplete="username" readonly></label>
+     <label>Contraseña<input id="passwordExistente" type="password" autocomplete="current-password" required></label>
+     <button type="submit">Vincular mi familia</button>
+   </form>
+   <p id="resultado" role="status" aria-live="polite"></p>
+   <a class="outline-link" href="/familia-acceso.html">Ir al portal familiar →</a>
+ </section>
+</section>
+</main></body></html>

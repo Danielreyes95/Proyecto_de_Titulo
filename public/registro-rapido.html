@@ -1,0 +1,83 @@
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Registro en cancha · Plataforma de Fútbol</title>
+<link rel="stylesheet" href="/assets/css/app-v2.css?v=3.0.1">
+<script src="/js/ui-propuesta2.js?v=3.0.0" defer></script>
+<script src="/js/registro-rapido.js?v=3.0.0" defer></script>
+</head><body>
+<main class="layout cancha app-module">
+<header class="cabecera module-header">
+  <div><span class="eyebrow">MODO CANCHA · REGISTRO RÁPIDO</span>
+    <h1 id="escuelaTitulo">Registro en cancha</h1>
+    <p id="subtitulo">Registra asistencia, goles y acciones sin entrar a cada ficha.</p>
+  </div>
+  <a id="verInforme" class="outline-link" href="#">Ver estadísticas →</a>
+</header>
+<nav class="cancha-steps" aria-label="Pasos del registro">
+  <div class="cancha-step is-active" data-step="1"><span>1</span> Seleccionar actividad</div>
+  <div class="cancha-step" data-step="2"><span>2</span> Registrar asistencia</div>
+  <div class="cancha-step" data-step="3"><span>3</span> Guardar y cerrar</div>
+</nav>
+<section id="seleccionPanel" hidden>
+  <section class="panel">
+    <div class="section-heading"><div><span class="eyebrow">PASO 1 · ORGANIZA TU ACTIVIDAD</span>
+      <h2>Crear entrenamiento o partido</h2>
+      <p>Selecciona categoría, fecha y tipo. Después podrás registrar el plantel.</p></div></div>
+    <form id="crearEventoForm" class="crear-actividad formulario" hidden>
+      <label>Categoría<select id="categoriaId" required></select></label>
+      <label>Fecha<input id="fecha" type="date" required></label>
+      <label>Hora (opcional)<input id="horaInicio" type="time"></label>
+      <label>Tipo de actividad<select id="tipo"><option>Entrenamiento</option><option>Partido</option><option>Torneo</option></select></label>
+      <button type="submit">Preparar actividad →</button>
+    </form>
+  </section>
+  <section class="section-block">
+    <div class="section-heading"><div><span class="eyebrow">ACTIVIDADES PROGRAMADAS</span>
+      <h2>Continuar un registro</h2><p>Selecciona una actividad abierta o consulta el resumen de una cerrada.</p></div></div>
+    <div id="listaEventos" class="eventos-lista" aria-live="polite"></div>
+  </section>
+</section>
+<section id="actividadPanel" hidden>
+  <div class="barra-actividad panel">
+    <div><span id="tipoEvento" class="eyebrow">ACTIVIDAD</span>
+      <h2 id="eventoTitulo">Preparando listado</h2>
+      <p id="contador" class="sin-margen"></p></div>
+    <div class="acciones-actividad">
+      <button id="marcarPendientes" class="secundario" type="button" hidden>✓ Confirmar pendientes presentes</button>
+      <button id="volver" class="secundario" type="button">← Otra actividad</button>
+    </div>
+  </div>
+  <div class="toolbar panel">
+    <label class="herramienta">Qué estadística voy a registrar
+      <select id="metrica">
+        <option value="goles">⚽ Goles</option>
+        <option value="asistenciasGol">🎯 Asistencias de gol</option>
+        <option value="pasesClave">↗ Pases clave</option>
+        <option value="recuperaciones">↺ Recuperaciones</option>
+        <option value="tirosArco">◎ Tiros al arco</option>
+        <option value="faltasCometidas">Faltas cometidas</option>
+        <option value="faltasRecibidas">Faltas recibidas</option>
+        <option value="rendimiento">★ Rendimiento (1–10)</option>
+      </select>
+    </label>
+    <label class="herramienta">Buscar jugador<input id="buscar" type="search" placeholder="Nombre del jugador"></label>
+    <label class="herramienta">Mostrar<select id="filtro">
+      <option value="todos">Todos</option><option value="pendiente">Pendientes</option>
+      <option value="presente">Presentes</option><option value="ausente">Ausentes</option>
+    </select></label>
+  </div>
+  <div class="ayuda-rapida">Marca presente o ausente de un toque. Usa <strong>− / +</strong> para registrar una métrica. El sistema guarda los cambios y te permite sincronizar si otro dispositivo editó el evento.</div>
+  <div class="guardar-flotante panel">
+    <span id="guardarEstado" role="status" aria-live="polite">Sin cambios pendientes</span>
+    <div class="acciones-guardar">
+      <button id="deshacer" class="secundario" type="button" disabled>Deshacer</button>
+      <button id="sincronizar" class="secundario" type="button" hidden>Sincronizar cambios</button>
+      <button id="guardar" type="button" disabled>Guardar ahora</button>
+      <button id="cerrar" class="secundario" type="button">Cerrar actividad ✓</button>
+    </div>
+  </div>
+  <div id="jugadores" class="jugadores-rapidos"></div>
+</section>
+<p id="mensaje" role="alert" aria-live="assertive"></p>
+</main></body></html>

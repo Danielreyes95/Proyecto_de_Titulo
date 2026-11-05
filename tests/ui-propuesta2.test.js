@@ -18,7 +18,7 @@ test("Las 12 páginas multiescuela usan SOLO la nueva hoja visual", () => {
  for (const page of pages) {
    const html = source("public/" + page);
    const stylesheets = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map(m=>m[1]);
-   assert.deepEqual(stylesheets, ["/assets/css/app-v2.css?v=3.0.0"], page);
+   assert.deepEqual(stylesheets, ["/assets/css/app-v2.css?v=3.0.1"], page);
    assert.ok(html.includes("/js/ui-propuesta2.js?v=3.0.0"), page);
    assert.ok(!html.includes("/assets/css/plataforma.css"), page);
    assert.ok(!html.includes("/assets/css/ui-propuesta2.css"), page);
@@ -124,4 +124,26 @@ test("App v3 incluye componentes, contraste y diseño adaptable", () => {
    ".family-kpis",".invitation-layout",".app-topbar-logout",
    "--ui-primary","@media(max-width:720px)","prefers-reduced-motion"
  ]) assert.ok(css.includes(fragment), fragment);
+});
+
+
+test("Personalización mantiene cabecera ordenada, imágenes acotadas y diseño adaptable", () => {
+  const page=source("public/director-acceso.html");
+  const css=source("public/assets/css/app-v2.css");
+  const imageIds=["previewLogo","previewPortada"];
+  assert.ok(page.includes('id="panelPersonalizacion"'));
+  assert.ok(page.includes('class="identity-editor-content"'));
+  imageIds.forEach(id=>assert.ok(page.includes('id="'+id+'"')));
+  for(const item of [
+    "#panelPersonalizacion > summary",
+    "#panelPersonalizacion > summary::-webkit-details-marker",
+    "#panelPersonalizacion > summary::marker",
+    "#panelPersonalizacion .identity-editor-content",
+    "#panelPersonalizacion #marcaDirector",
+    "#panelPersonalizacion .marca-imagen-card img",
+    "height:142px",
+    "object-fit:contain",
+    "#panelPersonalizacion .marca-imagen-card input[type=\"file\"]",
+    "@media(max-width:680px)"
+  ]) assert.ok(css.includes(item), "Falta regla: "+item);
 });

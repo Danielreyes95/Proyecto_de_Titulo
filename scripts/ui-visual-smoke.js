@@ -6,7 +6,7 @@ const root=path.resolve(__dirname,"..","public"),out=path.resolve(__dirname,".."
 const sid="6ab9d94c7205a988b1853bc4",cid="6ad174cf2e246eb52b17b0f1",pid="6b0000000000000000000001";
 const school={_id:sid,id:sid,nombre:"Academia Los Leones Demo",slug:"los-leones-demo",estado:"activa",branding:{
 nombrePublico:"Academia Los Leones Demo",colorPrimario:"#683ac6",colorSecundario:"#ffffff",colorAcento:"#f27686",colorTexto:"#24243d",
-logoUrl:"/uploads/escuelas/"+sid+"/logo/visual-smoke.svg",portadaUrl:"/uploads/escuelas/"+sid+"/portada/visual-smoke.svg"}};
+logoUrl:"/uploads/escuelas/"+sid+"/logo/aaaaaaaaaaaaaaaaaaaaaaaa.png",portadaUrl:"/uploads/escuelas/"+sid+"/portada/aaaaaaaaaaaaaaaaaaaaaaaa.png"}};
 const categories=[{_id:cid,nombre:"Sub 8",modalidad:"formativo",edadMin:6,edadMax:8,cupos:20,estado:"activa"},
 {_id:"6ad174cf2e246eb52b17b0f2",nombre:"Sub 10",modalidad:"competitivo",edadMin:9,edadMax:10,cupos:20,estado:"activa"}];
 const players=[{_id:pid,nombre:"Jugador Demo",rut:"11.111.111-1",fechaNacimiento:"2018-01-01T00:00:00.000Z",categoria:categories[0],apoderados:[],estado:"activo"}];
@@ -62,7 +62,7 @@ const js="sessionStorage.setItem("+JSON.stringify(k)+",'visual-smoke');"+
 "location.replace("+JSON.stringify(next)+");";
 res.writeHead(200,{"Content-Type":"text/html"});res.end("<html><body><script>"+js+"</script></body></html>");return;
 }
-if(p.startsWith("/uploads/escuelas/"+sid+"/") && p.endsWith("/visual-smoke.svg")){
+if(p.startsWith("/uploads/escuelas/"+sid+"/") && p.endsWith("/aaaaaaaaaaaaaaaaaaaaaaaa.png")){
   const logo=p.includes("/logo/");
   // Dibujos generados exclusivamente para la prueba: resolución grande para detectar desbordes.
   const svg=logo

@@ -5,7 +5,8 @@ const {spawnSync,spawn}=require("node:child_process");
 const root=path.resolve(__dirname,"..","public"),out=path.resolve(__dirname,"..","visual-smoke-output");
 const sid="6ab9d94c7205a988b1853bc4",cid="6ad174cf2e246eb52b17b0f1",pid="6b0000000000000000000001";
 const school={_id:sid,id:sid,nombre:"Academia Los Leones Demo",slug:"los-leones-demo",estado:"activa",branding:{
-nombrePublico:"Academia Los Leones Demo",colorPrimario:"#683ac6",colorSecundario:"#ffffff",colorAcento:"#f27686",colorTexto:"#24243d"}};
+nombrePublico:"Academia Los Leones Demo",colorPrimario:"#683ac6",colorSecundario:"#ffffff",colorAcento:"#f27686",colorTexto:"#24243d",
+logoUrl:"/uploads/escuelas/"+sid+"/logo/visual-smoke.svg",portadaUrl:"/uploads/escuelas/"+sid+"/portada/visual-smoke.svg"}};
 const categories=[{_id:cid,nombre:"Sub 8",modalidad:"formativo",edadMin:6,edadMax:8,cupos:20,estado:"activa"},
 {_id:"6ad174cf2e246eb52b17b0f2",nombre:"Sub 10",modalidad:"competitivo",edadMin:9,edadMax:10,cupos:20,estado:"activa"}];
 const players=[{_id:pid,nombre:"Jugador Demo",rut:"11.111.111-1",fechaNacimiento:"2018-01-01T00:00:00.000Z",categoria:categories[0],apoderados:[],estado:"activo"}];
@@ -47,7 +48,7 @@ return {};
 function probe(){
 return '<script>if(new URLSearchParams(location.search).get("menuTest")==="1"){setTimeout(function(){var b=document.querySelector(".app-menu-toggle");if(b)b.click()},900)}setTimeout(function(){'+
 'function shown(q){var el=document.querySelector(q);if(!el||el.hidden)return false;var s=getComputedStyle(el);return s.display!=="none"&&s.visibility!=="hidden"}'+
-'var d={width:innerWidth,scrollWidth:document.documentElement.scrollWidth,sidebar:shown(".app-sidenav"),topbar:shown(".app-topbar"),director:shown("#seleccion"),categories:document.querySelectorAll(".category-card").length,coaches:document.querySelectorAll(".coach-card").length,players:document.querySelectorAll("#tabla tr").length,bars:document.querySelectorAll(".month-column").length,family:shown(".family-dashboard"),menuOpen:document.body.classList.contains("app-menu-open"),css:[].some.call(document.styleSheets,function(x){return String(x.href).includes("app-v2.css")}),old:[].some.call(document.styleSheets,function(x){return String(x.href).includes("plataforma.css")})};'+
+'var d={width:innerWidth,scrollWidth:document.documentElement.scrollWidth,sidebar:shown(".app-sidenav"),topbar:shown(".app-topbar"),director:shown("#seleccion"),categories:document.querySelectorAll(".category-card").length,coaches:document.querySelectorAll(".coach-card").length,players:document.querySelectorAll("#tabla tr").length,bars:document.querySelectorAll(".month-column").length,family:shown(".family-dashboard"),menuOpen:document.body.classList.contains("app-menu-open"),personalizacion:(function(){var p=document.getElementById("panelPersonalizacion"),a=document.getElementById("previewLogo"),b=document.getElementById("previewPortada"),f=document.getElementById("marcaDirector"),sum=p&&p.querySelector("summary"),card=a&&a.closest(".marca-imagen-card");if(!p||!p.open||!a||!b||!sum||!card)return false;var sa=getComputedStyle(sum),r=card.getBoundingClientRect(),q=a.getBoundingClientRect(),z=b.getBoundingClientRect(),w=document.documentElement.clientWidth;return sa.display==="flex"&&shown("#marcaDirector")&&q.width>0&&q.width<=r.width&&q.height<=180&&z.height<=180&&r.right<=w+4})(),css:[].some.call(document.styleSheets,function(x){return String(x.href).includes("app-v2.css")}),old:[].some.call(document.styleSheets,function(x){return String(x.href).includes("plataforma.css")})};'+
 'var e=document.createElement("output");e.id="__visual_probe";e.textContent=JSON.stringify(d);document.body.appendChild(e);'+
 '},1800)</script>';
 }
@@ -60,6 +61,14 @@ const js="sessionStorage.setItem("+JSON.stringify(k)+",'visual-smoke');"+
 "document.cookie='visualRole="+(kind==="family"?"family":"school")+";SameSite=Lax';"+
 "location.replace("+JSON.stringify(next)+");";
 res.writeHead(200,{"Content-Type":"text/html"});res.end("<html><body><script>"+js+"</script></body></html>");return;
+}
+if(p.startsWith("/uploads/escuelas/"+sid+"/") && p.endsWith("/visual-smoke.svg")){
+  const logo=p.includes("/logo/");
+  // Dibujos generados exclusivamente para la prueba: resolución grande para detectar desbordes.
+  const svg=logo
+    ? '<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1800" viewBox="0 0 2400 1800"><rect width="2400" height="1800" fill="#f5f1fd"/><circle cx="1200" cy="900" r="660" fill="#6e37b4"/><circle cx="1200" cy="900" r="500" fill="none" stroke="#4fd4d3" stroke-width="80"/><text x="1200" y="1020" font-size="360" text-anchor="middle" fill="white">FC</text></svg>'
+    : '<svg xmlns="http://www.w3.org/2000/svg" width="3000" height="1200" viewBox="0 0 3000 1200"><rect width="3000" height="1200" fill="#512189"/><circle cx="2500" cy="550" r="420" fill="#24c7c5"/><text x="140" y="650" font-size="260" fill="white">ESCUELA DEMO</text></svg>';
+  res.writeHead(200,{"Content-Type":"image/svg+xml","Cache-Control":"no-store"});res.end(svg);return;
 }
 if(p.startsWith("/api/")){respond(res,fixture(p,req));return;}
 const filename=path.resolve(root,"."+decodeURIComponent(p==="/"?"/plataforma.html":p));
@@ -102,6 +111,7 @@ p.on("close",code=>{
 const tests=[
 ["superadmin","plataforma.html","platform","sidebar"],
 ["director","director-acceso.html?escuela="+sid,"school","director"],
+["personalizacion","director-acceso.html?escuela="+sid+"#personalizacion","school","personalizacion"],
 ["categorias","categorias-escuela.html?escuela="+sid,"school","categories"],
 ["entrenadores","entrenadores-escuela.html?escuela="+sid,"school","coaches"],
 ["jugadores","jugadores-escuela.html?escuela="+sid,"school","players"],
@@ -130,7 +140,7 @@ const okay=d.css&&!d.old&&(kind==="none"||(d.sidebar&&d.topbar))&&
 (expected==="sidebar"||expected==="css"||Boolean(d[expected]));
 console.log((okay?"PASS ":"FAIL ")+name+" "+JSON.stringify(d));
 if(!okay)failures++;
-if(["superadmin","director","categorias","entrenadores","jugadores","cancha","estadisticas","familia"].includes(name)){
+if(["superadmin","director","personalizacion","categorias","entrenadores","jugadores","cancha","estadisticas","familia"].includes(name)){
 await run(bin,["--window-size=1440,960","--screenshot="+path.join(out,name+"-desktop.png")],url);
 await run(bin,["--window-size=390,844","--screenshot="+path.join(out,name+"-mobile.png")],url);
 const mobileDom=await run(bin,["--window-size=390,844","--dump-dom"],url);
